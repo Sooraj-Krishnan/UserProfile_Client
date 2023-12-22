@@ -1,0 +1,13 @@
+.hide-input-arrows {
+  
+    height: 40px;
+  }
+
+.hide-input-arrows .ant-input-number-handler-wrap {
+    display: none;
+   }
+
+   .hide-input-arrows .ant-input-number-input {
+    line-height: 1.5715; /* Adjust this value as needed */
+    padding: 4px 11px; /* Adjust these values as needed */
+  }

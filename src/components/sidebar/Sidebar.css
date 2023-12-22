@@ -1,0 +1,29 @@
+
+
+.ant-layout-sider {
+  height: 100vh;
+  flex: 0 0 200px;
+  max-width: 200px;
+  min-width: 200px;
+  width: 200px;
+  background: #001529;
+}
+.trigger {
+    /* padding: 0 25px; */
+    width: 40px;
+    font-size: 18px;
+    line-height: 65px;
+    cursor: pointer;
+    transition: color 0.3s;
+    background: #001529;
+    color: rgb(255, 255, 255);
+
+  }
+  
+ .trigger:hover {
+    color: #1890ff;
+  }
+  
+ .logo {
+    margin: 16px;
+  }
