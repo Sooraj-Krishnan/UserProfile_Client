@@ -20,7 +20,6 @@ const bcrypt = require("bcrypt");
 //crypto.randomBytes(bytes).toString("hex");
 
 const createManager = async (req, res, next) => {
-  console.log(req.body);
   try {
     const { name, email, password, cardLimit } = req.body;
     const hash = await bcrypt.hash(password, 10);
@@ -40,7 +39,6 @@ const createManager = async (req, res, next) => {
       data: manager,
     });
   } catch (error) {
-    console.log(error);
     if (error.code === 11000) {
       return res
         .status(400)
@@ -71,7 +69,6 @@ const editManager = async (req, res, next) => {
       data: updatedManager,
     });
   } catch (error) {
-    console.log(error);
     if (error.code === 11000) {
       return res
         .status(400)
@@ -119,7 +116,6 @@ const blockManager = async (req, res, next) => {
       return res.status(200).json({ success: true, message: "Activated" });
     }
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };

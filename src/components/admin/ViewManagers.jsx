@@ -3,7 +3,7 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import { Button, Table, Col, Row, Typography } from "antd";
 import { Modal } from "antd";
 //import ErrorLogout from "../../../helper/ErrorLogout";
-
+import "./ViewManagers.css";
 import {
   viewManagers,
   blockManager,

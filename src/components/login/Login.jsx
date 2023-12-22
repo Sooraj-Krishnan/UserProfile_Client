@@ -36,40 +36,16 @@ function LoginArea() {
     try {
       console.log("login data", loginData);
       const { data } = await login(loginData);
-      console.log("login  data data", data);
+      console.log("login token data", data);
       console.log("login error", data?.message);
 
       if (data.success) {
         if (data.admin) {
           localStorage.setItem("admin-refToken", data.refreshToken);
-
-          const array = data?.admin?.features?.map((obj) => {
-            return obj.type;
-          });
-          if (array?.length == "1") {
-            if (array?.includes("businessCard")) {
-              navigate("/businessCard/dashboard");
-            } else if (array?.includes("contactCard")) {
-              navigate("/contactCard/dashboard");
-            } else if (array?.includes("feedbackForm")) {
-              navigate("/feedbackForm/dashboard");
-            }
-          } else {
-            navigate("/admin-dashboard");
-          }
-        } else {
-          localStorage.setItem("refToken", data.refreshToken);
-
-          if (data?.user?.adminID || data?.user?.userType === "trail") {
-            // navigate("/view-cards");
-            navigate("/dashboard");
-          } else {
-            if (data.cardCount === 0) {
-              navigate("/shopping");
-            } else {
-              navigate("/dashboard");
-            }
-          }
+          navigate("/admin-dashboard");
+        } else if (data.user) {
+          localStorage.setItem("manager-refToken", data.refreshToken);
+          navigate("/manager-dashboard");
         }
       }
     } catch (error) {

@@ -1,13 +1,12 @@
 import { Layout } from "antd";
 const { Content } = Layout;
-import Sidebar from "../../components/sidebar/Sidebar";
-import AdminDashboard from "../../components/dashboard/AdminDashboard";
 
-function DashboardPage() {
+import ManagerDasboard from "../../components/dashboard/ManagerDasboard";
+
+function ManagerDashboardPage() {
   return (
     <div className="flex">
       <Layout>
-        <Sidebar />
         <Content
           style={{
             margin: "24px 16px",
@@ -16,11 +15,11 @@ function DashboardPage() {
             background: "white",
           }}
         >
-          <AdminDashboard />
+          <ManagerDasboard />
         </Content>
       </Layout>
     </div>
   );
 }
 
-export default DashboardPage;
+export default ManagerDashboardPage;

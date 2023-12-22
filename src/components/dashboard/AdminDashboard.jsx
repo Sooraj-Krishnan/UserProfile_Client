@@ -12,9 +12,9 @@ const AdminDashboard = () => {
   return (
     <div className="relative">
       <Button
-        type="primary"
+        size="large"
         style={{
-          backgroundColor: "blue",
+          backgroundColor: "#1f6ff0",
           color: "white",
           position: "absolute",
           top: 20,

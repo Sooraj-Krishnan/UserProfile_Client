@@ -1,12 +1,13 @@
 import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
+  //  MenuFoldOutlined,
+  // MenuUnfoldOutlined,
   PieChartOutlined,
   LogoutOutlined,
-  ExclamationCircleFilled,
+  // ExclamationCircleFilled,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 
-import { Layout, Menu } from "antd";
+import { Menu, Layout } from "antd";
 import { useState } from "react";
 import "./Sidebar.css";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +19,7 @@ import ZEEQR_White from "../../assets/images/ZEEQR_White.svg";
 
 const { confirm } = Modal;
 const { Header, Sider } = Layout;
-const { SubMenu } = Menu;
+// const { SubMenu } = Menu;
 
 function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -38,18 +39,16 @@ function Sidebar() {
         onOk() {
           const signout = async () => {
             try {
-              const refToken = await localStorage.getItem(
-                "ServiceManager-refToken"
-              );
+              const refToken = await localStorage.getItem("admin-refToken");
               const { data } = await logout(refToken);
               if (data.success) {
                 localStorage.clear();
-                navigate("/feedback");
+                navigate("/login");
               }
             } catch (error) {
               console.log(error.response.data);
               localStorage.clear();
-              navigate("/feedback");
+              navigate("/login");
             }
           };
           signout();
