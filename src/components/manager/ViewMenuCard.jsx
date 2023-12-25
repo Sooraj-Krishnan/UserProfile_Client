@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaEdit } from "react-icons/fa";
+import { AiOutlineUserAdd } from "react-icons/ai";
 import { DownOutlined } from "@ant-design/icons";
 
 import {
@@ -103,7 +104,7 @@ function ViewMenuCard() {
 
   const handleEdit = (_id) => {
     const MenuCardID = _id._id;
-    navigate(`/edit-feedback/${MenuCardID}`, {
+    navigate(`/edit-menu-card/${MenuCardID}`, {
       state: { details: _id },
     });
   };
@@ -114,10 +115,10 @@ function ViewMenuCard() {
     window.open(url, "_blank");
   };
 
-  //   const handleAddWaiter = (_id) => {
-  //     const MenuCardID = _id._id;
-  //     navigate(`/create-waiter/${MenuCardID}`);
-  //   };
+  const handleAddWaiter = (_id) => {
+    const MenuCardID = _id._id;
+    navigate(`/create-waiter/${MenuCardID}`);
+  };
 
   // Create a menu for the dropdown
   const DropdownMenu = ({ _id }) => (
@@ -211,10 +212,10 @@ function ViewMenuCard() {
         const isBlocked = status === "blocked";
         return (
           <div className="flex gap-3">
-            {/* <div>
-              <Tooltip title={isBlocked ? "" : "Add Employee"}>
+            <div>
+              <Tooltip title={isBlocked ? "" : "Add Waiter"}>
                 <AiOutlineUserAdd
-                  onClick={isBlocked ? undefined : () => handleAddEmployee(_id)}
+                  onClick={isBlocked ? undefined : () => handleAddWaiter(_id)}
                   size={28}
                   style={{
                     cursor: isBlocked ? "default" : "pointer",
@@ -222,7 +223,19 @@ function ViewMenuCard() {
                   }}
                 />
               </Tooltip>
-            </div> */}
+            </div>
+            <div>
+              <Tooltip title={isBlocked ? "" : "Edit Your Menu Card"}>
+                <FaEdit
+                  onClick={isBlocked ? undefined : () => handleEdit(_id)}
+                  size={28}
+                  style={{
+                    cursor: isBlocked ? "default" : "pointer",
+                    opacity: isBlocked ? 0.5 : 1,
+                  }}
+                />
+              </Tooltip>
+            </div>
             <div>
               <Tooltip title={isBlocked ? "" : "Demo view only"}>
                 <FaEye
@@ -259,7 +272,7 @@ function ViewMenuCard() {
     <>
       <Row justify="space-between" align="middle">
         <Col span={12}>
-          <Title level={2}>Feedback Cards</Title>
+          <Title level={2}>Menu Cards</Title>
         </Col>
         <Col span={12} className="text-right">
           <Link className="add-button rounded-lg" to="/create-menu-card">

@@ -36,32 +36,32 @@ const tailFormItemLayout = {
   },
 };
 
-function CreateMenuCard({ MenuCardData, edit }) {
+function CreateMenuCard({ menuCardData, edit }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [loader] = UseSpinner();
 
   const [fileList1, setFileList1] = useState(
-    MenuCardData?.logoImage
+    menuCardData?.logoImage
       ? [
           {
             uid: "-1",
             name: "image.png",
             // status:  feedbackData.coverImage ? "done" : "",
-            thumbUrl: MenuCardData.logoImage,
+            thumbUrl: menuCardData.logoImage,
           },
         ]
       : []
   );
   const [fileList2, setFileList2] = useState(
-    MenuCardData?.coverImage
+    menuCardData?.coverImage
       ? [
           {
             uid: "-1",
             name: "image.png",
             // status:  feedbackData.coverImage ? "done" : "",
-            thumbUrl: MenuCardData.coverImage,
+            thumbUrl: menuCardData.coverImage,
           },
         ]
       : []
@@ -97,7 +97,7 @@ function CreateMenuCard({ MenuCardData, edit }) {
 
       try {
         if (edit) {
-          const response = await editMenuCard(MenuCardData._id, datas);
+          const response = await editMenuCard(menuCardData._id, datas);
           // hideLoder();
           console.log("Response from editMenuCard:", response);
           toast.success("Menu Card Updated", {
@@ -168,19 +168,22 @@ function CreateMenuCard({ MenuCardData, edit }) {
           <div className="mt-3"></div>
 
           <div className="w-12/12  mt-10 ">
-            <Title level={2}> Create your Menu Card</Title>
+            <Title level={2}>
+              {" "}
+              {edit ? "Edit your Menu Card" : "Create your Menu Card"}{" "}
+            </Title>
             <h3 className="text-md mb-7">Customize your profile</h3>
 
             <div className="my-5 flex flex-col gap-2 ">
               {/* ------------------------------ Here Put form -----------------------------  */}
-              {(edit || (!edit && !MenuCardData)) && (
+              {(edit || (!edit && !menuCardData)) && (
                 <Form
                   {...formItemLayout}
                   form={form}
                   name="register"
                   onFinish={onFinish}
                   initialValues={{
-                    name: MenuCardData?.name,
+                    name: menuCardData?.name,
                     fileList1: fileList1,
                     fileList2: fileList2,
                   }}
@@ -311,7 +314,7 @@ function CreateMenuCard({ MenuCardData, edit }) {
 }
 CreateMenuCard.propTypes = {
   edit: PropTypes.bool,
-  MenuCardData: PropTypes.shape({
+  menuCardData: PropTypes.shape({
     _id: PropTypes.string,
     name: PropTypes.string,
     coverImage: PropTypes.string,

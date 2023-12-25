@@ -15,6 +15,7 @@ import ManagerDashboardPage from "./pages/managerPages/Dashboard";
 import CreateWaiterPage from "./pages/managerPages/CreateWaiterPage";
 import EditWaiterPage from "./pages/managerPages/EditWaiterPage";
 import CreateMenuCardPage from "./pages/managerPages/CreateMenuCard";
+import EditMenuCardPage from "./pages/managerPages/EditMenuCard";
 import ViewAllMenuCard from "./pages/managerPages/ViewAllMenuCards";
 
 function App() {
@@ -32,8 +33,9 @@ function App() {
         <Route path="/" element={<ManagerLoginProtect />} />
         <Route path="manager-dashboard" element={<ManagerDashboardPage />} />
         <Route path="create-menu-card" element={<CreateMenuCardPage />} />
+        <Route path="edit-menu-card/:id" element={<EditMenuCardPage />} />
         <Route path="all-menu-cards" element={<ViewAllMenuCard />} />
-        <Route path="create-waiter" element={<CreateWaiterPage />} />
+        <Route path="create-waiter/:id" element={<CreateWaiterPage />} />
         <Route path="edit-waiter" element={<EditWaiterPage />} />
       </Routes>
     </Router>

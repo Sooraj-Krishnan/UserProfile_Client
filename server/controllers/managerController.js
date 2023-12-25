@@ -47,7 +47,7 @@ const createMenuCard = async (req, res, next) => {
       managerID: managerID,
       adminID: manager.adminID,
     });
-    console.log("newMenuCard", newMenuCard);
+
     res.status(201).json({
       success: true,
       message: "Menu Card created successfully!",
@@ -144,7 +144,6 @@ const editMenuCard = async (req, res, next) => {
 };
 
 const viewAllMenuCards = async (req, res, next) => {
-  console.log("Hello");
   try {
     const menucard = await MenuCard.find({
       managerID: req.user._id,
@@ -152,13 +151,12 @@ const viewAllMenuCards = async (req, res, next) => {
     })
       .sort({ createdDate: -1 })
       .exec();
-    console.log("menucard", menucard);
+
     res.status(200).json({
       success: true,
       menucard,
       message: "All Menu Card Under This Service Manager",
     });
-    console.log("menu card", menucard);
   } catch (error) {
     console.log(error);
     next(error);
@@ -166,17 +164,18 @@ const viewAllMenuCards = async (req, res, next) => {
 };
 
 const createWaiter = async (req, res, next) => {
-  console.log("req.body", req.body);
   try {
     const { name, email, password } = req.body;
     const hash = await bcrypt.hash(password, 10);
     const managerID = req.user._id;
+    const menuCardID = req.params.id;
     const manager = await Manager.findById(managerID);
     const waiter = await Waiter.create({
       name,
       email,
       password: hash,
       managerID,
+      menuCardID,
       adminID: manager.adminID,
     });
 

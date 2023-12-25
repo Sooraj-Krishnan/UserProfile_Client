@@ -35,7 +35,7 @@ const tailFormItemLayout = {
   },
 };
 
-function CreateWaiter({ edit, waiterData }) {
+function CreateWaiter({ id, edit, waiterData }) {
   console.log("Waiter Data", waiterData);
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ function CreateWaiter({ edit, waiterData }) {
       console.log("Sending this data to the 111backend:", details);
       const { data } = edit
         ? await editWaiter(waiterData?._id, details)
-        : await createWaiter(details);
+        : await createWaiter(id, details);
 
       if (data.success) {
         hideLoader();
@@ -280,6 +280,7 @@ function CreateWaiter({ edit, waiterData }) {
 }
 CreateWaiter.propTypes = {
   edit: PropTypes.bool,
+  id: PropTypes.string,
   waiterData: PropTypes.shape({
     _id: PropTypes.string,
     name: PropTypes.string,

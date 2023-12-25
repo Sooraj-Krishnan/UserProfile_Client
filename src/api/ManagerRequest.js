@@ -6,17 +6,12 @@ export const createMenuCard = (details) =>
   axiosPrivate.post(`/create-menu-card`, details);
 
 export const editMenuCard = (menuCardID, details) =>
-  axiosPrivate.put(
-    `/edit-menu-card/${menuCardID}`,
-    details
-  );
+  axiosPrivate.put(`/edit-menu-card/${menuCardID}`, details);
 
-export const viewAllMenuCards = () =>
-  axiosPrivate.get(`/all-menu-cards`);
+export const viewAllMenuCards = () => axiosPrivate.get(`/all-menu-cards`);
 
-export const createWaiter = (details) =>
-  axiosPrivate.post(`/create-waiter`, details);
+export const createWaiter = (menucardID, details) =>
+  axiosPrivate.post(`/create-waiter/${menucardID}`, details);
 
 export const editWaiter = (waiterID, details) =>
   axiosPrivate.put(`/edit-waiter/${waiterID}`, details);
-
