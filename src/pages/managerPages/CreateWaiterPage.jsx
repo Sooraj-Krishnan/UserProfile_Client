@@ -1,11 +1,12 @@
+import CreateWaiter from "../../components/manager/CreateWaiter";
 import { Layout } from "antd";
-const { Content } = Layout;
 import ManagerSidebar from "../../components/sidebar/ManagerSidebar";
-import ManagerDasboard from "../../components/dashboard/ManagerDasboard";
+const { Content } = Layout;
 
-function ManagerDashboardPage() {
+function CreateWaiterPage() {
+  const edit = false;
   return (
-    <div className="flex">
+    <div>
       <Layout>
         <ManagerSidebar />
         <Content
@@ -16,11 +17,11 @@ function ManagerDashboardPage() {
             background: "white",
           }}
         >
-          <ManagerDasboard />
+          <CreateWaiter edit={edit} />
         </Content>
       </Layout>
     </div>
   );
 }
 
-export default ManagerDashboardPage;
+export default CreateWaiterPage;

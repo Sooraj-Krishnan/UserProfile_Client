@@ -1,11 +1,12 @@
+import ManagerSidebar from "../../components/sidebar/ManagerSidebar";
+import CreateMenuCard from "../../components/manager/CreateMenuCard";
 import { Layout } from "antd";
 const { Content } = Layout;
-import ManagerSidebar from "../../components/sidebar/ManagerSidebar";
-import ManagerDasboard from "../../components/dashboard/ManagerDasboard";
 
-function ManagerDashboardPage() {
+function CreateMenuCardPage() {
+  const edit = false;
   return (
-    <div className="flex">
+    <div>
       <Layout>
         <ManagerSidebar />
         <Content
@@ -16,11 +17,11 @@ function ManagerDashboardPage() {
             background: "white",
           }}
         >
-          <ManagerDasboard />
+          <CreateMenuCard edit={edit} />
         </Content>
       </Layout>
     </div>
   );
 }
 
-export default ManagerDashboardPage;
+export default CreateMenuCardPage;

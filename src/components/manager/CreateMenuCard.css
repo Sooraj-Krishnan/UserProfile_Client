@@ -1,0 +1,101 @@
+
+.previewWrapBlock{
+    display: flex;
+    height: calc( 100vh - 82px);
+    max-width: 1140px;
+    margin:0 auto;
+}
+.previewContainerMyorders{
+    max-width: 1140px;
+    margin: 0 auto 50px;
+}
+.previewContainer{
+    /* max-width: 1140px; */
+    margin: 0 auto;
+}
+.previewWrapBlock .ant-collapse.border-red-500{
+    border: none;
+}
+.previewWrapBlock .ant-collapse.border-red-500 .ant-collapse-item{
+    border:solid 1px rgb(239 68 68);
+    border-radius: 8px;
+}
+.mobilePreview{
+    height:100vh;
+    width: 380px;
+    max-height: 860px;
+    padding-top: 19px;
+    box-sizing: border-box;
+    background:  url('../../../assests/images/mobileTop.png') no-repeat center top;
+    background-size: 380px;
+    transform: scale(0.80);
+    -moz-transform: scale(0.80);
+    -webkit-transform: scale(0.80);
+    transform-origin: center right;
+    -moz-transform-origin: center right;
+    -webkit-transform-origin: center right;
+}
+.mobilePreviewB{
+    height: 100vh;
+    width: 380px;
+    max-height: 740px;
+    padding-bottom: 22px;
+    box-sizing: border-box;
+    background: url('../../../assests/images/mobileBottom.png') no-repeat center bottom;
+    background-size: 376px ;
+}
+.themepreviewWrap{
+    height: calc(100vh - 16px);
+    width: 340px;
+    margin: 0 auto;
+    overflow: auto;
+    border-radius: 44px;
+    max-height: 722px;
+}
+
+.themepreviewWrap::-webkit-scrollbar {
+    display: none;
+}
+.themepreviewWrap {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.overlayLoader{
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.overlayLoader .ant-spin .ant-spin-dot-item{
+    background: #ea580c;
+}
+
+button.text-white:focus {
+    box-shadow: none;
+}
+.ant-modal .ant-btn-primary{
+    background: #ea580c;
+    box-shadow: none;
+}
+.ant-modal .ant-btn-primary:hover, .ant-modal .ant-btn-primary:focus{
+    background: #d24c05;
+}
+
+.ant-modal .ant-btn {
+    height: 40px;
+    padding: 5px 25px;
+}
+.w-100{
+    width: 100%;
+}
+
+.previewWrapBlock .ant-collapse p{
+    margin: 0;
+}

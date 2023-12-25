@@ -21,13 +21,17 @@ const { confirm } = Modal;
 const { Sider } = Layout;
 // const { SubMenu } = Menu;
 
-function Sidebar() {
+function ManagerSidebar() {
   const [collapsed, setCollapsed] = useState(false);
 
   const navigate = useNavigate();
 
   const items = [
-    { label: "Dashboard", key: "/admin-dashboard", icon: <PieChartOutlined /> },
+    {
+      label: "Dashboard",
+      key: "/manager-dashboard",
+      icon: <PieChartOutlined />,
+    },
     { label: "SignOut", key: "/signout", icon: <LogoutOutlined /> },
   ];
 
@@ -39,7 +43,7 @@ function Sidebar() {
         onOk() {
           const signout = async () => {
             try {
-              const refToken = await localStorage.getItem("admin-refToken");
+              const refToken = await localStorage.getItem("manager-refToken");
               const { data } = await logout(refToken);
               if (data.success) {
                 localStorage.clear();
@@ -88,4 +92,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default ManagerSidebar;

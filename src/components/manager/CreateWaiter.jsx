@@ -2,15 +2,14 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { Spin } from "antd";
-import { Input, Typography, Form, InputNumber } from "antd";
+import { Input, Typography, Form } from "antd";
 // import Spinner from "../hooks/Spinner";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { Button } from "antd";
-import Whatsapp from "../../../assests/images/WhatsApp.svg";
+import { createWaiter, editWaiter } from "../../api/ManagerRequest";
 
-import { createManager, editManager } from "../../api/AdminRequest";
-import "./CreateManager.css";
+import "../admin/CreateManager.css";
 
 const { Title } = Typography;
 const formItemLayout = {
@@ -36,8 +35,8 @@ const tailFormItemLayout = {
   },
 };
 
-function CreateManager({ edit, managerData }) {
-  console.log("managerData", managerData);
+function CreateWaiter({ edit, waiterData }) {
+  console.log("Waiter Data", waiterData);
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -51,15 +50,17 @@ function CreateManager({ edit, managerData }) {
   };
 
   const onFinish = async (details) => {
+    console.log("Sending this data to the backend:", details);
     try {
       showLoader();
+      console.log("Sending this data to the 111backend:", details);
       const { data } = edit
-        ? await editManager(managerData?._id, details)
-        : await createManager(details);
+        ? await editWaiter(waiterData?._id, details)
+        : await createWaiter(details);
 
       if (data.success) {
         hideLoader();
-        toast.success("New Manager Created", {
+        toast.success("New Waiter Created", {
           position: "top-right",
           autoClose: 3000,
           theme: "dark",
@@ -73,17 +74,21 @@ function CreateManager({ edit, managerData }) {
         });
       }
       setTimeout(() => {
-        navigate("/view-managers");
+        navigate("/view-waiters");
       }, 3000);
     } catch (error) {
       console.log(error);
       hideLoader();
-      console.log("Error Message : ", error.response.data.message);
-      toast.error(error.response.data.message, {
-        position: "top-right",
-        autoClose: 3000,
-        theme: "dark",
-      });
+      if (error.response) {
+        console.log("Error Message : ", error.response.data.message);
+        toast.error(error.response.data.message, {
+          position: "top-right",
+          autoClose: 3000,
+          theme: "dark",
+        });
+      } else {
+        console.log("Error: ", error);
+      }
     }
   };
 
@@ -95,7 +100,7 @@ function CreateManager({ edit, managerData }) {
       <div className="md:w-7/12 flex justify-center overflow-auto scrollbar-hide">
         <div className="w-100">
           <div className="w-12/12  mt-10 ">
-            <Title level={2}>{edit ? "Edit Manager" : "Add Manager"}</Title>
+            <Title level={2}>{edit ? "Edit Waiter" : "Create Waiter"}</Title>
 
             <div className="my-5 flex flex-col gap-2 ">
               <Form
@@ -104,9 +109,8 @@ function CreateManager({ edit, managerData }) {
                 name="register"
                 onFinish={onFinish}
                 initialValues={{
-                  name: managerData?.name,
-                  email: managerData?.email,
-                  cardLimit: managerData?.cardLimit,
+                  name: waiterData?.name,
+                  email: waiterData?.email,
                 }}
                 style={{
                   // maxWidth: 600,
@@ -117,7 +121,7 @@ function CreateManager({ edit, managerData }) {
                 <div className="grid grid-cols-2 gap-2 ">
                   <div>
                     <label htmlFor="" className="text-xl font-semibold">
-                      Manager's Name{" "}
+                      Waiter's Name{" "}
                     </label>
                     <Form.Item
                       name="name"
@@ -159,7 +163,7 @@ function CreateManager({ edit, managerData }) {
                     </Form.Item>
                   </div>
                 </div>
-                <div>
+                {/* <div>
                   <label htmlFor="" className="text-xl font-semibold">
                     Card Limit
                   </label>
@@ -184,7 +188,7 @@ function CreateManager({ edit, managerData }) {
                       style={{ width: "100%" }}
                     />
                   </Form.Item>
-                </div>
+                </div> */}
 
                 <div className="grid grid-cols-2 gap-2 "></div>
 
@@ -271,22 +275,16 @@ function CreateManager({ edit, managerData }) {
       </div>
 
       <ToastContainer />
-      <button className="fixed bottom-5 right-3">
-        <a href="https://wa.me/+971505363704?text=Hi%2C" target="blank">
-          <img src={Whatsapp} alt="WhatsappImage" />
-        </a>
-      </button>
     </div>
   );
 }
-CreateManager.propTypes = {
+CreateWaiter.propTypes = {
   edit: PropTypes.bool,
-  managerData: PropTypes.shape({
+  waiterData: PropTypes.shape({
     _id: PropTypes.string,
     name: PropTypes.string,
     email: PropTypes.string,
-    cardLimit: PropTypes.number,
   }),
 };
 
-export default CreateManager;
+export default CreateWaiter;

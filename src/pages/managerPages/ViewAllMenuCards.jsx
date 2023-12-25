@@ -1,11 +1,11 @@
 import { Layout } from "antd";
-const { Content } = Layout;
 import ManagerSidebar from "../../components/sidebar/ManagerSidebar";
-import ManagerDasboard from "../../components/dashboard/ManagerDasboard";
+import ViewMenuCard from "../../components/manager/ViewMenuCard";
+const { Content } = Layout;
 
-function ManagerDashboardPage() {
+function ViewAllMenuCard() {
   return (
-    <div className="flex">
+    <div>
       <Layout>
         <ManagerSidebar />
         <Content
@@ -16,11 +16,11 @@ function ManagerDashboardPage() {
             background: "white",
           }}
         >
-          <ManagerDasboard />
+          <ViewMenuCard />
         </Content>
       </Layout>
     </div>
   );
 }
 
-export default ManagerDashboardPage;
+export default ViewAllMenuCard;

@@ -12,6 +12,10 @@ import ViewAllManagers from "./pages/adminPages/ViewManager";
 /*---------------Manager Pages ----------------*/
 import ManagerLoginProtect from "./auth/ManagerLoginProtect";
 import ManagerDashboardPage from "./pages/managerPages/Dashboard";
+import CreateWaiterPage from "./pages/managerPages/CreateWaiterPage";
+import EditWaiterPage from "./pages/managerPages/EditWaiterPage";
+import CreateMenuCardPage from "./pages/managerPages/CreateMenuCard";
+import ViewAllMenuCard from "./pages/managerPages/ViewAllMenuCards";
 
 function App() {
   return (
@@ -27,6 +31,10 @@ function App() {
         {/* other routes can go here */}
         <Route path="/" element={<ManagerLoginProtect />} />
         <Route path="manager-dashboard" element={<ManagerDashboardPage />} />
+        <Route path="create-menu-card" element={<CreateMenuCardPage />} />
+        <Route path="all-menu-cards" element={<ViewAllMenuCard />} />
+        <Route path="create-waiter" element={<CreateWaiterPage />} />
+        <Route path="edit-waiter" element={<EditWaiterPage />} />
       </Routes>
     </Router>
   );
