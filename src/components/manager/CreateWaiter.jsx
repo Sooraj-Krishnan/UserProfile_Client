@@ -74,7 +74,7 @@ function CreateWaiter({ id, edit, waiterData }) {
         });
       }
       setTimeout(() => {
-        navigate("/view-waiters");
+        navigate("/all-waiters");
       }, 3000);
     } catch (error) {
       console.log(error);

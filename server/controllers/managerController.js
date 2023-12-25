@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 // const {generateQR} = require("../helpers/qrCodeGenerator");
 const { uploadFile, deleteFile } = require("../helpers/s3");
+const { log } = require("console");
 
 const S3Url = process.env.AWS_BUCKET_URL;
 
@@ -194,6 +195,31 @@ const createWaiter = async (req, res, next) => {
   }
 };
 
+const viewAllWaiters = async (req, res, next) => {
+  try {
+    const managerID = req.user._id;
+    const waiters = await Waiter.find({
+      managerID: managerID,
+      status: { $ne: "delete" },
+    })
+      .populate("menuCardID")
+      .sort({ createdDate: -1 });
+
+    const manager = await Manager.findOne({ _id: managerID });
+    if (!manager) {
+      return res.status(404).json({ message: "Manager not found" });
+    }
+    res.status(200).json({
+      success: true,
+      waiters,
+      message: "All Employees Under This Service Manager",
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 const editWaiter = async (req, res, next) => {
   try {
     const waiterID = req.params.id;
@@ -247,6 +273,7 @@ module.exports = {
   editMenuCard,
   viewAllMenuCards,
   createWaiter,
+  viewAllWaiters,
   editWaiter,
   viewWaiters,
 };

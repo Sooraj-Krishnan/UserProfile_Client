@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Admin = require("./adminModel");
 const Manager = require("./managerModel");
+const MenuCard = require("./menuCardModel");
 
 const WaiterSchema = mongoose.Schema({
   name: {
@@ -20,6 +21,11 @@ const WaiterSchema = mongoose.Schema({
   managerID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: Manager,
+  },
+
+  menuCardID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: MenuCard,
   },
   password: {
     type: String,

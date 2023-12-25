@@ -5,6 +5,7 @@ const {
   editMenuCard,
   viewAllMenuCards,
   createWaiter,
+  viewAllWaiters,
   editWaiter,
   viewWaiters,
 } = require("../controllers/managerController");
@@ -25,8 +26,8 @@ router.post(
 
 router.put("/edit-menu-card/:id", verifyJwt, upload.any(), editMenuCard);
 router.get("/all-menu-cards", verifyJwt, viewAllMenuCards);
-
 router.post("/create-waiter/:id", verifyJwt, createWaiter);
+router.get("/all-waiters", verifyJwt, viewAllWaiters);
 router.put("/edit-waiter/:id", verifyJwt, editWaiter);
 router.get("/view-waiters", verifyJwt, viewWaiters);
 module.exports = router;

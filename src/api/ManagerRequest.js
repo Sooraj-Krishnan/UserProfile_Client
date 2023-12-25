@@ -13,5 +13,7 @@ export const viewAllMenuCards = () => axiosPrivate.get(`/all-menu-cards`);
 export const createWaiter = (menucardID, details) =>
   axiosPrivate.post(`/create-waiter/${menucardID}`, details);
 
+export const viewAllWaiters = () => axiosPrivate.get(`/all-waiters`);
+
 export const editWaiter = (waiterID, details) =>
   axiosPrivate.put(`/edit-waiter/${waiterID}`, details);
