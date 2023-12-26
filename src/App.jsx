@@ -21,6 +21,9 @@ import ViewAllWaiters from "./pages/managerPages/ViewAllWaiters";
 import CreateMenuCardPage from "./pages/managerPages/CreateMenuCard";
 import EditMenuCardPage from "./pages/managerPages/EditMenuCard";
 import ViewAllMenuCard from "./pages/managerPages/ViewAllMenuCards";
+import CreateKitchenEmployee from "./pages/managerPages/CreateKitchenStaff";
+import EditKitchenEmployee from "./pages/managerPages/EditKitchenStaff";
+import ViewAllKitchenStaffs from "./pages/managerPages/ViewAllKitchenStaff";
 
 function App() {
   return (
@@ -45,6 +48,15 @@ function App() {
         <Route path="create-waiter/:id" element={<CreateWaiterPage />} />
         <Route path="all-waiters" element={<ViewAllWaiters />} />
         <Route path="edit-waiter/:id" element={<EditWaiterPage />} />
+        <Route
+          path="create-kitchen-staff/:id"
+          element={<CreateKitchenEmployee />}
+        />
+        <Route
+          path="edit-kitchen-staff/:id"
+          element={<EditKitchenEmployee />}
+        />
+        <Route path="all-kitchen-staffs" element={<ViewAllKitchenStaffs />} />
       </Routes>
     </Router>
   );

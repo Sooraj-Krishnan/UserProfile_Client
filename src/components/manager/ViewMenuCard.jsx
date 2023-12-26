@@ -120,6 +120,10 @@ function ViewMenuCard() {
     const MenuCardID = _id._id;
     navigate(`/create-waiter/${MenuCardID}`);
   };
+  const handleAddKitchenStaff = (_id) => {
+    const MenuCardID = _id._id;
+    navigate(`/create-kitchen-staff/${MenuCardID}`);
+  };
 
   const handleAddTable = (_id) => {
     const MenuCardID = _id._id;
@@ -131,10 +135,10 @@ function ViewMenuCard() {
     <Menu>
       <Menu.Item
         key="edit"
-        onClick={() => handleEdit(_id)}
+        onClick={() => handleAddKitchenStaff(_id)}
         style={{ textAlign: "center" }}
       >
-        Edit
+        Kitchen Staff
       </Menu.Item>
       {/* <Menu.Item
         key="block"

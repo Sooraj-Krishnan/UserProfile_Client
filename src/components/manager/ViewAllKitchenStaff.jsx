@@ -2,33 +2,20 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { DownOutlined } from "@ant-design/icons";
 import {} from "@ant-design/icons";
-import {
-  Button,
-  Table,
-  Col,
-  Row,
-  Typography,
-  Menu,
-  Dropdown,
-  Modal,
-  Tooltip,
-} from "antd";
-import { MdOutlineQrCodeScanner } from "react-icons/md";
+import { Button, Table, Col, Row, Typography, Menu, Dropdown } from "antd";
+
 // import ErrorLogout from "../../../helper/ErrorLogout";
-import { viewAllTables } from "../../api/ManagerRequest";
+import { viewAllKitchenStaff } from "../../api/ManagerRequest";
 import useColumnSearch from "../hooks/useColumnSearch";
 import { useNavigate } from "react-router-dom";
-import { saveAs } from "file-saver";
 
 const { Title } = Typography;
-// const { confirm } = Modal;
 
-function ViewTables() {
+function ViewKitchenStaffs() {
   const getColumnSearchProps = useColumnSearch();
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [singleCard, setSingleCard] = useState("");
-  const [tables, setTables] = useState([]);
+
+  const [kitchenStaffs, setKitchenStaffs] = useState([]);
 
   //  const [block, setBlock] = useState("");
 
@@ -37,8 +24,8 @@ function ViewTables() {
   // const [, setDelLoaderId] = useState("");
 
   const handleEdit = (_id) => {
-    const tableID = _id._id;
-    navigate(`/edit-table/${tableID}`, {
+    const kitchenStaffID = _id._id;
+    navigate(`/edit-kitchen-staff/${kitchenStaffID}`, {
       state: { details: _id },
     });
   };
@@ -77,13 +64,13 @@ function ViewTables() {
   };
 
   useEffect(() => {
-    const getTables = async () => {
+    const getKitchenStaffs = async () => {
       try {
         // Replace with your method to fetch all employees
-        const { data } = await viewAllTables();
+        const { data } = await viewAllKitchenStaff();
         console.log("data", data);
-        if (data && data.tables) {
-          setTables(data.tables);
+        if (data && data.kitchenStaffs) {
+          setKitchenStaffs(data.kitchenStaffs);
         }
         setLoader(false);
       } catch (error) {
@@ -94,27 +81,8 @@ function ViewTables() {
       }
     };
 
-    getTables();
+    getKitchenStaffs();
   }, []);
-  const showModal = (record) => {
-    setSingleCard(record);
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleDownload = () => {
-    if (singleCard) {
-      let url = singleCard.QRCode;
-      let name = singleCard.name;
-      saveAs(url, name);
-    }
-  };
 
   const columns = [
     {
@@ -125,11 +93,11 @@ function ViewTables() {
       render: (text, record, index) => index + 1,
     },
     {
-      title: "Table ID",
-      dataIndex: "tableID",
-      key: "tableID",
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
       width: "25%",
-      ...getColumnSearchProps("tableID"),
+      ...getColumnSearchProps("name"),
     },
 
     {
@@ -152,22 +120,10 @@ function ViewTables() {
       dataIndex: "status",
       key: "_id",
       render: (status, _id) => {
-        const isBlocked = status === "blocked";
+        //   const isBlocked = status === "blocked";
         return (
           <div className="flex gap-3">
             {/* ... */}
-            <div>
-              <Tooltip title={isBlocked ? "" : "Scan QR Code"}>
-                <MdOutlineQrCodeScanner
-                  size={28}
-                  style={{
-                    cursor: isBlocked ? "default" : "pointer",
-                    opacity: isBlocked ? 0.5 : 1,
-                  }}
-                  onClick={isBlocked ? undefined : () => showModal(_id)}
-                />
-              </Tooltip>
-            </div>
             <div>
               {/* Wrap the next three buttons in a Dropdown */}
               <Dropdown
@@ -188,30 +144,9 @@ function ViewTables() {
 
   return (
     <>
-      <Modal
-        title="Menu QR Code"
-        style={{ width: "300px" }}
-        visible={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={false}
-      >
-        <div className="flex flex-col items-center justify-center">
-          <img
-            src={singleCard.QRCode}
-            className="my-qr-code p-3 bg-white  border-2 rounded-xl border-black"
-            width="200px"
-            alt=""
-          />
-          <p className="my-qr-download cursor-pointer" onClick={handleDownload}>
-            Download QR Code
-          </p>
-        </div>
-      </Modal>
-
       <Row justify="space-between" align="middle">
         <Col span={12}>
-          <Title level={2}>All Tables</Title>
+          <Title level={2}>Kitchen Staff</Title>
         </Col>
         <Col span={12} className="text-right"></Col>
       </Row>
@@ -220,8 +155,8 @@ function ViewTables() {
           <Table
             columns={columns}
             loading={loader}
-            dataSource={tables}
-            pagination={tables.length > 10 ? true : false}
+            dataSource={kitchenStaffs}
+            pagination={kitchenStaffs.length > 10 ? true : false}
           />
         </div>
       </div>
@@ -229,4 +164,4 @@ function ViewTables() {
   );
 }
 
-export default ViewTables;
+export default ViewKitchenStaffs;

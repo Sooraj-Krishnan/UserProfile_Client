@@ -10,6 +10,9 @@ const {
   createWaiter,
   viewAllWaiters,
   editWaiter,
+  createKitchenStaff,
+  editKitchenStaff,
+  viewAllKitchenStaff,
 } = require("../controllers/managerController");
 
 const multer = require("multer");
@@ -34,4 +37,7 @@ router.get("/all-tables", verifyJwt, viewAllTables);
 router.post("/create-waiter/:id", verifyJwt, createWaiter);
 router.get("/all-waiters", verifyJwt, viewAllWaiters);
 router.put("/edit-waiter/:id", verifyJwt, editWaiter);
+router.post("/create-kitchen-staff/:id", verifyJwt, createKitchenStaff);
+router.put("/edit-kitchen-staff/:id", verifyJwt, editKitchenStaff);
+router.get("/all-kitchen-staffs", verifyJwt, viewAllKitchenStaff);
 module.exports = router;

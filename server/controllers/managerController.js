@@ -3,6 +3,7 @@ const Manager = require("../models/managerModel");
 const Waiter = require("../models/waiterModel");
 const MenuCard = require("../models/menuCardModel");
 const Table = require("../models/tableModel");
+const KitchenStaff = require("../models/kitchenStaffModel");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const { generateQR } = require("../helpers/qrCodeGenerator");
@@ -330,6 +331,92 @@ const viewAllTables = async (req, res, next) => {
   }
 };
 
+const createKitchenStaff = async (req, res, next) => {
+  try {
+    const { name, email, password } = req.body;
+    const hash = await bcrypt.hash(password, 10);
+    const managerID = req.user._id;
+    const menuCardID = req.params.id;
+    const manager = await Manager.findById(managerID);
+    const kitchenStaff = await KitchenStaff.create({
+      name,
+      email,
+      password: hash,
+      managerID,
+      menuCardID,
+      adminID: manager.adminID,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Kitchen Staff Created Successfully",
+      data: kitchenStaff,
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "Kitchen Staff Email Already exists",
+      });
+    }
+    next(error);
+  }
+};
+
+const editKitchenStaff = async (req, res, next) => {
+  try {
+    const kitchenStaffID = req.params.id;
+
+    const kitchenStaff = await KitchenStaff.findById(kitchenStaffID);
+
+    // Update the in the database
+    kitchenStaff.name = req.body.name;
+    kitchenStaff.email = req.body.email;
+    kitchenStaff.kitchenStaffID = req.body.kitchenStaffID;
+
+    const updatedKitchenStaff = await kitchenStaff.save();
+
+    res.status(200).json({
+      update: true,
+      message: "Kitchen Staff updated successfully!",
+      data: updatedKitchenStaff,
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "Kitchen Staff Email Already exists",
+      });
+    }
+    next(error);
+  }
+};
+
+const viewAllKitchenStaff = async (req, res, next) => {
+  try {
+    const managerID = req.user._id;
+    const kitchenStaff = await KitchenStaff.find({
+      managerID: managerID,
+      status: { $ne: "delete" },
+    })
+      .populate("menuCardID")
+      .sort({ createdDate: -1 });
+
+    const manager = await Manager.findOne({ _id: managerID });
+    if (!manager) {
+      return res.status(404).json({ message: "Manager not found" });
+    }
+    res.status(200).json({
+      success: true,
+      kitchenStaffs: kitchenStaff,
+      message: "All Employees Under This Service Manager",
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 module.exports = {
   createMenuCard,
   editMenuCard,
@@ -340,4 +427,7 @@ module.exports = {
   createWaiter,
   viewAllWaiters,
   editWaiter,
+  createKitchenStaff,
+  editKitchenStaff,
+  viewAllKitchenStaff,
 };

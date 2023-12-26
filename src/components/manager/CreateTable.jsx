@@ -2,11 +2,10 @@ import PropTypes from "prop-types";
 //import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { createTable, editTable } from "../../api/ManagerRequest";
-import { Input, Typography, Form } from "antd";
+import { Input, Typography, Form, Button } from "antd";
 import UseSpinner from "../hooks/UseSpinner";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import { Button } from "antd";
 import "./CreateMenuCard.css";
 
 const { Title } = Typography;
@@ -40,7 +39,6 @@ function CreateTable({ id, tableData, edit }) {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [loader, showLoader, hideLoader] = UseSpinner();
-
   const onFinish = async (details) => {
     try {
       showLoader();

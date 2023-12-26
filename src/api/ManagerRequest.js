@@ -25,3 +25,12 @@ export const viewAllWaiters = () => axiosPrivate.get(`/all-waiters`);
 
 export const editWaiter = (waiterID, details) =>
   axiosPrivate.put(`/edit-waiter/${waiterID}`, details);
+
+export const createKitchenStaff = (menuCardID, details) =>
+  axiosPrivate.post(`/create-kitchen-staff/${menuCardID}`, details);
+
+export const editKitchenStaff = (kitchenStaffID, details) =>
+  axiosPrivate.put(`/edit-kitchen-staff/${kitchenStaffID}`, details);
+
+export const viewAllKitchenStaff = () =>
+  axiosPrivate.get(`/all-kitchen-staffs`);
