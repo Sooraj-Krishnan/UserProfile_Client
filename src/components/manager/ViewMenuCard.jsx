@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { FaEye, FaEdit } from "react-icons/fa";
 import { AiOutlineUserAdd } from "react-icons/ai";
+import { GiRoundTable } from "react-icons/gi";
 import { DownOutlined } from "@ant-design/icons";
 
 import {
@@ -120,6 +121,11 @@ function ViewMenuCard() {
     navigate(`/create-waiter/${MenuCardID}`);
   };
 
+  const handleAddTable = (_id) => {
+    const MenuCardID = _id._id;
+    navigate(`/create-table/${MenuCardID}`);
+  };
+
   // Create a menu for the dropdown
   const DropdownMenu = ({ _id }) => (
     <Menu>
@@ -213,6 +219,18 @@ function ViewMenuCard() {
         return (
           <div className="flex gap-3">
             <div>
+              <Tooltip title={isBlocked ? "" : "Edit Your Menu Card"}>
+                <FaEdit
+                  onClick={isBlocked ? undefined : () => handleEdit(_id)}
+                  size={28}
+                  style={{
+                    cursor: isBlocked ? "default" : "pointer",
+                    opacity: isBlocked ? 0.5 : 1,
+                  }}
+                />
+              </Tooltip>
+            </div>
+            <div>
               <Tooltip title={isBlocked ? "" : "Add Waiter"}>
                 <AiOutlineUserAdd
                   onClick={isBlocked ? undefined : () => handleAddWaiter(_id)}
@@ -225,9 +243,9 @@ function ViewMenuCard() {
               </Tooltip>
             </div>
             <div>
-              <Tooltip title={isBlocked ? "" : "Edit Your Menu Card"}>
-                <FaEdit
-                  onClick={isBlocked ? undefined : () => handleEdit(_id)}
+              <Tooltip title={isBlocked ? "" : "Add Table"}>
+                <GiRoundTable
+                  onClick={isBlocked ? undefined : () => handleAddTable(_id)}
                   size={28}
                   style={{
                     cursor: isBlocked ? "default" : "pointer",
@@ -236,6 +254,7 @@ function ViewMenuCard() {
                 />
               </Tooltip>
             </div>
+
             <div>
               <Tooltip title={isBlocked ? "" : "Demo view only"}>
                 <FaEye

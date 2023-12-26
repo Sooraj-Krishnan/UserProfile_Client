@@ -2,13 +2,14 @@ require("dotenv").config();
 const Manager = require("../models/managerModel");
 const Waiter = require("../models/waiterModel");
 const MenuCard = require("../models/menuCardModel");
+const Table = require("../models/tableModel");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-// const {generateQR} = require("../helpers/qrCodeGenerator");
+const { generateQR } = require("../helpers/qrCodeGenerator");
 const { uploadFile, deleteFile } = require("../helpers/s3");
-const { log } = require("console");
 
 const S3Url = process.env.AWS_BUCKET_URL;
+const QRBase = process.env.MENU_CARD_QR_URL;
 
 const generateFileName = (bytes = 32) =>
   crypto.randomBytes(bytes).toString("hex");
@@ -247,23 +248,84 @@ const editWaiter = async (req, res, next) => {
     next(error);
   }
 };
-
-const viewWaiters = async (req, res, next) => {
+const createTable = async (req, res, next) => {
   try {
     const managerID = req.user._id;
-    // const admin = await Admin.findById(adminID).exec();
-
-    const waiters = await Waiter.find({
+    const manager = await Manager.findById(managerID);
+    const table = await Table.create({
+      tableID: req.body.tableID,
       managerID: managerID,
-      status: { $ne: "delete" },
-    }).sort({ createdDate: -1 });
+      adminID: manager.adminID,
+    });
 
+    // Generating QR code for the Table
+    const URL = QRBase + table._id;
+    const QRCodeLink = await generateQR(URL);
+    table.QRCode = QRCodeLink;
+
+    await table.save();
     res.status(200).json({
       success: true,
-      message: "Waiters Fetched Successfully",
-      data: waiters,
+      message: "Table Created Successfully",
+      data: table,
     });
   } catch (error) {
+    if (error.code === 11000) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Table ID Already exists" });
+    }
+    next(error);
+  }
+};
+
+const editTable = async (req, res, next) => {
+  try {
+    const tableID = req.params.id;
+
+    const table = await Table.findById(tableID);
+
+    // Update the in the database
+    table.tableID = req.body.tableID;
+
+    const updatedTable = await table.save();
+
+    res.status(200).json({
+      update: true,
+      message: "Table updated successfully!",
+      data: updatedTable,
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Table ID Already exists" });
+    }
+    next(error);
+  }
+};
+
+const viewAllTables = async (req, res, next) => {
+  try {
+    const managerID = req.user._id;
+    const tables = await Table.find({
+      managerID: managerID,
+      status: { $ne: "delete" },
+    })
+      .populate("menuCardID")
+      .sort({ createdDate: -1 });
+
+    const manager = await Manager.findOne({ _id: managerID });
+    if (!manager) {
+      return res.status(404).json({ message: "Manager not found" });
+    }
+    res.status(200).json({
+      success: true,
+      tables,
+      message: "All Tables Under This Service Manager",
+    });
+  } catch (error) {
+    console.log(error);
     next(error);
   }
 };
@@ -272,8 +334,10 @@ module.exports = {
   createMenuCard,
   editMenuCard,
   viewAllMenuCards,
+  createTable,
+  editTable,
+  viewAllTables,
   createWaiter,
   viewAllWaiters,
   editWaiter,
-  viewWaiters,
 };

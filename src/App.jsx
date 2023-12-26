@@ -14,6 +14,9 @@ import ManagerLoginProtect from "./auth/ManagerLoginProtect";
 import ManagerDashboardPage from "./pages/managerPages/Dashboard";
 import CreateWaiterPage from "./pages/managerPages/CreateWaiterPage";
 import EditWaiterPage from "./pages/managerPages/EditWaiterPage";
+import CreateTablePage from "./pages/managerPages/CreateTablePage";
+import EditTablePage from "./pages/managerPages/EditTablePage";
+import ViewAllTables from "./pages/managerPages/ViewAllTable";
 import ViewAllWaiters from "./pages/managerPages/ViewAllWaiters";
 import CreateMenuCardPage from "./pages/managerPages/CreateMenuCard";
 import EditMenuCardPage from "./pages/managerPages/EditMenuCard";
@@ -36,9 +39,12 @@ function App() {
         <Route path="create-menu-card" element={<CreateMenuCardPage />} />
         <Route path="edit-menu-card/:id" element={<EditMenuCardPage />} />
         <Route path="all-menu-cards" element={<ViewAllMenuCard />} />
+        <Route path="create-table/:id" element={<CreateTablePage />} />
+        <Route path="edit-table/:id" element={<EditTablePage />} />
+        <Route path="all-tables" element={<ViewAllTables />} />
         <Route path="create-waiter/:id" element={<CreateWaiterPage />} />
         <Route path="all-waiters" element={<ViewAllWaiters />} />
-        <Route path="edit-waiter" element={<EditWaiterPage />} />
+        <Route path="edit-waiter/:id" element={<EditWaiterPage />} />
       </Routes>
     </Router>
   );

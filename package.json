@@ -15,6 +15,7 @@
     "antd-img-crop": "^4.18.0",
     "axios": "^1.6.2",
     "browser-image-compression": "^2.0.2",
+    "file-saver": "^2.0.5",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-countdown": "^2.3.5",
