@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 /*---------------Common Pages ----------------*/
 import LoginPage from "./pages/LoginPage";
+import EmployeeLoginPage from "./pages/employeePages/EmployeeLogin";
 /*---------------Admin Pages ----------------*/
 import AdminLoginProtect from "./auth/AdminLoginProtect";
 import DashboardPage from "./pages/adminPages/Dashboard";
@@ -25,11 +26,18 @@ import CreateKitchenEmployee from "./pages/managerPages/CreateKitchenStaff";
 import EditKitchenEmployee from "./pages/managerPages/EditKitchenStaff";
 import ViewAllKitchenStaffs from "./pages/managerPages/ViewAllKitchenStaff";
 
+/*---------------Employee Pages ----------------*/
+import KitchenStaffLoginProtect from "./auth/KitchenLoginProtect";
+import WaiterLoginProtect from "./auth/WaiterLoginProtext";
+import KitchenStaffDashboard from "./pages/employeePages/KitchenStaffDashboard";
+import WaiterDashboard from "./pages/employeePages/WaiterDashboard";
+
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/employee-login" element={<EmployeeLoginPage />} />
 
         <Route path="/" element={<AdminLoginProtect />} />
         <Route path="admin-dashboard" element={<DashboardPage />} />
@@ -57,6 +65,16 @@ function App() {
           element={<EditKitchenEmployee />}
         />
         <Route path="all-kitchen-staffs" element={<ViewAllKitchenStaffs />} />
+        {/* other routes can go here */}
+        <Route path="/" element={<KitchenStaffLoginProtect />} />
+        <Route
+          path="kitchenStaff-dashboard"
+          element={<KitchenStaffDashboard />}
+        />
+        {/* other routes can go here */}
+        <Route path="/" element={<WaiterLoginProtect />} />
+        <Route path="waiter-dashboard" element={<WaiterDashboard />} />
+        {/* other routes can go here */}
       </Routes>
     </Router>
   );

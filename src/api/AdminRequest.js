@@ -5,6 +5,8 @@ import { axiosPrivate } from "./AxiosPrivate";
 /*-----------------------------Auth Routes -------------------------------*/
 
 export const login = (loginData) => axios.post("/login", loginData);
+export const employeeLogin = (loginData) =>
+  axios.post("/employee-login", loginData);
 
 export const forgotPassword = (mail) => axios.post(`/forgot_password`, mail);
 
