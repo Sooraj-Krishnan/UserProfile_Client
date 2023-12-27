@@ -73,28 +73,7 @@
     justify-content: center;
 }
 
-.overlayLoader .ant-spin .ant-spin-dot-item{
-    background: #ea580c;
-}
 
-button.text-white:focus {
-    box-shadow: none;
-}
-.ant-modal .ant-btn-primary{
-    background: #ea580c;
-    box-shadow: none;
-}
-.ant-modal .ant-btn-primary:hover, .ant-modal .ant-btn-primary:focus{
-    background: #d24c05;
-}
-
-.ant-modal .ant-btn {
-    height: 40px;
-    padding: 5px 25px;
-}
-.w-100{
-    width: 100%;
-}
 
 .previewWrapBlock .ant-collapse p{
     margin: 0;

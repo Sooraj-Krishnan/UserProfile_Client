@@ -112,7 +112,7 @@ function ViewMenuCard() {
 
   const handleViewMenuCard = (_id) => {
     const MenuCardID = _id._id;
-    const url = `/menu-card-view/${MenuCardID}`;
+    const url = `/menu-view/${MenuCardID}`;
     window.open(url, "_blank");
   };
 

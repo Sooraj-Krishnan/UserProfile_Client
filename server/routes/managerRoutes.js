@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { verifyJwt } = require("../helpers/verify_jwt");
 const {
+  managerDashboard,
   createMenuCard,
   editMenuCard,
   viewAllMenuCards,
@@ -19,6 +20,7 @@ const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+router.get("/manager-dashboard", verifyJwt, managerDashboard);
 router.post(
   "/create-menu-card",
   verifyJwt,

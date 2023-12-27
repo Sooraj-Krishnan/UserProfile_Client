@@ -2,6 +2,8 @@
 
 import { axiosPrivate } from "./AxiosPrivate";
 
+export const managerDashboard = () => axiosPrivate.get(`/manager-dashboard`);
+
 export const createMenuCard = (details) =>
   axiosPrivate.post(`/create-menu-card`, details);
 

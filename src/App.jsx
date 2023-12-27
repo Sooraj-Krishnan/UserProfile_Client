@@ -1,8 +1,10 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 /*---------------Common Pages ----------------*/
+import HomePage from "./pages/commonPages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import EmployeeLoginPage from "./pages/employeePages/EmployeeLogin";
+
 /*---------------Admin Pages ----------------*/
 import AdminLoginProtect from "./auth/AdminLoginProtect";
 import DashboardPage from "./pages/adminPages/Dashboard";
@@ -36,6 +38,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/employee-login" element={<EmployeeLoginPage />} />
 

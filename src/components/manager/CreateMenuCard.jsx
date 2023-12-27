@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { Button } from "antd";
 import "./CreateMenuCard.css";
+import CoverImage from "../menuCard/CoverImage";
 import HandleImageUpload from "../helper/ImageCompress";
 import { UploadOutlined } from "@ant-design/icons";
 
@@ -163,7 +164,7 @@ function CreateMenuCard({ menuCardData, edit }) {
 
   return (
     <div className="previewWrapBlock">
-      <div className="md:w-7/12 flex justify-center overflow-auto scrollbar-hide">
+      <div className="md:w-7/12 flex justify-center  scrollbar-hide">
         <div className="w-100">
           <div className="mt-3"></div>
 
@@ -193,28 +194,27 @@ function CreateMenuCard({ menuCardData, edit }) {
                   }}
                   scrollToFirstError
                 >
+                  <div>
+                    <label htmlFor="" className="text-xl font-semibold">
+                      Name{" "}
+                    </label>
+                    <Form.Item
+                      name="name"
+                      // label="Name "
+                      className="mb-2"
+                      tooltip="What do you want others to call you?"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input service name!",
+                          whitespace: true,
+                        },
+                      ]}
+                    >
+                      <Input className="py-2" />
+                    </Form.Item>
+                  </div>
                   <div className="grid grid-cols-2 gap-2 ">
-                    <div>
-                      <label htmlFor="" className="text-xl font-semibold">
-                        Name{" "}
-                      </label>
-                      <Form.Item
-                        name="name"
-                        // label="Name "
-                        className="mb-2"
-                        tooltip="What do you want others to call you?"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input service name!",
-                            whitespace: true,
-                          },
-                        ]}
-                      >
-                        <Input className="py-2" />
-                      </Form.Item>
-                    </div>
-
                     <div>
                       <label htmlFor="" className="text-xl font-semibold">
                         Cover Image
@@ -302,7 +302,9 @@ function CreateMenuCard({ menuCardData, edit }) {
         <div className="flex ">
           <div className="mobilePreview">
             <div className="mobilePreviewB">
-              <div className="themepreviewWrap"></div>
+              <div className="themepreviewWrap">
+                <CoverImage fileList1={fileList1} fileList2={fileList2} />
+              </div>
             </div>
           </div>
         </div>
