@@ -2,7 +2,17 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { createMenuCard, editMenuCard } from "../../api/ManagerRequest";
-import { Input, Typography, Form, Upload } from "antd";
+import {
+  Input,
+  Typography,
+  Form,
+  Upload,
+  Row,
+  Col,
+  Collapse,
+  Tooltip,
+} from "antd";
+import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
 import UseSpinner from "../hooks/UseSpinner";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +23,8 @@ import HandleImageUpload from "../helper/ImageCompress";
 import { UploadOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
+const { Panel } = Collapse;
+const { TextArea } = Input;
 
 const formItemLayout = {
   labelCol: {
@@ -42,6 +54,32 @@ function CreateMenuCard({ menuCardData, edit }) {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [loader] = UseSpinner();
+  const [menuItems, setMenuItems] = useState([
+    {
+      key: "1",
+      label: "",
+      items: [{ category: "", itemName: "", price: "", description: "" }],
+    },
+  ]);
+
+  const addItem = (panelIndex) => {
+    const newItems = [
+      ...menuItems[panelIndex].items,
+      { category: "", itemName: "", price: "", description: "", image: "" },
+    ];
+    const newMenuItems = [...menuItems];
+    newMenuItems[panelIndex].items = newItems;
+    setMenuItems(newMenuItems);
+  };
+
+  const removeItem = (panelIndex, itemIndex) => {
+    const newItems = menuItems[panelIndex].items.filter(
+      (item, index) => index !== itemIndex
+    );
+    const newMenuItems = [...menuItems];
+    newMenuItems[panelIndex].items = newItems;
+    setMenuItems(newMenuItems);
+  };
 
   const [fileList1, setFileList1] = useState(
     menuCardData?.logoImage
@@ -67,6 +105,28 @@ function CreateMenuCard({ menuCardData, edit }) {
         ]
       : []
   );
+
+  const handleItemChange = (panelKey, itemKey, field, value) => {
+    const newMenuItems = menuItems.map((panel) => {
+      if (panel.key === panelKey) {
+        const newItems = panel.items.map((item, index) => {
+          if (index === itemKey) {
+            return { ...item, [field]: value };
+          }
+          return item;
+        });
+        return { ...panel, items: newItems };
+      }
+      return panel;
+    });
+    setMenuItems(newMenuItems);
+  };
+
+  // const handleItemChange = (panelIndex, itemIndex, field, value) => {
+  //   const newMenuItems = [...menuItems];
+  //   newMenuItems[panelIndex].items[itemIndex][field] = value;
+  //   setMenuItems(newMenuItems);
+  // };
 
   const onFinish = async (values) => {
     const errors = validateForm(values);
@@ -162,12 +222,12 @@ function CreateMenuCard({ menuCardData, edit }) {
     return fileList;
   };
 
+  const onFileChange3 = ({ fileList }) => fileList;
+
   return (
     <div className="previewWrapBlock">
-      <div className="md:w-7/12 flex justify-center  scrollbar-hide">
+      <div className="md:w-7/12 flex justify-center scrollbar-hide">
         <div className="w-100">
-          <div className="mt-3"></div>
-
           <div className="w-12/12  mt-10 ">
             <Title level={2}>
               {" "}
@@ -206,7 +266,7 @@ function CreateMenuCard({ menuCardData, edit }) {
                       rules={[
                         {
                           required: true,
-                          message: "Please input service name!",
+                          message: "Please input restaurant name!",
                           whitespace: true,
                         },
                       ]}
@@ -226,7 +286,7 @@ function CreateMenuCard({ menuCardData, edit }) {
                         rules={[
                           {
                             required: true,
-                            message: "Please upload an Logo image",
+                            message: "Please upload cover image",
                           },
                         ]}
                       >
@@ -257,7 +317,7 @@ function CreateMenuCard({ menuCardData, edit }) {
                         rules={[
                           {
                             required: true,
-                            message: "Please upload an cover image",
+                            message: "Please upload logo image",
                           },
                         ]}
                       >
@@ -277,6 +337,188 @@ function CreateMenuCard({ menuCardData, edit }) {
                       </Form.Item>
                     </div>
                   </div>
+                  <label htmlFor="" className="text-xl font-semibold">
+                    Enter Your item details{" "}
+                  </label>
+                  <Collapse>
+                    {menuItems.map((panel, panelIndex) => (
+                      <Panel header={panel.label} key={panel.key}>
+                        {panel.items.map((item, itemIndex) => (
+                          <Row key={itemIndex}>
+                            {itemIndex !== 0 && (
+                              <Tooltip title="Remove">
+                                <IoRemoveCircleOutline
+                                  onClick={() =>
+                                    removeItem(panelIndex, itemIndex)
+                                  }
+                                  size="1.7em"
+                                  style={{ color: "red", marginLeft: "50%" }}
+                                />
+                              </Tooltip>
+                            )}
+                            {/* Your existing item content here */}
+                            <Col span={12}>
+                              <div>
+                                <label
+                                  htmlFor=""
+                                  className="text-xl font-semibold"
+                                >
+                                  Category{" "}
+                                </label>
+                                <Form.Item
+                                  name={`menuItems[${panelIndex}].items[${itemIndex}].category`}
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please input category name!",
+                                    },
+                                  ]}
+                                >
+                                  <Input
+                                    placeholder="Category"
+                                    value={item.category}
+                                    onChange={(e) =>
+                                      handleItemChange(
+                                        panel.key,
+                                        itemIndex,
+                                        "category",
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                </Form.Item>
+                              </div>
+                              <label
+                                htmlFor=""
+                                className="text-xl font-semibold"
+                              >
+                                Item photo{" "}
+                              </label>
+                              <Form.Item
+                                name={`menuItems[${panelIndex}].items[${itemIndex}].itemImage`}
+                                valuePropName="fileList"
+                                getValueFromEvent={onFileChange3}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please upload an image!",
+                                  },
+                                ]}
+                              >
+                                <Upload
+                                  name="itemImage"
+                                  action="/create-menu-card"
+                                  listType="picture"
+                                  beforeUpload={() => false} // Prevent automatic upload
+                                >
+                                  <Button icon={<UploadOutlined />}>
+                                    Click to Upload
+                                  </Button>
+                                </Upload>
+                              </Form.Item>
+                              <div className="grid grid-cols-2 gap-2 ">
+                                <div>
+                                  <label
+                                    htmlFor=""
+                                    className="text-xl font-semibold"
+                                  >
+                                    Item Name{" "}
+                                  </label>
+                                  <Form.Item
+                                    name={`menuItems[${panelIndex}].items[${itemIndex}].itemName`}
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Please input item name!",
+                                      },
+                                    ]}
+                                  >
+                                    <Input
+                                      placeholder="Item Name"
+                                      value={item.name}
+                                      onChange={(e) =>
+                                        handleItemChange(
+                                          panel.key,
+                                          itemIndex,
+                                          "itemName",
+                                          e.target.value
+                                        )
+                                      }
+                                    />
+                                  </Form.Item>
+                                </div>
+                                <div>
+                                  <label
+                                    htmlFor=""
+                                    className="text-xl font-semibold"
+                                  >
+                                    Item Price{" "}
+                                  </label>
+                                  <Form.Item
+                                    name={`menuItems[${panelIndex}].items[${itemIndex}].price`}
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Please input item price!",
+                                      },
+                                    ]}
+                                  >
+                                    <Input
+                                      placeholder="Price"
+                                      value={item.price}
+                                      onChange={(e) =>
+                                        handleItemChange(
+                                          panel.key,
+                                          itemIndex,
+                                          "price",
+                                          e.target.value
+                                        )
+                                      }
+                                    />
+                                  </Form.Item>
+                                </div>
+                              </div>
+                              <label
+                                htmlFor=""
+                                className="text-xl font-semibold"
+                              >
+                                Item description{" "}
+                              </label>
+                              <Form.Item
+                                name={`menuItems[${panelIndex}].items[${itemIndex}].description`}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please input item description!",
+                                  },
+                                ]}
+                              >
+                                <TextArea
+                                  placeholder="Item Description"
+                                  value={item.description}
+                                  onChange={(e) =>
+                                    handleItemChange(
+                                      panel.key,
+                                      itemIndex,
+                                      "description",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </Form.Item>
+                            </Col>
+                          </Row>
+                        ))}
+                        <Tooltip title="Add more">
+                          <IoAddCircleOutline
+                            onClick={() => addItem(panelIndex)}
+                            size="1.7em"
+                            style={{ color: "green", marginLeft: "50%" }}
+                          />
+                        </Tooltip>
+                      </Panel>
+                    ))}
+                  </Collapse>
 
                   <Form.Item {...tailFormItemLayout} className="flex">
                     <Button

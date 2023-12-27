@@ -91,8 +91,8 @@ const editMenuCard = async (req, res, next) => {
     const managerID = req.user._id;
     const MenuCardID = req.params.id;
     const manager = await Manager.findById(managerID);
-    console.log("Files", req.files);
-    // Fetch the existing feedback
+
+    // Fetch the existing Menu Card
     const existingMenuCard = await MenuCard.findById(MenuCardID);
     if (!existingMenuCard) {
       return res.status(404).json({
@@ -109,11 +109,10 @@ const editMenuCard = async (req, res, next) => {
       (file) => file.fieldname === "coverImage"
     );
     let coverImageUrl = existingMenuCard.coverImage;
-    console.log("Cover image file", coverImageFile);
+
     if (coverImageFile) {
-      console.log("Cover image file", coverImageFile);
       const coverImageName = generateFileName();
-      console.log("Cover image name", coverImageName);
+
       await uploadFile(
         coverImageFile.buffer,
         coverImageName,
@@ -124,8 +123,7 @@ const editMenuCard = async (req, res, next) => {
       // Delete the old cover image from S3
       if (existingMenuCard.coverImage) {
         const oldCoverImageKey = existingMenuCard.coverImage.split(S3Url)[1];
-        const deleteResult = await deleteFile(oldCoverImageKey);
-        console.log("Delete result", deleteResult);
+        await deleteFile(oldCoverImageKey);
       }
     }
 
@@ -138,16 +136,13 @@ const editMenuCard = async (req, res, next) => {
 
     if (logoImageFile) {
       const logoImageName = generateFileName();
-      try {
-        const uploadResult = await uploadFile(
-          logoImageFile.buffer,
-          logoImageName,
-          logoImageFile.mimetype
-        );
-        console.log("Upload result", uploadResult);
-      } catch (error) {
-        console.error("Upload error", error);
-      }
+
+      await uploadFile(
+        logoImageFile.buffer,
+        logoImageName,
+        logoImageFile.mimetype
+      );
+
       logoImageUrl = S3Url + logoImageName;
 
       // Delete the old logo image from S3
@@ -165,7 +160,6 @@ const editMenuCard = async (req, res, next) => {
     existingMenuCard.adminID = manager.adminID;
 
     const updatedMenuCard = await existingMenuCard.save();
-    console.log("Cover image url", coverImageUrl);
 
     res.status(200).json({
       success: true,
