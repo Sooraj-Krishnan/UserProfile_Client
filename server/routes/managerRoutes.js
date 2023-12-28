@@ -24,10 +24,11 @@ router.get("/manager-dashboard", verifyJwt, managerDashboard);
 router.post(
   "/create-menu-card",
   verifyJwt,
-  upload.fields([
-    { name: "coverImage", maxCount: 1 },
-    { name: "logoImage", maxCount: 1 },
-  ]),
+  // upload.fields([
+  //   { name: "coverImage", maxCount: 1 },
+  //   { name: "logoImage", maxCount: 1 },
+  // ]),
+  upload.any(),
   createMenuCard
 );
 

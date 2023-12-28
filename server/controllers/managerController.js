@@ -39,9 +39,9 @@ const createMenuCard = async (req, res, next) => {
     // Handle coverImage
     const managerID = req.user._id;
     const manager = await Manager.findById(managerID);
-    const coverImageFile = req.files?.coverImage
-      ? req.files.coverImage[0]
-      : null;
+    const coverImageFile = req.files.find(
+      (file) => file.fieldname === "coverImage"
+    );
     const coverImageName = coverImageFile ? generateFileName() : "";
     if (coverImageFile) {
       await uploadFile(
@@ -52,7 +52,10 @@ const createMenuCard = async (req, res, next) => {
     }
 
     // Handle logoImage
-    const logoImageFile = req.files?.logoImage ? req.files.logoImage[0] : null;
+    // const logoImageFile = req.files?.logoImage ? req.files.logoImage[0] : null;
+    const logoImageFile = req.files.find(
+      (file) => file.fieldname === "logoImage"
+    );
     const logoImageName = logoImageFile ? generateFileName() : "";
     if (logoImageFile) {
       await uploadFile(
@@ -62,12 +65,42 @@ const createMenuCard = async (req, res, next) => {
       );
     }
 
+    req.body.menuItems = JSON.parse(req.body.menuItems);
+    // Handle itemImages
+
+    const menuItems = req.body.menuItems.map(async (menuItem, panelIndex) => {
+      menuItem.items = menuItem.items.map(async (item, itemIndex) => {
+        const itemImageFile = req.files.find(
+          (file) => file.fieldname === `itemImage-${panelIndex}-${itemIndex}`
+        );
+        const itemImageName = itemImageFile ? generateFileName() : "";
+        if (itemImageFile) {
+          await uploadFile(
+            itemImageFile.buffer,
+            itemImageName,
+            itemImageFile.mimetype
+          );
+        }
+
+        return {
+          ...item,
+          itemImage: itemImageFile ? S3Url + itemImageName : "",
+        };
+      });
+
+      return {
+        ...menuItem,
+        items: await Promise.all(menuItem.items),
+      };
+    });
+    console.log("menuItems", menuItems);
     const newMenuCard = await MenuCard.create({
       name: req.body.name,
       coverImage: coverImageFile ? S3Url + coverImageName : "",
       logoImage: logoImageFile ? S3Url + logoImageName : "",
       managerID: managerID,
       adminID: manager.adminID,
+      menuItems: await Promise.all(menuItems),
     });
 
     res.status(201).json({
@@ -101,10 +134,6 @@ const editMenuCard = async (req, res, next) => {
       });
     }
 
-    // Handle coverImage
-    // const coverImageFile = req.files?.coverImage
-    //   ? req.files.coverImage[0]
-    //   : null;
     const coverImageFile = req.files.find(
       (file) => file.fieldname === "coverImage"
     );
@@ -127,8 +156,6 @@ const editMenuCard = async (req, res, next) => {
       }
     }
 
-    // Handle logoImage
-    // const logoImageFile = req.files?.logoImage ? req.files.logoImage[0] : null;
     const logoImageFile = req.files.find(
       (file) => file.fieldname === "logoImage"
     );
@@ -152,12 +179,40 @@ const editMenuCard = async (req, res, next) => {
       }
     }
 
+    //Handle Menu Items
+    req.body.menuItems = JSON.parse(req.body.menuItems);
+    const menuItems = req.body.menuItems.map(async (menuItem, panelIndex) => {
+      menuItem.items = menuItem.items.map(async (item, itemIndex) => {
+        const itemImageFile = req.files.find(
+          (file) => file.fieldname === `itemImage-${panelIndex}-${itemIndex}`
+        );
+        const itemImageName = itemImageFile ? generateFileName() : "";
+        if (itemImageFile) {
+          await uploadFile(
+            itemImageFile.buffer,
+            itemImageName,
+            itemImageFile.mimetype
+          );
+        }
+        return {
+          ...item,
+          itemImage: itemImageFile ? S3Url + itemImageName : "",
+        };
+      });
+
+      return {
+        ...menuItem,
+        items: await Promise.all(menuItem.items),
+      };
+    });
+
     // Update the Menu Card in the database
     existingMenuCard.name = req.body.name;
     existingMenuCard.coverImage = coverImageUrl;
     existingMenuCard.logoImage = logoImageUrl;
     existingMenuCard.managerID = managerID;
     existingMenuCard.adminID = manager.adminID;
+    existingMenuCard.menuItems = await Promise.all(menuItems);
 
     const updatedMenuCard = await existingMenuCard.save();
 

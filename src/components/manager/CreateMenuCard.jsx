@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { createMenuCard, editMenuCard } from "../../api/ManagerRequest";
 import {
@@ -54,18 +54,45 @@ function CreateMenuCard({ menuCardData, edit }) {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [loader] = UseSpinner();
-  const [menuItems, setMenuItems] = useState([
-    {
-      key: "1",
+  const [fileList3, setFileList3] = useState({});
+  const [menuItems, setMenuItems] = useState(
+    menuCardData?.menuItems
+      ? menuCardData.menuItems
+      : [
+          {
+            key: "1",
+            label: "",
+            items: [
+              { itemImage: "", itemName: "", price: "", description: "" },
+            ],
+          },
+        ]
+  );
+
+  const addPanel = () => {
+    const newPanel = {
+      key: (menuItems.length + 1).toString(),
       label: "",
-      items: [{ category: "", itemName: "", price: "", description: "" }],
-    },
-  ]);
+      items: [{ itemImage: "", itemName: "", price: "", description: "" }],
+    };
+    setMenuItems([...menuItems, newPanel]);
+  };
+
+  const removePanel = (panelIndex) => {
+    const newMenuItems = menuItems.filter((_, index) => index !== panelIndex);
+    setMenuItems(newMenuItems);
+  };
+
+  const handleLabelChange = (panelIndex, newLabel) => {
+    const newMenuItems = [...menuItems];
+    newMenuItems[panelIndex].label = newLabel;
+    setMenuItems(newMenuItems);
+  };
 
   const addItem = (panelIndex) => {
     const newItems = [
       ...menuItems[panelIndex].items,
-      { category: "", itemName: "", price: "", description: "", image: "" },
+      { itemImage: "", itemName: "", price: "", description: "", image: "" },
     ];
     const newMenuItems = [...menuItems];
     newMenuItems[panelIndex].items = newItems;
@@ -74,12 +101,34 @@ function CreateMenuCard({ menuCardData, edit }) {
 
   const removeItem = (panelIndex, itemIndex) => {
     const newItems = menuItems[panelIndex].items.filter(
-      (item, index) => index !== itemIndex
+      (_, index) => index !== itemIndex
     );
     const newMenuItems = [...menuItems];
     newMenuItems[panelIndex].items = newItems;
     setMenuItems(newMenuItems);
   };
+
+  const handleItemChange = (panelKey, itemKey, field, value) => {
+    const newMenuItems = menuItems.map((panel) => {
+      if (panel.key === panelKey) {
+        const newItems = panel.items.map((item, index) => {
+          if (index === itemKey) {
+            return { ...item, [field]: value };
+          }
+          return item;
+        });
+        return { ...panel, items: newItems };
+      }
+      return panel;
+    });
+    setMenuItems(newMenuItems);
+  };
+
+  // const handleItemChange = (panelIndex, itemIndex, field, value) => {
+  //   const newMenuItems = [...menuItems];
+  //   newMenuItems[panelIndex].items[itemIndex][field] = value;
+  //   setMenuItems(newMenuItems);
+  // };
 
   const [fileList1, setFileList1] = useState(
     menuCardData?.logoImage
@@ -106,29 +155,29 @@ function CreateMenuCard({ menuCardData, edit }) {
       : []
   );
 
-  const handleItemChange = (panelKey, itemKey, field, value) => {
-    const newMenuItems = menuItems.map((panel) => {
-      if (panel.key === panelKey) {
-        const newItems = panel.items.map((item, index) => {
-          if (index === itemKey) {
-            return { ...item, [field]: value };
+  // Initialize fileLists with menuCardData
+  useEffect(() => {
+    if (menuCardData?.menuItems) {
+      const initialFileLists = {};
+      menuCardData.menuItems.forEach((menuItem, menuItemIndex) => {
+        menuItem.items.forEach((item, itemIndex) => {
+          if (item.itemImage) {
+            initialFileLists[`${menuItemIndex}-${itemIndex}`] = [
+              {
+                uid: "-1",
+                name: "image.png",
+                thumbUrl: item.itemImage,
+              },
+            ];
           }
-          return item;
         });
-        return { ...panel, items: newItems };
-      }
-      return panel;
-    });
-    setMenuItems(newMenuItems);
-  };
-
-  // const handleItemChange = (panelIndex, itemIndex, field, value) => {
-  //   const newMenuItems = [...menuItems];
-  //   newMenuItems[panelIndex].items[itemIndex][field] = value;
-  //   setMenuItems(newMenuItems);
-  // };
+      });
+      setFileList3(initialFileLists);
+    }
+  }, [menuCardData]);
 
   const onFinish = async (values) => {
+    console.log("Received values of form: ", values);
     const errors = validateForm(values);
     if (Object.keys(errors).length === 0) {
       // showLoader();
@@ -139,7 +188,32 @@ function CreateMenuCard({ menuCardData, edit }) {
 
       const datas = new FormData();
       datas.append("name", values.name);
-      datas.append("type", values.type);
+      datas.append("coverImage", values.fileList1[0].originFileObj);
+      // datas.append("fileList2", values.fileList2);
+      datas.append("logoImage", values.fileList2[0].originFileObj);
+
+      // Append dynamic form values to datas
+      // values.menuItems.forEach((menuItem, index) => {
+      //   menuItem.items.forEach((item, itemIndex) => {
+      //     datas.append(
+      //       `menuItems[${index}].items[${itemIndex}].itemImage`,
+      //       item.itemImage
+      //     );
+      //     datas.append(
+      //       `menuItems[${index}].items[${itemIndex}].itemName`,
+      //       item.itemName
+      //     );
+      //     datas.append(
+      //       `menuItems[${index}].items[${itemIndex}].price`,
+      //       item.price
+      //     );
+      //     datas.append(
+      //       `menuItems[${index}].items[${itemIndex}].description`,
+      //       item.description
+      //     );
+      //   });
+      // });
+      datas.append("menuItems", JSON.stringify(values.menuItems));
       if (fileList1[0]?.originFileObj && fileList1[0]?.status !== "removed") {
         datas.append("logoImage", LogoImgCompress);
       }
@@ -156,7 +230,30 @@ function CreateMenuCard({ menuCardData, edit }) {
         datas.append("coverImage", "delete");
       }
 
+      // Iterate over each key-value pair in fileList3
+      for (const [key, fileList] of Object.entries(fileList3)) {
+        if (fileList[0]?.originFileObj && fileList[0]?.status !== "removed") {
+          const ItemImgCompress = await HandleImageUpload(fileList);
+          datas.append(`itemImage-${key}`, ItemImgCompress);
+        }
+      }
+
+      // Iterate again for deletion
+      for (const [key, fileList] of Object.entries(fileList3)) {
+        if (!fileList[0]?.originFileObj && fileList[0]?.status === "removed") {
+          datas.append(`itemImage-${key}`, "delete");
+        }
+      }
+      console.log("FormData:", datas);
       try {
+        console.log("datas to back end", datas);
+        for (let pair of datas.entries()) {
+          if (pair[1] instanceof File) {
+            console.log(pair[0] + ", " + pair[1].name);
+          } else {
+            console.log(pair[0] + ", " + pair[1]);
+          }
+        }
         if (edit) {
           const response = await editMenuCard(menuCardData._id, datas);
           // hideLoder();
@@ -183,7 +280,7 @@ function CreateMenuCard({ menuCardData, edit }) {
       } catch (error) {
         console.log(error);
         // hideLoder();
-        toast.error("Error Creating Feedback", {
+        toast.error("Error Creating Menu card", {
           position: "top-right",
           autoClose: 3000,
           theme: "dark",
@@ -222,7 +319,17 @@ function CreateMenuCard({ menuCardData, edit }) {
     return fileList;
   };
 
-  const onFileChange3 = ({ fileList }) => fileList;
+  const onFileChange3 = (panelIndex, itemIndex) => (e) => {
+    let { fileList } = e;
+    fileList = fileList.filter((file) => file.status !== "removed");
+
+    setFileList3((prevFileLists) => ({
+      ...prevFileLists,
+      [`${panelIndex}-${itemIndex}`]: fileList,
+    }));
+
+    return fileList;
+  };
 
   return (
     <div className="previewWrapBlock">
@@ -247,6 +354,19 @@ function CreateMenuCard({ menuCardData, edit }) {
                     name: menuCardData?.name,
                     fileList1: fileList1,
                     fileList2: fileList2,
+                    menuItems: menuCardData?.menuItems || [
+                      {
+                        label: "",
+                        items: [
+                          {
+                            itemImage: [],
+                            itemName: "",
+                            price: "",
+                            description: "",
+                          },
+                        ],
+                      },
+                    ],
                   }}
                   style={{
                     // maxWidth: 600,
@@ -340,9 +460,30 @@ function CreateMenuCard({ menuCardData, edit }) {
                   <label htmlFor="" className="text-xl font-semibold">
                     Enter Your item details{" "}
                   </label>
+                  <Tooltip title="Add Category">
+                    <IoAddCircleOutline
+                      onClick={addPanel}
+                      size="1.7em"
+                      style={{
+                        color: "green",
+                        marginLeft: "50%",
+                        marginBottom: "8px",
+                      }}
+                    />
+                  </Tooltip>
+
                   <Collapse>
                     {menuItems.map((panel, panelIndex) => (
                       <Panel header={panel.label} key={panel.key}>
+                        <label htmlFor="" className="text-xl font-semibold">
+                          Category{" "}
+                        </label>
+                        <Input
+                          value={panel.label}
+                          onChange={(e) =>
+                            handleLabelChange(panelIndex, e.target.value)
+                          }
+                        />
                         {panel.items.map((item, itemIndex) => (
                           <Row key={itemIndex}>
                             {itemIndex !== 0 && (
@@ -358,36 +499,6 @@ function CreateMenuCard({ menuCardData, edit }) {
                             )}
                             {/* Your existing item content here */}
                             <Col span={12}>
-                              <div>
-                                <label
-                                  htmlFor=""
-                                  className="text-xl font-semibold"
-                                >
-                                  Category{" "}
-                                </label>
-                                <Form.Item
-                                  name={`menuItems[${panelIndex}].items[${itemIndex}].category`}
-                                  rules={[
-                                    {
-                                      required: true,
-                                      message: "Please input category name!",
-                                    },
-                                  ]}
-                                >
-                                  <Input
-                                    placeholder="Category"
-                                    value={item.category}
-                                    onChange={(e) =>
-                                      handleItemChange(
-                                        panel.key,
-                                        itemIndex,
-                                        "category",
-                                        e.target.value
-                                      )
-                                    }
-                                  />
-                                </Form.Item>
-                              </div>
                               <label
                                 htmlFor=""
                                 className="text-xl font-semibold"
@@ -395,9 +506,19 @@ function CreateMenuCard({ menuCardData, edit }) {
                                 Item photo{" "}
                               </label>
                               <Form.Item
-                                name={`menuItems[${panelIndex}].items[${itemIndex}].itemImage`}
+                                //  name={`menuItems[${panelIndex}].items[${itemIndex}].itemImage`}
+                                name={[
+                                  "menuItems",
+                                  panelIndex,
+                                  "items",
+                                  itemIndex,
+                                  "itemImage",
+                                ]}
                                 valuePropName="fileList"
-                                getValueFromEvent={onFileChange3}
+                                getValueFromEvent={onFileChange3(
+                                  panelIndex,
+                                  itemIndex
+                                )}
                                 rules={[
                                   {
                                     required: true,
@@ -406,7 +527,7 @@ function CreateMenuCard({ menuCardData, edit }) {
                                 ]}
                               >
                                 <Upload
-                                  name="itemImage"
+                                  name={`itemImage_${panelIndex}-${itemIndex}`}
                                   action="/create-menu-card"
                                   listType="picture"
                                   beforeUpload={() => false} // Prevent automatic upload
@@ -425,7 +546,13 @@ function CreateMenuCard({ menuCardData, edit }) {
                                     Item Name{" "}
                                   </label>
                                   <Form.Item
-                                    name={`menuItems[${panelIndex}].items[${itemIndex}].itemName`}
+                                    name={[
+                                      "menuItems",
+                                      panelIndex,
+                                      "items",
+                                      itemIndex,
+                                      "itemName",
+                                    ]}
                                     rules={[
                                       {
                                         required: true,
@@ -455,7 +582,13 @@ function CreateMenuCard({ menuCardData, edit }) {
                                     Item Price{" "}
                                   </label>
                                   <Form.Item
-                                    name={`menuItems[${panelIndex}].items[${itemIndex}].price`}
+                                    name={[
+                                      "menuItems",
+                                      panelIndex,
+                                      "items",
+                                      itemIndex,
+                                      "price",
+                                    ]}
                                     rules={[
                                       {
                                         required: true,
@@ -485,7 +618,13 @@ function CreateMenuCard({ menuCardData, edit }) {
                                 Item description{" "}
                               </label>
                               <Form.Item
-                                name={`menuItems[${panelIndex}].items[${itemIndex}].description`}
+                                name={[
+                                  "menuItems",
+                                  panelIndex,
+                                  "items",
+                                  itemIndex,
+                                  "description",
+                                ]}
                                 rules={[
                                   {
                                     required: true,
@@ -519,7 +658,19 @@ function CreateMenuCard({ menuCardData, edit }) {
                       </Panel>
                     ))}
                   </Collapse>
-
+                  {menuItems.length > 1 && (
+                    <Tooltip title="Remove Category">
+                      <IoRemoveCircleOutline
+                        onClick={() => removePanel(menuItems.length - 1)}
+                        size="1.7em"
+                        style={{
+                          color: "red",
+                          marginLeft: "50%",
+                          marginTop: "8px",
+                        }}
+                      />
+                    </Tooltip>
+                  )}
                   <Form.Item {...tailFormItemLayout} className="flex">
                     <Button
                       className="bg-blue-800 w-45 mt-2 "
@@ -563,6 +714,20 @@ CreateMenuCard.propTypes = {
     name: PropTypes.string,
     coverImage: PropTypes.string,
     logoImage: PropTypes.string,
+    menuItems: PropTypes.arrayOf(
+      PropTypes.shape({
+        key: PropTypes.string,
+        label: PropTypes.string,
+        items: PropTypes.arrayOf(
+          PropTypes.shape({
+            itemImage: PropTypes.string,
+            itemName: PropTypes.string,
+            price: PropTypes.string,
+            description: PropTypes.string,
+          })
+        ),
+      })
+    ),
   }),
 };
 
