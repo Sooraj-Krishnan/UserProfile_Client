@@ -120,6 +120,7 @@ const createMenuCard = async (req, res, next) => {
 };
 
 const editMenuCard = async (req, res, next) => {
+  console.log("req.files", req.files);
   try {
     const managerID = req.user._id;
     const MenuCardID = req.params.id;
@@ -182,30 +183,29 @@ const editMenuCard = async (req, res, next) => {
     //Handle Menu Items
     req.body.menuItems = JSON.parse(req.body.menuItems);
     const menuItems = req.body.menuItems.map(async (menuItem, panelIndex) => {
-      menuItem.items = menuItem.items.map(async (item, itemIndex) => {
-        const itemImageFile = req.files.find(
-          (file) => file.fieldname === `itemImage-${panelIndex}-${itemIndex}`
-        );
-        const itemImageName = itemImageFile ? generateFileName() : "";
-        if (itemImageFile) {
-          await uploadFile(
-            itemImageFile.buffer,
-            itemImageName,
-            itemImageFile.mimetype
+      menuItem.items = await Promise.all(
+        menuItem.items.map(async (item, itemIndex) => {
+          let itemImageUrl = item.itemImage[0].url; // Extract the url from the itemImage object
+          const itemImageFile = req.files.find(
+            (file) => file.fieldname === `itemImage-${panelIndex}-${itemIndex}`
           );
-        }
-        return {
-          ...item,
-          itemImage: itemImageFile ? S3Url + itemImageName : "",
-        };
-      });
-
-      return {
-        ...menuItem,
-        items: await Promise.all(menuItem.items),
-      };
+          if (itemImageFile) {
+            const itemImageName = generateFileName();
+            await uploadFile(
+              itemImageFile.buffer,
+              itemImageName,
+              itemImageFile.mimetype
+            );
+            itemImageUrl = S3Url + itemImageName; // Update the itemImage only if a new file is sent
+          }
+          return {
+            ...item,
+            itemImage: itemImageUrl,
+          };
+        })
+      );
+      return menuItem;
     });
-
     // Update the Menu Card in the database
     existingMenuCard.name = req.body.name;
     existingMenuCard.coverImage = coverImageUrl;

@@ -214,6 +214,25 @@ function CreateMenuCard({ menuCardData, edit }) {
       //   });
       // });
       datas.append("menuItems", JSON.stringify(values.menuItems));
+
+      // values.menuItems.forEach((menuItem, menuItemIndex) => {
+      //   menuItem.items.forEach((item, itemIndex) => {
+      //     if (item.itemImage && item.itemImage.length > 0) {
+      //       const file = item.itemImage[0];
+      //       if (file.originFileObj) {
+      //         datas.append(
+      //           `itemImage-${menuItemIndex}-${itemIndex}`,
+      //           file.originFileObj
+      //         );
+      //       } else if (file.status === "removed") {
+      //         datas.append(`itemImage-${menuItemIndex}-${itemIndex}`, "delete");
+      //       } else {
+      //         datas.append(`itemImage-${menuItemIndex}-${itemIndex}`, file.url);
+      //       }
+      //     }
+      //   });
+      // });
+
       if (fileList1[0]?.originFileObj && fileList1[0]?.status !== "removed") {
         datas.append("logoImage", LogoImgCompress);
       }
@@ -350,26 +369,49 @@ function CreateMenuCard({ menuCardData, edit }) {
                   form={form}
                   name="register"
                   onFinish={onFinish}
+                  // onValuesChange={(changedValues, allValues) => {
+                  //   if ("menuItems" in changedValues) {
+                  //     setMenuItems(allValues.menuItems);
+                  //   }
+                  // }}
                   initialValues={{
                     name: menuCardData?.name,
                     fileList1: fileList1,
                     fileList2: fileList2,
-                    menuItems: menuCardData?.menuItems || [
-                      {
-                        label: "",
-                        items: [
+                    menuItems: menuCardData?.menuItems
+                      ? menuCardData.menuItems.map(
+                          (menuItem, menuItemIndex) => ({
+                            ...menuItem,
+                            items: menuItem.items.map((item, itemIndex) => ({
+                              ...item,
+                              itemImage: item.itemImage
+                                ? [
+                                    {
+                                      uid: "-1",
+                                      name: `image-${menuItemIndex}-${itemIndex}.png`,
+                                      status: "done",
+                                      url: item.itemImage,
+                                    },
+                                  ]
+                                : [],
+                            })),
+                          })
+                        )
+                      : [
                           {
-                            itemImage: [],
-                            itemName: "",
-                            price: "",
-                            description: "",
+                            label: "",
+                            items: [
+                              {
+                                itemImage: [],
+                                itemName: "",
+                                price: "",
+                                description: "",
+                              },
+                            ],
                           },
                         ],
-                      },
-                    ],
                   }}
                   style={{
-                    // maxWidth: 600,
                     width: 600,
                   }}
                   scrollToFirstError
