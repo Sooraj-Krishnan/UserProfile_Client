@@ -35,6 +35,7 @@ const managerDashboard = async (req, res, next) => {
 
 /*----------------------------------------MANAGER----------------------------------------*/
 const createMenuCard = async (req, res, next) => {
+  console.log("Create req.files", req.files);
   try {
     // Handle coverImage
     const managerID = req.user._id;
@@ -67,7 +68,7 @@ const createMenuCard = async (req, res, next) => {
 
     req.body.menuItems = JSON.parse(req.body.menuItems);
     // Handle itemImages
-
+    // console.log("to check label is coming", req.body.menuItems);
     const menuItems = req.body.menuItems.map(async (menuItem, panelIndex) => {
       menuItem.items = menuItem.items.map(async (item, itemIndex) => {
         const itemImageFile = req.files.find(
@@ -93,7 +94,7 @@ const createMenuCard = async (req, res, next) => {
         items: await Promise.all(menuItem.items),
       };
     });
-    console.log("menuItems", menuItems);
+
     const newMenuCard = await MenuCard.create({
       name: req.body.name,
       coverImage: coverImageFile ? S3Url + coverImageName : "",

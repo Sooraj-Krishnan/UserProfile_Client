@@ -520,12 +520,14 @@ function CreateMenuCard({ menuCardData, edit }) {
                         <label htmlFor="" className="text-xl font-semibold">
                           Category{" "}
                         </label>
-                        <Input
-                          value={panel.label}
-                          onChange={(e) =>
-                            handleLabelChange(panelIndex, e.target.value)
-                          }
-                        />
+                        <Form.Item name={["menuItems", panelIndex, "label"]}>
+                          <Input
+                            value={panel.label}
+                            onChange={(e) =>
+                              handleLabelChange(panelIndex, e.target.value)
+                            }
+                          />
+                        </Form.Item>
                         {panel.items.map((item, itemIndex) => (
                           <Row key={itemIndex}>
                             {itemIndex !== 0 && (
