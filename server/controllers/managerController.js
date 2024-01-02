@@ -35,7 +35,6 @@ const managerDashboard = async (req, res, next) => {
 
 /*----------------------------------------MANAGER----------------------------------------*/
 const createMenuCard = async (req, res, next) => {
-  console.log("Create req.files", req.files);
   try {
     // Handle coverImage
     const managerID = req.user._id;
@@ -68,7 +67,7 @@ const createMenuCard = async (req, res, next) => {
 
     req.body.menuItems = JSON.parse(req.body.menuItems);
     // Handle itemImages
-    // console.log("to check label is coming", req.body.menuItems);
+
     const menuItems = req.body.menuItems.map(async (menuItem, panelIndex) => {
       menuItem.items = menuItem.items.map(async (item, itemIndex) => {
         const itemImageFile = req.files.find(
@@ -121,7 +120,6 @@ const createMenuCard = async (req, res, next) => {
 };
 
 const editMenuCard = async (req, res, next) => {
-  console.log("req.files", req.files);
   try {
     const managerID = req.user._id;
     const MenuCardID = req.params.id;
@@ -182,11 +180,16 @@ const editMenuCard = async (req, res, next) => {
     }
 
     //Handle Menu Items
-    req.body.menuItems = JSON.parse(req.body.menuItems);
+    // req.body.menuItems = JSON.parse(req.body.menuItems);
+    if (req.body.menuItems) {
+      req.body.menuItems = JSON.parse(req.body.menuItems);
+    } else {
+      req.body.menuItems = existingMenuCard.menuItems;
+    }
     const menuItems = req.body.menuItems.map(async (menuItem, panelIndex) => {
       menuItem.items = await Promise.all(
         menuItem.items.map(async (item, itemIndex) => {
-          let itemImageUrl = item.itemImage[0].url; // Extract the url from the itemImage object
+          let itemImageUrl = item.itemImage[0].url;
           const itemImageFile = req.files.find(
             (file) => file.fieldname === `itemImage-${panelIndex}-${itemIndex}`
           );
@@ -340,10 +343,12 @@ const createTable = async (req, res, next) => {
   try {
     const managerID = req.user._id;
     const manager = await Manager.findById(managerID);
+    const menuCardID = req.params.id;
     const table = await Table.create({
       tableID: req.body.tableID,
       managerID: managerID,
       adminID: manager.adminID,
+      menuCardID: menuCardID,
     });
 
     // Generating QR code for the Table

@@ -6,6 +6,7 @@ import {
   // ExclamationCircleFilled,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
+import { GiRoundTable } from "react-icons/gi";
 
 import { Menu, Layout } from "antd";
 import { useState } from "react";
@@ -31,6 +32,11 @@ function ManagerSidebar() {
       label: "Dashboard",
       key: "/manager-dashboard",
       icon: <PieChartOutlined />,
+    },
+    {
+      label: "All tables",
+      key: "/all-tables",
+      icon: <GiRoundTable />,
     },
     { label: "SignOut", key: "/signout", icon: <LogoutOutlined /> },
   ];

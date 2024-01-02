@@ -5,7 +5,7 @@ const MenuCard = require("./menuCardModel");
 
 const TableSchema = mongoose.Schema({
   tableID: {
-    type: Number,
+    type: String,
     required: [true, "ID is required"],
     unique: true,
   },

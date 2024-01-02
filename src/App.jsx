@@ -1,9 +1,10 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-/*---------------Common Pages ----------------*/
-import HomePage from "./pages/commonPages/HomePage";
+/*---------------Public Pages ----------------*/
+import HomePage from "./pages/publicPages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import EmployeeLoginPage from "./pages/employeePages/EmployeeLogin";
+import MenuCardView from "./pages/publicPages/MenuCardView";
 
 /*---------------Admin Pages ----------------*/
 import AdminLoginProtect from "./auth/AdminLoginProtect";
@@ -41,6 +42,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/employee-login" element={<EmployeeLoginPage />} />
+        <Route path="/menu-view/:id" element={<MenuCardView />} />
 
         <Route path="/" element={<AdminLoginProtect />} />
         <Route path="admin-dashboard" element={<DashboardPage />} />

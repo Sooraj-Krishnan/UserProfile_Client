@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { DownOutlined } from "@ant-design/icons";
-import {} from "@ant-design/icons";
+import { FaEye } from "react-icons/fa";
 import {
   Button,
   Table,
@@ -41,6 +41,11 @@ function ViewTables() {
     navigate(`/edit-table/${tableID}`, {
       state: { details: _id },
     });
+  };
+  const handleViewMenuCard = (_id) => {
+    const TableID = _id._id;
+    const url = `/menu-view/${TableID}`;
+    window.open(url, "_blank");
   };
 
   //Create a menu for drop down
@@ -165,6 +170,20 @@ function ViewTables() {
                     opacity: isBlocked ? 0.5 : 1,
                   }}
                   onClick={isBlocked ? undefined : () => showModal(_id)}
+                />
+              </Tooltip>
+            </div>
+            <div>
+              <Tooltip title={isBlocked ? "" : "View Menu"}>
+                <FaEye
+                  onClick={
+                    isBlocked ? undefined : () => handleViewMenuCard(_id)
+                  }
+                  size={28}
+                  style={{
+                    cursor: isBlocked ? "default" : "pointer",
+                    opacity: isBlocked ? 0.5 : 1,
+                  }}
                 />
               </Tooltip>
             </div>

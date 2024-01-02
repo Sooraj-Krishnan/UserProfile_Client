@@ -20,10 +20,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const managerRoutes = require("./routes/managerRoutes");
+const publicRoutes = require("./routes/publicRoutes");
 
 app.use("/api", authRoutes);
 app.use("/api", adminRoutes);
 app.use("/api", managerRoutes);
+app.use("/api", publicRoutes);
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {

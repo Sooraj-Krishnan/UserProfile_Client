@@ -124,25 +124,7 @@ function CreateMenuCard({ menuCardData, edit }) {
     setMenuItems(newMenuItems);
   };
 
-  // const handleItemChange = (panelIndex, itemIndex, field, value) => {
-  //   const newMenuItems = [...menuItems];
-  //   newMenuItems[panelIndex].items[itemIndex][field] = value;
-  //   setMenuItems(newMenuItems);
-  // };
-
   const [fileList1, setFileList1] = useState(
-    menuCardData?.logoImage
-      ? [
-          {
-            uid: "-1",
-            name: "image.png",
-            // status:  feedbackData.coverImage ? "done" : "",
-            thumbUrl: menuCardData.logoImage,
-          },
-        ]
-      : []
-  );
-  const [fileList2, setFileList2] = useState(
     menuCardData?.coverImage
       ? [
           {
@@ -150,6 +132,18 @@ function CreateMenuCard({ menuCardData, edit }) {
             name: "image.png",
             // status:  feedbackData.coverImage ? "done" : "",
             thumbUrl: menuCardData.coverImage,
+          },
+        ]
+      : []
+  );
+  const [fileList2, setFileList2] = useState(
+    menuCardData?.logoImage
+      ? [
+          {
+            uid: "-1",
+            name: "image.png",
+            // status:  feedbackData.coverImage ? "done" : "",
+            thumbUrl: menuCardData.logoImage,
           },
         ]
       : []
@@ -183,70 +177,31 @@ function CreateMenuCard({ menuCardData, edit }) {
       // showLoader();
       setIsSubmitting(true);
 
-      const LogoImgCompress = await HandleImageUpload(fileList1);
-      const CoverImgCompress = await HandleImageUpload(fileList2);
+      const CoverImgCompress = await HandleImageUpload(fileList1);
+      const LogoImgCompress = await HandleImageUpload(fileList2);
 
       const datas = new FormData();
       datas.append("name", values.name);
       datas.append("coverImage", values.fileList1[0].originFileObj);
       // datas.append("fileList2", values.fileList2);
       datas.append("logoImage", values.fileList2[0].originFileObj);
-
-      // Append dynamic form values to datas
-      // values.menuItems.forEach((menuItem, index) => {
-      //   menuItem.items.forEach((item, itemIndex) => {
-      //     datas.append(
-      //       `menuItems[${index}].items[${itemIndex}].itemImage`,
-      //       item.itemImage
-      //     );
-      //     datas.append(
-      //       `menuItems[${index}].items[${itemIndex}].itemName`,
-      //       item.itemName
-      //     );
-      //     datas.append(
-      //       `menuItems[${index}].items[${itemIndex}].price`,
-      //       item.price
-      //     );
-      //     datas.append(
-      //       `menuItems[${index}].items[${itemIndex}].description`,
-      //       item.description
-      //     );
-      //   });
-      // });
+      console.log(values.menuItems);
       datas.append("menuItems", JSON.stringify(values.menuItems));
 
-      // values.menuItems.forEach((menuItem, menuItemIndex) => {
-      //   menuItem.items.forEach((item, itemIndex) => {
-      //     if (item.itemImage && item.itemImage.length > 0) {
-      //       const file = item.itemImage[0];
-      //       if (file.originFileObj) {
-      //         datas.append(
-      //           `itemImage-${menuItemIndex}-${itemIndex}`,
-      //           file.originFileObj
-      //         );
-      //       } else if (file.status === "removed") {
-      //         datas.append(`itemImage-${menuItemIndex}-${itemIndex}`, "delete");
-      //       } else {
-      //         datas.append(`itemImage-${menuItemIndex}-${itemIndex}`, file.url);
-      //       }
-      //     }
-      //   });
-      // });
-
       if (fileList1[0]?.originFileObj && fileList1[0]?.status !== "removed") {
-        datas.append("logoImage", LogoImgCompress);
-      }
-
-      if (!fileList1[0]?.originFileObj && fileList1[0]?.status === "removed") {
-        datas.append("logoImage", "delete");
-      }
-
-      if (fileList2[0]?.originFileObj && fileList2[0]?.status !== "removed") {
         datas.append("coverImage", CoverImgCompress);
       }
 
-      if (!fileList2[0]?.originFileObj && fileList2[0]?.status === "removed") {
+      if (!fileList1[0]?.originFileObj && fileList1[0]?.status === "removed") {
         datas.append("coverImage", "delete");
+      }
+
+      if (fileList2[0]?.originFileObj && fileList2[0]?.status !== "removed") {
+        datas.append("logoImage", LogoImgCompress);
+      }
+
+      if (!fileList2[0]?.originFileObj && fileList2[0]?.status === "removed") {
+        datas.append("logoImage", "delete");
       }
 
       // Iterate over each key-value pair in fileList3
@@ -263,16 +218,8 @@ function CreateMenuCard({ menuCardData, edit }) {
           datas.append(`itemImage-${key}`, "delete");
         }
       }
-      console.log("FormData:", datas);
+
       try {
-        console.log("datas to back end", datas);
-        for (let pair of datas.entries()) {
-          if (pair[1] instanceof File) {
-            console.log(pair[0] + ", " + pair[1].name);
-          } else {
-            console.log(pair[0] + ", " + pair[1]);
-          }
-        }
         if (edit) {
           const response = await editMenuCard(menuCardData._id, datas);
           // hideLoder();
@@ -349,7 +296,7 @@ function CreateMenuCard({ menuCardData, edit }) {
 
     return fileList;
   };
-
+  console.log("qwerty", menuCardData.menuItems);
   return (
     <div className="previewWrapBlock">
       <div className="md:w-7/12 flex justify-center scrollbar-hide">
@@ -369,11 +316,6 @@ function CreateMenuCard({ menuCardData, edit }) {
                   form={form}
                   name="register"
                   onFinish={onFinish}
-                  // onValuesChange={(changedValues, allValues) => {
-                  //   if ("menuItems" in changedValues) {
-                  //     setMenuItems(allValues.menuItems);
-                  //   }
-                  // }}
                   initialValues={{
                     name: menuCardData?.name,
                     fileList1: fileList1,
