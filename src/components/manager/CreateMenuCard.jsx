@@ -296,7 +296,7 @@ function CreateMenuCard({ menuCardData, edit }) {
 
     return fileList;
   };
-  console.log("qwerty", menuCardData.menuItems);
+
   return (
     <div className="previewWrapBlock">
       <div className="md:w-7/12 flex justify-center scrollbar-hide">

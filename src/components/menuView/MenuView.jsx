@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { menuView } from "../../api/PublicRequest";
 import { Typography, Row, Col } from "antd";
-// import MenuItemDetails from "./MenuItemDetails";
+import { FaShoppingCart } from "react-icons/fa";
 import "./MenuView.css";
 const { Title } = Typography;
 
 const MenuView = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [menuData, setMenuData] = useState([]);
   const [selectedLabel, setSelectedLabel] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     const fetchMenu = async () => {
@@ -42,6 +44,19 @@ const MenuView = () => {
     setMenuData(newMenuData);
   };
 
+  // const addToCart = (item) => {
+  //   setCartItems([...cartItems, item]);
+  // };
+
+  const addToCart = (itemId) => {
+    const selectedItem = menuData.menuItems
+      .flatMap((menuItem) => menuItem.items)
+      .find((item) => item._id === itemId);
+    const newCartItems = [...cartItems, selectedItem];
+    setCartItems(newCartItems);
+    localStorage.setItem("cartItems", JSON.stringify(newCartItems));
+  };
+
   return (
     <div className="bg-gray-200" style={{ width: "600px", margin: "0 auto" }}>
       <div className="flex space-x-4 justify-center">
@@ -58,6 +73,14 @@ const MenuView = () => {
             </div>
           ))}
       </div>
+      <div style={{ marginLeft: "20px", marginTop: "-40px" }}>
+        <FaShoppingCart
+          size={30}
+          onClick={() => navigate(`/menu-view/${id}/order`)}
+        />
+        {cartItems.length}
+      </div>
+
       {menuData &&
         menuData.menuItems &&
         (selectedLabel
@@ -96,8 +119,9 @@ const MenuView = () => {
                         +
                       </button>
                     </div>
-                    <div className="quantity-button">
-                      <button>Add</button>
+                    <div className="quantity-button mt-2 justify-center">
+                      {/* <button onClick={() => addToCart(item)}>Add</button> */}
+                      <button onClick={() => addToCart(item._id)}>Add</button>
                     </div>
                   </Col>
                   <Col span={12}>

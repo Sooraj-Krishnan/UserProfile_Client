@@ -38,6 +38,11 @@ function ManagerSidebar() {
       key: "/all-tables",
       icon: <GiRoundTable />,
     },
+    {
+      label: "All waiters",
+      key: "/all-waiters",
+      icon: <GiRoundTable />,
+    },
     { label: "SignOut", key: "/signout", icon: <LogoutOutlined /> },
   ];
 

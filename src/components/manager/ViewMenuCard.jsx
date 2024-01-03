@@ -28,7 +28,6 @@ const { Title } = Typography;
 // const { confirm } = Modal;
 
 function ViewMenuCard() {
-  console.log("View All Menu Cards Route Hit");
   const getColumnSearchProps = useColumnSearch();
   const navigate = useNavigate();
 

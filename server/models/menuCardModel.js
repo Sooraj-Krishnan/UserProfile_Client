@@ -2,6 +2,19 @@ const mongoose = require("mongoose");
 const Manager = require("./managerModel");
 const Admin = require("./adminModel");
 
+const MenuItemSchema = mongoose.Schema({
+  key: String,
+  label: String,
+  items: [
+    {
+      itemImage: String,
+      itemName: String,
+      price: String,
+      description: String,
+    },
+  ],
+});
+
 const MenuCardSchema = mongoose.Schema({
   name: {
     type: String,
@@ -16,20 +29,7 @@ const MenuCardSchema = mongoose.Schema({
     type: String,
     required: [true, "Logo Image is required"],
   },
-  menuItems: [
-    {
-      key: String,
-      label: String,
-      items: [
-        {
-          itemImage: String,
-          itemName: String,
-          price: String,
-          description: String,
-        },
-      ],
-    },
-  ],
+  menuItems: [MenuItemSchema],
 
   status: {
     type: String,

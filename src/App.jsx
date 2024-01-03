@@ -5,6 +5,7 @@ import HomePage from "./pages/publicPages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import EmployeeLoginPage from "./pages/employeePages/EmployeeLogin";
 import MenuCardView from "./pages/publicPages/MenuCardView";
+import OrderView from "./pages/publicPages/OrderViewPage";
 
 /*---------------Admin Pages ----------------*/
 import AdminLoginProtect from "./auth/AdminLoginProtect";
@@ -43,6 +44,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/employee-login" element={<EmployeeLoginPage />} />
         <Route path="/menu-view/:id" element={<MenuCardView />} />
+        <Route path="/menu-view/:id/order" element={<OrderView />} />
 
         <Route path="/" element={<AdminLoginProtect />} />
         <Route path="admin-dashboard" element={<DashboardPage />} />
