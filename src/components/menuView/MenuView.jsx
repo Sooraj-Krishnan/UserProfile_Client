@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { menuView } from "../../api/PublicRequest";
 import { Typography, Row, Col } from "antd";
@@ -9,15 +10,19 @@ const { Title } = Typography;
 const MenuView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [menuData, setMenuData] = useState([]);
   const [selectedLabel, setSelectedLabel] = useState(null);
   const [cartItems, setCartItems] = useState([]);
+  const [, setLocalMenuData] = useState(null);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchMenu = async () => {
+  const {
+    data: menuData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["menuView", id],
+    queryFn: async () => {
       const { data } = await menuView(id);
-      console.log("data", data.data);
-      //  setMenuData(data.data);
       const menuDataWithQuantity = {
         ...data.data,
         menuItems: data.data.menuItems.map((menuItem) => ({
@@ -25,28 +30,46 @@ const MenuView = () => {
           items: menuItem.items.map((item) => ({ ...item, quantity: 1 })),
         })),
       };
-      setMenuData(menuDataWithQuantity);
-    };
-    fetchMenu();
-  }, [id]);
+      return menuDataWithQuantity;
+    },
+  });
+
+  useEffect(() => {
+    if (menuData) {
+      setLocalMenuData(menuData);
+    }
+  }, [menuData]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error occurred while fetching data</div>;
+  }
 
   const incrementQuantity = (menuItemIndex, itemIndex) => {
-    const newMenuData = { ...menuData };
-    newMenuData.menuItems[menuItemIndex].items[itemIndex].quantity++;
-    setMenuData(newMenuData);
+    queryClient.setQueryData(["menuView", id], (oldData) => {
+      const updatedMenuData = { ...oldData };
+      updatedMenuData.menuItems[menuItemIndex].items[itemIndex].quantity++;
+      return updatedMenuData;
+    });
+
+    setLocalMenuData(queryClient.getQueryData(["menuView", id]));
   };
 
   const decrementQuantity = (menuItemIndex, itemIndex) => {
-    const newMenuData = { ...menuData };
-    if (newMenuData.menuItems[menuItemIndex].items[itemIndex].quantity > 1) {
-      newMenuData.menuItems[menuItemIndex].items[itemIndex].quantity--;
-    }
-    setMenuData(newMenuData);
+    setLocalMenuData((prevData) => {
+      const updatedMenuData = { ...prevData };
+      if (
+        updatedMenuData.menuItems[menuItemIndex].items[itemIndex].quantity > 1
+      ) {
+        updatedMenuData.menuItems[menuItemIndex].items[itemIndex].quantity--;
+      }
+      queryClient.setQueryData(["menuView", id], updatedMenuData);
+      return updatedMenuData;
+    });
   };
-
-  // const addToCart = (item) => {
-  //   setCartItems([...cartItems, item]);
-  // };
 
   const addToCart = (itemId) => {
     const selectedItem = menuData.menuItems
