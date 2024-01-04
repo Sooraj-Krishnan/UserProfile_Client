@@ -295,16 +295,53 @@ const viewAllWaiters = async (req, res, next) => {
       status: { $ne: "delete" },
     })
       .populate("menuCardID")
+      .populate("assignedTables")
       .sort({ createdDate: -1 });
 
     const manager = await Manager.findOne({ _id: managerID });
     if (!manager) {
       return res.status(404).json({ message: "Manager not found" });
     }
+    // Fetch all tables associated with each waiter
+    const waiterTables = await Promise.all(
+      waiters.map(async (waiter) => {
+        const tables = await Table.find({ menuCardID: waiter.menuCardID });
+        return {
+          waiterID: waiter._id,
+          tables: tables.map((table) => table.tableID),
+        };
+      })
+    );
+
     res.status(200).json({
       success: true,
       waiters,
+      waiterTables,
       message: "All Employees Under This Service Manager",
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+const assignTablesToWaiter = async (req, res, next) => {
+  try {
+    const { tableIDs } = req.body;
+
+    const { waiterID } = req.params;
+    const waiter = await Waiter.findById(waiterID);
+    if (!waiter) {
+      return res.status(404).json({ message: "Waiter not found" });
+    }
+    console.log("tableIDs", tableIDs);
+    waiter.assignedTables = tableIDs;
+    await waiter.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Tables Assigned Successfully",
+      waiter,
     });
   } catch (error) {
     console.log(error);
@@ -519,6 +556,7 @@ module.exports = {
   viewAllTables,
   createWaiter,
   viewAllWaiters,
+  assignTablesToWaiter,
   editWaiter,
   createKitchenStaff,
   editKitchenStaff,

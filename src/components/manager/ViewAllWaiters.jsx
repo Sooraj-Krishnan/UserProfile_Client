@@ -1,12 +1,15 @@
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { DownOutlined } from "@ant-design/icons";
-import {
-} from "@ant-design/icons";
+import {} from "@ant-design/icons";
+import { ToastContainer, toast } from "react-toastify";
 import {
   Button,
   Table,
   Col,
+  Form,
+  Select,
   Row,
   Typography,
   Menu,
@@ -14,36 +17,85 @@ import {
 } from "antd";
 
 // import ErrorLogout from "../../../helper/ErrorLogout";
-import { viewAllWaiters } from "../../api/ManagerRequest";
+import { assignTablesToWaiter, viewAllWaiters } from "../../api/ManagerRequest";
 import useColumnSearch from "../hooks/useColumnSearch";
 import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
 function ViewWaiters() {
+  const [form] = Form.useForm();
   const getColumnSearchProps = useColumnSearch();
   const navigate = useNavigate();
 
-  const [waiters, setWaiters] = useState([]);
+  //  const [block, setBlock] = useState("");
 
-//  const [block, setBlock] = useState("");
-
-
-  
   const [loader, setLoader] = useState(true);
- // const [, setBtLoaderId] = useState("");
- // const [, setDelLoaderId] = useState("");
+  // const [, setBtLoaderId] = useState("");
+  // const [, setDelLoaderId] = useState("");
 
+  const fetchWaiters = async () => {
+    const { data } = await viewAllWaiters();
+    if (data && data.waiters && data.waiterTables) {
+      const merged = data.waiters.map((waiter) => {
+        const waiterTablesItem = data.waiterTables.find(
+          (item) => item.waiterID.toString() === waiter._id.toString()
+        );
+        return {
+          ...waiter,
+          tables: waiterTablesItem ? waiterTablesItem.tables : [],
+        };
+      });
+      return merged;
+    }
+    return [];
+  };
+  const {
+    data: mergedData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: "waiters",
+    queryFn: fetchWaiters,
+  });
 
+  if (error) {
+    console.log(error.message);
+    if (error.response.status === 403) {
+      // ErrorLogout(error);
+    }
+  }
+  useEffect(() => {
+    setLoader(isLoading);
+  }, [isLoading]);
 
   const handleEdit = (_id) => {
-    const waiterID = _id._id; 
+    const waiterID = _id._id;
     navigate(`/edit-waiter/${waiterID}`, {
       state: { details: _id },
     });
   };
 
- 
+  const handleAssignTables = async (_id) => {
+    const waiterID = _id;
+    console.log("waiter id", waiterID);
+    const tableIDs = form.getFieldValue(`select-tables-${waiterID}`);
+    console.log("table ids", tableIDs);
+    try {
+      const { data } = await assignTablesToWaiter(waiterID, tableIDs);
+
+      console.log("waiter data", data);
+      console.log("message", data.message);
+      toast.success(data.message);
+      setTimeout(() => {
+        navigate("/all-waiters");
+      }, 1000);
+    } catch (error) {
+      console.log(error.message);
+      toast.error(error.message);
+    }
+  };
+
   //Create a menu for drop down
   const DropdownMenu = ({ _id }) => (
     <Menu>
@@ -77,27 +129,6 @@ function ViewWaiters() {
     }),
   };
 
-  useEffect(() => {
-    const getWaiters = async () => {
-      try {
-        // Replace with your method to fetch all employees
-        const { data } = await viewAllWaiters();
-        console.log("data", data);
-        if (data && data.waiters) {
-          setWaiters(data.waiters);        
-        }
-        setLoader(false);
-      } catch (error) {
-        console.log(error.message);
-        if (error.response.status === 403) {
-       //   ErrorLogout(error);
-        }
-      }
-    };
-
-    getWaiters();
-  }, []);
-
   const columns = [
     {
       title: "No.",
@@ -128,16 +159,66 @@ function ViewWaiters() {
       },
       width: "10%",
     },
+    {
+      title: "Assigned Tables",
+      dataIndex: "assignedTables",
+      key: "assignedTables",
+      render: (assignedTables, record) => {
+        return (
+          <Form.Item
+            name={`select-tables-${record._id}`}
+            initialValue={record.tables || []}
+            //label="Select[multiple]"
+            rules={[
+              {
+                required: true,
+                message: "Please select your favourite colors!",
+                type: "array",
+              },
+            ]}
+          >
+            <div style={{ display: "flex" }}>
+              <Select
+                mode="multiple"
+                placeholder="Please select tables"
+                onChange={(value) =>
+                  form.setFieldsValue({
+                    [`select-tables-${record._id}`]: value,
+                  })
+                }
+              >
+                {record.tables
+                  ? record.tables.map((table) => (
+                      <Select.Option key={table} value={table}>
+                        {table}
+                      </Select.Option>
+                    ))
+                  : null}
+              </Select>
+              <Button
+                style={{
+                  backgroundColor: "#1f6ff0",
+                  color: "white",
+                  marginLeft: "4px",
+                }}
+                onClick={() => handleAssignTables(record._id)}
+              >
+                OK
+              </Button>
+            </div>
+          </Form.Item>
+        );
+      },
+    },
 
     {
       title: "Action",
       dataIndex: "status",
       key: "_id",
       render: (status, _id) => {
-     //   const isBlocked = status === "blocked";
+        //   const isBlocked = status === "blocked";
         return (
           <div className="flex gap-3">
-
             {/* ... */}
             <div>
               {/* Wrap the next three buttons in a Dropdown */}
@@ -159,23 +240,25 @@ function ViewWaiters() {
 
   return (
     <>
-
       <Row justify="space-between" align="middle">
         <Col span={12}>
           <Title level={2}>Waiters</Title>
         </Col>
-        <Col span={12} className="text-right">
-        </Col>
+        <Col span={12} className="text-right"></Col>
       </Row>
       <div className="flex justify-center">
         <div className="w-full mt-5">
-          <Table
-            columns={columns}
-            loading={loader}
-            dataSource={waiters}
-            pagination={waiters.length > 10 ? true : false}
-          />
+          <Form form={form}>
+            <Table
+              columns={columns}
+              loading={loader}
+              // dataSource={waiters}
+              dataSource={mergedData}
+              //  pagination={mergedData && mergedData.length > 10 ? true : false}
+            />
+          </Form>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

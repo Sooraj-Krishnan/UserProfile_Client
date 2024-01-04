@@ -25,6 +25,9 @@ export const createWaiter = (menucardID, details) =>
 
 export const viewAllWaiters = () => axiosPrivate.get(`/all-waiters`);
 
+export const assignTablesToWaiter = (waiterID, tableIDs) =>
+  axiosPrivate.post(`/assign-tables/${waiterID}`, { tableIDs });
+
 export const editWaiter = (waiterID, details) =>
   axiosPrivate.put(`/edit-waiter/${waiterID}`, details);
 

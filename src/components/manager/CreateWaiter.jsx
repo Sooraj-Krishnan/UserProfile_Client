@@ -163,32 +163,6 @@ function CreateWaiter({ id, edit, waiterData }) {
                     </Form.Item>
                   </div>
                 </div>
-                {/* <div>
-                  <label htmlFor="" className="text-xl font-semibold">
-                    Card Limit
-                  </label>
-                  <Form.Item
-                    name="cardLimit"
-                    // label="Employee Limit"
-                    className="mb-2"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input the employee limit!",
-                      },
-                      {
-                        type: "number",
-                        min: 0,
-                        message: "Employee limit must be a positive number!",
-                      },
-                    ]}
-                  >
-                    <InputNumber
-                      className="py-2 hide-input-arrows"
-                      style={{ width: "100%" }}
-                    />
-                  </Form.Item>
-                </div> */}
 
                 <div className="grid grid-cols-2 gap-2 "></div>
 

@@ -13,6 +13,11 @@ const WaiterSchema = mongoose.Schema({
     required: [true, "Email is required"],
     unique: true,
   },
+  password: {
+    type: String,
+    minlength: [6, "Password must contain 6 letters"],
+    required: [true, "Password is required"],
+  },
 
   adminID: {
     type: mongoose.Schema.Types.ObjectId,
@@ -27,11 +32,14 @@ const WaiterSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: MenuCard,
   },
-  password: {
-    type: String,
-    minlength: [6, "Password must contain 6 letters"],
-    required: [true, "Password is required"],
-  },
+
+  assignedTables: [
+    {
+      type: String,
+
+      default: null,
+    },
+  ],
 
   status: {
     type: String,
