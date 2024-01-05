@@ -71,7 +71,7 @@ function ViewWaiters() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: "waiters",
+    queryKey: ["waiters"],
     queryFn: fetchWaiters,
   });
 
@@ -105,21 +105,24 @@ function ViewWaiters() {
 
   const handleAssignTables = async (_id) => {
     const waiterID = _id;
-    console.log("waiter id", waiterID);
+
     const tableIDs = form.getFieldValue(`select-tables-${waiterID}`);
-    console.log("table ids", tableIDs);
+
     try {
       const { data } = await assignTablesToWaiter(waiterID, tableIDs);
 
-      console.log("waiter data", data);
-      console.log("message", data.message);
       toast.success(data.message);
       setTimeout(() => {
-        navigate("/all-waiters");
-      }, 1000);
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.log(error.message);
-      toast.error(error.message);
+      const serverMessage =
+        error.response && error.response.data && error.response.data.message;
+      toast.error(serverMessage || error.message);
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     }
   };
 
@@ -213,7 +216,6 @@ function ViewWaiters() {
                 // value={form.getFieldValue(`select-tables-${record._id}`) || []}
                 value={selectedTables[record._id]}
                 onChange={(value) => {
-                  console.log("onChange called with value:", value);
                   const newSelectedTables = {
                     ...selectedTables,
                     [record._id]: value,
@@ -225,11 +227,22 @@ function ViewWaiters() {
                 }}
               >
                 {record.tables
-                  ? record.tables.map((table) => (
-                      <Select.Option key={table} value={table}>
-                        {table}
-                      </Select.Option>
-                    ))
+                  ? record.tables
+                      .filter((table) => {
+                        // Get all tables assigned to other waiters
+                        const otherWaitersTables = Object.values(selectedTables)
+                          .flat()
+                          .filter(
+                            (assignedTable) => assignedTable !== record._id
+                          );
+                        // Only include tables that haven't been assigned to other waiters
+                        return !otherWaitersTables.includes(table);
+                      })
+                      .map((table) => (
+                        <Select.Option key={table} value={table}>
+                          {table}
+                        </Select.Option>
+                      ))
                   : null}
               </Select>
               <Button
@@ -259,10 +272,7 @@ function ViewWaiters() {
             {/* ... */}
             <div>
               {/* Wrap the next three buttons in a Dropdown */}
-              <Dropdown
-                overlay={<DropdownMenu _id={_id} />}
-                placement="bottomCenter"
-              >
+              <Dropdown menu={<DropdownMenu _id={_id} />} placement="bottom">
                 <Button style={{ marginLeft: "10px", width: "150px" }}>
                   More{" "}
                   <DownOutlined style={{ position: "relative", top: "-2px" }} />

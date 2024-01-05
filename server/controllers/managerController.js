@@ -334,7 +334,19 @@ const assignTablesToWaiter = async (req, res, next) => {
     if (!waiter) {
       return res.status(404).json({ message: "Waiter not found" });
     }
-    console.log("tableIDs", tableIDs);
+    // Check if any of the tables are already assigned to another waiter
+    const otherWaiters = await Waiter.find({ _id: { $ne: waiterID } });
+    for (let tableID of tableIDs) {
+      const otherWaiter = otherWaiters.find((waiter) =>
+        waiter.assignedTables.includes(tableID)
+      );
+      if (otherWaiter) {
+        return res.status(400).json({
+          message: `Table ${tableID} is already assigned to ${otherWaiter.name}`,
+        });
+      }
+    }
+
     waiter.assignedTables = tableIDs;
     await waiter.save();
 
