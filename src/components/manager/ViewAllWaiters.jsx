@@ -31,19 +31,35 @@ function ViewWaiters() {
   //  const [block, setBlock] = useState("");
 
   const [loader, setLoader] = useState(true);
+  const [selectedTables, setSelectedTables] = useState({});
   // const [, setBtLoaderId] = useState("");
   // const [, setDelLoaderId] = useState("");
 
   const fetchWaiters = async () => {
     const { data } = await viewAllWaiters();
     if (data && data.waiters && data.waiterTables) {
+      const allAssignedTables = data.waiters.flatMap((waiter) =>
+        waiter.assignedTables && waiter.assignedTables.length > 0
+          ? waiter.assignedTables
+              .filter((table) => table !== null)
+              .map((table) => table.tableID)
+          : []
+      );
       const merged = data.waiters.map((waiter) => {
         const waiterTablesItem = data.waiterTables.find(
           (item) => item.waiterID.toString() === waiter._id.toString()
         );
+        const tables = waiterTablesItem
+          ? waiterTablesItem.tables.filter(
+              (table) =>
+                !allAssignedTables.includes(table) ||
+                waiter.assignedTables.includes(table)
+            )
+          : [];
         return {
           ...waiter,
-          tables: waiterTablesItem ? waiterTablesItem.tables : [],
+          tables,
+          assignedTables: waiter.assignedTables,
         };
       });
       return merged;
@@ -61,13 +77,24 @@ function ViewWaiters() {
 
   if (error) {
     console.log(error.message);
-    if (error.response.status === 403) {
+    if (error.respose && error.response.status === 403) {
       // ErrorLogout(error);
     }
   }
   useEffect(() => {
     setLoader(isLoading);
   }, [isLoading]);
+
+  useEffect(() => {
+    if (mergedData) {
+      const initialSelectedTables = mergedData.reduce((acc, waiter) => {
+        acc[waiter._id] =
+          form.getFieldValue(`select-tables-${waiter._id}`) || [];
+        return acc;
+      }, {});
+      setSelectedTables(initialSelectedTables);
+    }
+  }, [mergedData, form]);
 
   const handleEdit = (_id) => {
     const waiterID = _id._id;
@@ -167,8 +194,8 @@ function ViewWaiters() {
         return (
           <Form.Item
             name={`select-tables-${record._id}`}
-            initialValue={record.tables || []}
-            //label="Select[multiple]"
+            initialValue={record.assignedTables || []}
+            //  defaultValue={record.assignedTables || []}
             rules={[
               {
                 required: true,
@@ -179,13 +206,23 @@ function ViewWaiters() {
           >
             <div style={{ display: "flex" }}>
               <Select
+                key={selectedTables[record._id]}
                 mode="multiple"
                 placeholder="Please select tables"
-                onChange={(value) =>
+                //  defaultValue={record.assignedTables || []}
+                // value={form.getFieldValue(`select-tables-${record._id}`) || []}
+                value={selectedTables[record._id]}
+                onChange={(value) => {
+                  console.log("onChange called with value:", value);
+                  const newSelectedTables = {
+                    ...selectedTables,
+                    [record._id]: value,
+                  };
+                  setSelectedTables(newSelectedTables);
                   form.setFieldsValue({
                     [`select-tables-${record._id}`]: value,
-                  })
-                }
+                  });
+                }}
               >
                 {record.tables
                   ? record.tables.map((table) => (

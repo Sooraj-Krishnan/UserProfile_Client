@@ -40,7 +40,7 @@ router.put("/edit-table/:id", verifyJwt, editTable);
 router.get("/all-tables", verifyJwt, viewAllTables);
 router.post("/create-waiter/:id", verifyJwt, createWaiter);
 router.get("/all-waiters", verifyJwt, viewAllWaiters);
-router.post("/assign-tables/:waiterID", verifyJwt, assignTablesToWaiter);
+router.put("/assign-tables/:waiterID", verifyJwt, assignTablesToWaiter);
 router.put("/edit-waiter/:id", verifyJwt, editWaiter);
 router.post("/create-kitchen-staff/:id", verifyJwt, createKitchenStaff);
 router.put("/edit-kitchen-staff/:id", verifyJwt, editKitchenStaff);
