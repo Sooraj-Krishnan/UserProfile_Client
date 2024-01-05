@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const app = express();
+const createServer = require("./helpers/socket");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { connectDb } = require("./config/connection");
@@ -37,8 +38,11 @@ app.use((err, req, res, next) => {
   res.status(error.status).json(error);
 });
 
+const server = createServer(app);
+
 const PORT = process.env.PORT || 5173;
-app.listen(PORT, async () => {
+// app.listen(PORT, async () => {
+server.listen(PORT, async () => {
   console.log(`Server is running at port ${PORT}`);
   await connectDb();
 });

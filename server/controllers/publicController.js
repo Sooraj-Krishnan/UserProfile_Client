@@ -1,6 +1,7 @@
 require("dotenv").config();
 const MenuCard = require("../models/menuCardModel");
 const Table = require("../models/tableModel");
+const Waiter = require("../models/waiterModel");
 
 const menuView = async (req, res, next) => {
   try {
@@ -38,6 +39,36 @@ const menuView = async (req, res, next) => {
   }
 };
 
+const findWaiterByTableId = async (req, res, next) => {
+  try {
+    const tableID = req.params.id;
+
+    const table = await Table.findById(tableID);
+    if (!table) {
+      return res.status(404).json({
+        success: false,
+        message: "Table not found",
+      });
+    }
+
+    // Find a waiter who is assigned to the table
+    const waiter = await Waiter.findOne({ assignedTables: table.tableID });
+    if (!waiter) {
+      return res.status(404).json({
+        success: false,
+        message: "Waiter not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      waiter,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
 module.exports = {
   menuView,
+  findWaiterByTableId,
 };

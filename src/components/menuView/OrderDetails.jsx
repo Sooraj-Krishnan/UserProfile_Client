@@ -1,6 +1,7 @@
+import { io } from "socket.io-client";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { MdDelete } from "react-icons/md";
 import "./OrderDetails.css";
@@ -8,6 +9,8 @@ import "./OrderDetails.css";
 // const { Title } = Typography;
 
 const OrderDetails = () => {
+  const socket = io(import.meta.env.VITE_REACT_APP_SERVER_URL);
+  const { id } = useParams();
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
 
@@ -20,6 +23,12 @@ const OrderDetails = () => {
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const handleOrder = () => {
+    socket.emit("order", { tableID: id, order: cartItems });
+    localStorage.removeItem("cartItems");
+    setCartItems([]);
   };
 
   const Cart = ({ cartItems }) => {
@@ -85,7 +94,9 @@ const OrderDetails = () => {
         <ArrowLeftOutlined />
       </p>
       <Cart cartItems={cartItems} />
-      <button className="items-order-button">ORDER</button>
+      <button className="items-order-button" onClick={handleOrder}>
+        ORDER
+      </button>
     </div>
   );
 };
