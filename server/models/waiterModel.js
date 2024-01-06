@@ -40,6 +40,10 @@ const WaiterSchema = mongoose.Schema({
       default: null,
     },
   ],
+  socketId: {
+    type: String,
+    default: null,
+  },
 
   status: {
     type: String,

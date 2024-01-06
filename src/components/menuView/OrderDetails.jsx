@@ -26,9 +26,10 @@ const OrderDetails = () => {
   };
 
   const handleOrder = () => {
-    socket.emit("order", { tableID: id, order: cartItems });
-    localStorage.removeItem("cartItems");
-    setCartItems([]);
+    socket.emit("orders", { tableID: id, orders: cartItems });
+    console.log("Order sent to server", id, cartItems);
+    // localStorage.removeItem("cartItems");
+    // setCartItems([]);
   };
 
   const Cart = ({ cartItems }) => {

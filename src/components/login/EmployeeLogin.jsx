@@ -1,3 +1,4 @@
+// import io from "socket.io-client";
 import { useState } from "react";
 import { Form, Input, Button } from "antd";
 import Styles from "./styles.module.scss";
@@ -12,6 +13,7 @@ import { employeeLogin, forgotPassword } from "../../api/AdminRequest";
 import Countdown from "react-countdown";
 import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 function EmployeeLoginArea() {
+  // const socket = io(import.meta.env.VITE_REACT_APP_SERVER_URL);
   const navigate = useNavigate();
 
   const [loginError, setLoginError] = useState("");
@@ -30,14 +32,13 @@ function EmployeeLoginArea() {
     setLoginError("");
 
     try {
-      console.log("login data", loginData);
       const { data } = await employeeLogin(loginData);
-      console.log("login token data", data);
-      console.log("login error", data?.message);
-
       if (data.success) {
         if (data.waiter) {
+          console.log("Waiter object:", data.waiter);
           localStorage.setItem("waiter-refToken", data.refreshToken);
+          localStorage.setItem("waiter-id", data.waiter._id);
+          // socket.emit("login", data.waiter._id);
           navigate("/waiter-dashboard");
         } else if (data.kitchen) {
           localStorage.setItem("kitchenStaff-refToken", data.refreshToken);

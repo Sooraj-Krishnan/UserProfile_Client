@@ -39,36 +39,47 @@ const menuView = async (req, res, next) => {
   }
 };
 
-const findWaiterByTableId = async (req, res, next) => {
+const findWaiterByTableId = async (tableId) => {
+  console.log("Table ID", tableId);
   try {
-    const tableID = req.params.id;
-
-    const table = await Table.findById(tableID);
+    // Find the table document by _id
+    const table = await Table.findById(tableId);
     if (!table) {
-      return res.status(404).json({
-        success: false,
-        message: "Table not found",
-      });
+      throw new Error("Table not found");
     }
 
-    // Find a waiter who is assigned to the table
-    const waiter = await Waiter.findOne({ assignedTables: table.tableID });
+    // Get the tableID from the found table document
+    const tableID = table.tableID;
+
+    // Find the waiter who is assigned to this table by tableID
+    const waiter = await Waiter.findOne({ assignedTables: { $in: [tableID] } });
     if (!waiter) {
-      return res.status(404).json({
-        success: false,
-        message: "Waiter not found",
-      });
+      throw new Error("Waiter not found");
     }
-    res.status(200).json({
-      success: true,
-      waiter,
-    });
+
+    console.log("Waiter found", waiter);
+    return waiter;
   } catch (error) {
-    console.log(error);
-    next(error);
+    console.error(error);
+    throw error;
   }
 };
+
+const updateWaiterSocketId = async (userId, socketId) => {
+  try {
+    const updatedWaiter = await Waiter.findOneAndUpdate(
+      { _id: userId },
+      { socketId: socketId },
+      { new: true }
+    );
+    console.log("Updated waiter:", updatedWaiter);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   menuView,
   findWaiterByTableId,
+  updateWaiterSocketId,
 };
