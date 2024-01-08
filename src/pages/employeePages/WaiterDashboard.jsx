@@ -1,7 +1,7 @@
 import { Layout } from "antd";
 const { Content } = Layout;
 import KitchenStaffSidebar from "../../components/sidebar/KitchenStaffSidebar";
-import Waiter from "../../components/dashboard/WaiterDashboard";
+import Waiter from "../../components/dashboard/waiterDashboard/WaiterDashboard";
 function WaiterDashboard() {
   return (
     <div className="flex">

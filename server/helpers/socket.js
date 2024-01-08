@@ -1,9 +1,10 @@
 const http = require("http");
 const { Server } = require("socket.io");
+
 const {
   findWaiterByTableId,
   updateWaiterSocketId,
-} = require("../controllers/publicController");
+} = require("../controllers/socketController");
 
 module.exports = function (app) {
   const server = http.createServer(app);
@@ -38,6 +39,11 @@ module.exports = function (app) {
       } catch (error) {
         console.error(error);
       }
+    });
+    // Listen for 'confirm' events
+    socket.on("confirm", async (order) => {
+      // Emit a 'confirmOrder' event to the kitchen staff with the order details
+      io.emit("confirmOrder", order);
     });
   });
 
