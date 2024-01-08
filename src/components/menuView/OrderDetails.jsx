@@ -13,12 +13,25 @@ const OrderDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
+  const [orderStatus, setOrderStatus] = useState("");
+  const [orderReadyStatus, setOrderReadyStatus] = useState("");
 
   useEffect(() => {
     const storedCartItems = localStorage.getItem("cartItems");
     if (storedCartItems) {
       setCartItems(JSON.parse(storedCartItems));
     }
+    // Listen for 'mealPreparationStarted' events
+    socket.on("mealPreparationStarted", () => {
+      // Update the order status to 'Meals preparation started'
+      setOrderStatus("Meals preparation started");
+    });
+
+    // Listen for 'orderReady' events
+    socket.on("orderReady", () => {
+      // Update the order status to 'ORDER READY'
+      setOrderReadyStatus("ORDER READY");
+    });
   }, []);
 
   const handleBack = () => {
@@ -98,6 +111,8 @@ const OrderDetails = () => {
       <button className="items-order-button" onClick={handleOrder}>
         ORDER
       </button>
+      {orderStatus && <p>{orderStatus}</p>}
+      {orderReadyStatus && <p>{orderReadyStatus}</p>}
     </div>
   );
 };

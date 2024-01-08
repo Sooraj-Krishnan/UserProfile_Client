@@ -45,6 +45,16 @@ module.exports = function (app) {
       // Emit a 'confirmOrder' event to the kitchen staff with the order details
       io.emit("confirmOrder", order);
     });
+    // Listen for 'mealPreparationStarted' events
+    socket.on("mealPreparationStarted", async (order) => {
+      // Emit a 'mealPreparationStarted' event to all connected clients with the order details
+      io.emit("mealPreparationStarted", order);
+    });
+    //Listen for 'orderReady' events
+    socket.on("orderReady", async (order) => {
+      // Emit a 'orderReady' event to all connected clients with the order details
+      io.emit("orderReady", order);
+    });
   });
 
   return server;

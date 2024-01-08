@@ -7,6 +7,7 @@ const { Title } = Typography;
 
 function Waiter() {
   const [orders, setOrders] = useState([]);
+  const [orderReady, setOrderReady] = useState([]);
   const socketRef = useRef();
   useEffect(() => {
     const waiterId = localStorage.getItem("waiter-id");
@@ -22,6 +23,22 @@ function Waiter() {
         ...prevOrders,
         ...(Array.isArray(orderDetails) ? orderDetails : [orderDetails]),
       ]);
+    });
+    // Listen for 'mealPreparationStarted' events
+    socketRef.current.on("mealPreparationStarted", (order) => {
+      // Update the order status to 'Meals preparation started'
+      setOrders((prevOrders) =>
+        prevOrders.map((o) =>
+          o.tableID === order.tableID
+            ? { ...o, status: "Meals preparation started" }
+            : o
+        )
+      );
+    });
+    // Listen for 'orderReady' events
+    socketRef.current.on("orderReady", (order) => {
+      // Update the orderReady state with the tableID of the ready order
+      setOrderReady((prevOrderReady) => [...prevOrderReady, order.tableID]);
     });
     return () => {
       socketRef.current.disconnect();
@@ -64,6 +81,8 @@ function Waiter() {
           >
             CONFIRM
           </button>
+          <p>{order.status}</p>
+          {orderReady.includes(order.tableID) && <p>ORDER READY</p>}
         </div>
       ))}
     </div>
