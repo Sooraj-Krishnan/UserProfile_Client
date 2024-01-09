@@ -1,6 +1,7 @@
 import { Typography } from "antd";
 import { useEffect, useState, useRef } from "react";
 import socketIOClient from "socket.io-client";
+import { updateOrderStatus } from "../../../api/PublicRequest";
 import "./WaiterDashboard.css";
 
 const { Title } = Typography;
@@ -73,9 +74,20 @@ function Waiter() {
           </p>
           <button
             className="items-confirm-button"
-            onClick={() => {
+            onClick={async () => {
               if (socketRef.current) {
                 socketRef.current.emit("confirm", order);
+                try {
+                  await updateOrderStatus(order._id); // Call the function with the order ID
+                  // After the status is updated in the database, update it in the state as well
+                  setOrders((prevOrders) =>
+                    prevOrders.map((o) =>
+                      o._id === order._id ? { ...o, status: "confirmed" } : o
+                    )
+                  );
+                } catch (error) {
+                  console.error(error); // Log any errors
+                }
               }
             }}
           >

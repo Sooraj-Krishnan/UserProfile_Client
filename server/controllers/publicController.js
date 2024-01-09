@@ -1,6 +1,7 @@
 require("dotenv").config();
 const MenuCard = require("../models/menuCardModel");
 const Table = require("../models/tableModel");
+const Order = require("../models/orderModel");
 // const Waiter = require("../models/waiterModel");
 
 const menuView = async (req, res, next) => {
@@ -39,6 +40,42 @@ const menuView = async (req, res, next) => {
   }
 };
 
+const createOrder = async (req, res, next) => {
+  try {
+    const tableID = req.params.id;
+    const { orders } = req.body;
+
+    const table = await Table.findById(tableID);
+    if (!table) {
+      return res.status(404).json({
+        success: false,
+        message: "Table not found",
+      });
+    }
+    const order = await Order.create({
+      tableID,
+      orders,
+    });
+    res.status(200).json({
+      success: true,
+      order,
+    });
+  } catch (error) {
+    console.error("Detailed Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+    next(error);
+  }
+};
+
+const updateOrderStatus = async (req, res, next) => {
+  try{
+    const 
+  }
 module.exports = {
   menuView,
+  createOrder,
 };

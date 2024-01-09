@@ -1,9 +1,11 @@
 import { io } from "socket.io-client";
 import PropTypes from "prop-types";
+import { toast, ToastContainer } from "react-toastify";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { MdDelete } from "react-icons/md";
+import { createOrder } from "../../api/PublicRequest";
 import "./OrderDetails.css";
 // import { Typography } from "antd";
 // const { Title } = Typography;
@@ -38,9 +40,21 @@ const OrderDetails = () => {
     navigate(-1);
   };
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
     socket.emit("orders", { tableID: id, orders: cartItems });
     console.log("Order sent to server", id, cartItems);
+
+    // Call the createOrder function when the ORDER button is clicked
+    try {
+      const response = await createOrder(id, { orders: cartItems });
+      console.log(response.data.message); // Log the success message
+      if (response.data.success) {
+        toast.success("Order Received");
+      }
+    } catch (error) {
+      console.error(error); // Log any errors
+    }
+
     // localStorage.removeItem("cartItems");
     // setCartItems([]);
   };
@@ -113,6 +127,7 @@ const OrderDetails = () => {
       </button>
       {orderStatus && <p>{orderStatus}</p>}
       {orderReadyStatus && <p>{orderReadyStatus}</p>}
+      <ToastContainer />
     </div>
   );
 };
