@@ -1,5 +1,7 @@
 import { Typography } from "antd";
 import { useEffect, useState, useRef } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import socketIOClient from "socket.io-client";
 import { updateOrderStatus } from "../../../api/PublicRequest";
 import "./WaiterDashboard.css";
@@ -78,13 +80,12 @@ function Waiter() {
               if (socketRef.current) {
                 socketRef.current.emit("confirm", order);
                 try {
-                  await updateOrderStatus(order._id); // Call the function with the order ID
+                  await updateOrderStatus(order.orderId); // Call the function with the order ID
                   // After the status is updated in the database, update it in the state as well
                   setOrders((prevOrders) =>
-                    prevOrders.map((o) =>
-                      o._id === order._id ? { ...o, status: "confirmed" } : o
-                    )
+                    prevOrders.map((o) => (o._id === order._id ? { ...o } : o))
                   );
+                  toast.success("Order confirmed");
                 } catch (error) {
                   console.error(error); // Log any errors
                 }
@@ -97,6 +98,7 @@ function Waiter() {
           {orderReady.includes(order.tableID) && <p>ORDER READY</p>}
         </div>
       ))}
+      <ToastContainer />
     </div>
   );
 }

@@ -27,14 +27,18 @@ module.exports = function (app) {
     });
 
     // Listen for 'order' events
-    socket.on("orders", async ({ orders, tableID }) => {
+    socket.on("orders", async ({ orders, tableID, orderId }) => {
       try {
         // Find the waiter assigned to the table ID
         const waiter = await findWaiterByTableId(tableID);
         console.log("i got waiter waiter ", waiter);
 
         // Emit an 'order' event to the waiter with the order details
-        io.to(waiter.socketId).emit("orders", { cartItems: orders, tableID });
+        io.to(waiter.socketId).emit("orders", {
+          orderId,
+          cartItems: orders,
+          tableID,
+        });
         console.log("order received", { cartItems: orders, tableID });
       } catch (error) {
         console.error(error);
@@ -43,7 +47,7 @@ module.exports = function (app) {
     // Listen for 'confirm' events
     socket.on("confirm", async (order) => {
       // Emit a 'confirmOrder' event to the kitchen staff with the order details
-      io.emit("confirmOrder", order);
+      io.emit("confirmOrder", { orderId: order.orderId, ...order });
     });
     // Listen for 'mealPreparationStarted' events
     socket.on("mealPreparationStarted", async (order) => {

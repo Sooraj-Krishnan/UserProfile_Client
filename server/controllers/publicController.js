@@ -58,6 +58,7 @@ const createOrder = async (req, res, next) => {
     });
     res.status(200).json({
       success: true,
+      orderID: order._id,
       order,
     });
   } catch (error) {
@@ -72,10 +73,36 @@ const createOrder = async (req, res, next) => {
 };
 
 const updateOrderStatus = async (req, res, next) => {
-  try{
-    const 
+  try {
+    const orderID = req.params.id;
+    console.log("Order ID", orderID);
+    const order = await Order.findById(orderID);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+    order.status = "confirmed";
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      order,
+    });
+  } catch (error) {
+    console.error("Detailed Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+    next(error);
   }
+};
+
 module.exports = {
   menuView,
   createOrder,
+  updateOrderStatus,
 };

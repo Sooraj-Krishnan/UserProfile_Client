@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
 import PropTypes from "prop-types";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
@@ -41,12 +42,14 @@ const OrderDetails = () => {
   };
 
   const handleOrder = async () => {
-    socket.emit("orders", { tableID: id, orders: cartItems });
+    // socket.emit("orders", { tableID: id, orders: cartItems });
     console.log("Order sent to server", id, cartItems);
 
     // Call the createOrder function when the ORDER button is clicked
     try {
       const response = await createOrder(id, { orders: cartItems });
+      const orderId = response.data.orderID;
+      socket.emit("orders", { tableID: id, orders: cartItems, orderId });
       console.log(response.data.message); // Log the success message
       if (response.data.success) {
         toast.success("Order Received");
