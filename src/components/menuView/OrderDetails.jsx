@@ -19,6 +19,7 @@ const OrderDetails = () => {
   const [orderStatus, setOrderStatus] = useState("");
   const [orderReadyStatus, setOrderReadyStatus] = useState("");
   const [orderId, setOrderId] = useState(null);
+  const [isOrderPlaced, setIsOrderPlaced] = useState(false);
 
   useEffect(() => {
     const storedCartItems = localStorage.getItem("cartItems");
@@ -61,6 +62,7 @@ const OrderDetails = () => {
       console.log(response.data.message); // Log the success message
       if (response.data.success) {
         toast.success("Order Received");
+        setIsOrderPlaced(true);
       }
     } catch (error) {
       console.error(error); // Log any errors
@@ -133,7 +135,11 @@ const OrderDetails = () => {
         <ArrowLeftOutlined />
       </p>
       <Cart cartItems={cartItems} />
-      <button className="items-order-button" onClick={handleOrder}>
+      <button
+        className="items-order-button"
+        onClick={handleOrder}
+        disabled={isOrderPlaced}
+      >
         ORDER
       </button>
       {orderStatus && <p>{orderStatus}</p>}

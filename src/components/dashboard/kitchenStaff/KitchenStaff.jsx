@@ -28,7 +28,7 @@ function KitchenStaff() {
 
   const handleOrderReceived = (order) => {
     // Find the complete order data from the orders state
-    const orderData = orders.find((o) => o.tableID === order.tableID);
+    const orderData = orders.find((o) => o.orderId === order.orderId);
 
     if (order.status === "ORDER RECEIVED") {
       // Emit 'mealPreparationStarted' event to the order detail
@@ -40,7 +40,7 @@ function KitchenStaff() {
       // Update the order status to 'DONE'
       setOrders((prevOrders) =>
         prevOrders.map((o) =>
-          o.tableID === order.tableID ? { ...o, status: "DONE" } : o
+          o.orderId === order.orderId ? { ...o, status: "DONE" } : o
         )
       );
     } else if (order.status === "DONE") {
@@ -50,10 +50,11 @@ function KitchenStaff() {
       // Update the order status to 'ORDER READY'
       setOrders((prevOrders) =>
         prevOrders.map((o) =>
-          o.tableID === order.tableID ? { ...o, status: "ORDER READY" } : o
+          o.orderId === order.orderId ? { ...o, status: "ORDER READY" } : o
         )
       );
-      setDoneOrders((prevDoneOrders) => [...prevDoneOrders, order.tableID]);
+
+      setDoneOrders((prevDoneOrders) => [...prevDoneOrders, order.orderId]);
     }
   };
 
@@ -86,8 +87,14 @@ function KitchenStaff() {
           </p>
           <Button
             onClick={() => handleOrderReceived(order)}
-            className={doneOrders.includes(order.tableID) ? "done" : ""}
-            disabled={doneOrders.includes(order.tableID)}
+            className={doneOrders.includes(order.orderId) ? "done" : ""}
+            disabled={doneOrders.includes(order.orderId)}
+            style={{
+              backgroundColor: doneOrders.includes(order.orderId)
+                ? "#038009"
+                : "blue",
+              color: "white",
+            }}
           >
             {order.status}
           </Button>

@@ -22,10 +22,20 @@ function Waiter() {
     socketRef.current.on("orders", (orderDetails) => {
       console.log("connected to server", socketRef.current.id);
       // Update the orders state with the new order details
+      // setOrders((prevOrders) => [
+      //   ...prevOrders,
+      //   ...(Array.isArray(orderDetails) ? orderDetails : [orderDetails]),
+      // ]);
       setOrders((prevOrders) => [
         ...prevOrders,
-        ...(Array.isArray(orderDetails) ? orderDetails : [orderDetails]),
+        ...(Array.isArray(orderDetails)
+          ? orderDetails.map((order) => ({ ...order, confirmed: false }))
+          : [{ ...orderDetails, confirmed: false }]),
       ]);
+      // Clear the tableID from the orderReady state
+      setOrderReady((prevOrderReady) =>
+        prevOrderReady.filter((tableID) => tableID !== orderDetails.tableID)
+      );
     });
     // Listen for 'mealPreparationStarted' events
     socketRef.current.on("mealPreparationStarted", (order) => {
@@ -75,15 +85,24 @@ function Waiter() {
               )}
           </p>
           <button
-            className="items-confirm-button"
+            className={`items-confirm-button ${
+              order.confirmed ? "confirmed" : ""
+            }`}
             onClick={async () => {
               if (socketRef.current) {
                 socketRef.current.emit("confirm", order);
                 try {
                   await updateOrderStatus(order.orderId); // Call the function with the order ID
                   // After the status is updated in the database, update it in the state as well
+                  // setOrders((prevOrders) =>
+                  //   prevOrders.map((o) => (o._id === order._id ? { ...o } : o))
+                  // );
                   setOrders((prevOrders) =>
-                    prevOrders.map((o) => (o._id === order._id ? { ...o } : o))
+                    prevOrders.map((o) =>
+                      o.orderId === order.orderId
+                        ? { ...o, confirmed: true }
+                        : o
+                    )
                   );
                   toast.success("Order confirmed");
                 } catch (error) {
@@ -91,8 +110,9 @@ function Waiter() {
                 }
               }
             }}
+            disabled={order.confirmed}
           >
-            CONFIRM
+            {order.confirmed ? "CONFIRMED" : "CONFIRM"}
           </button>
           <p>{order.status}</p>
           {orderReady.includes(order.tableID) && <p>ORDER READY</p>}

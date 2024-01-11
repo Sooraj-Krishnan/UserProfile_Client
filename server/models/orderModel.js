@@ -5,6 +5,10 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  managerID: {
+    type: String,
+    required: true,
+  },
   orders: [
     {
       itemName: {

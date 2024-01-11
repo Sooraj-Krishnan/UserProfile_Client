@@ -52,8 +52,10 @@ const createOrder = async (req, res, next) => {
         message: "Table not found",
       });
     }
+    const managerID = table.managerID;
     const order = await Order.create({
       tableID,
+      managerID,
       orders,
     });
     res.status(200).json({

@@ -5,3 +5,8 @@
     width: 50%;
     border-radius: 5%;
   }
+
+  .items-confirm-button.confirmed {
+    background-color: green;
+    color: white;
+  }
