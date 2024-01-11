@@ -18,6 +18,7 @@ const OrderDetails = () => {
   const [cartItems, setCartItems] = useState([]);
   const [orderStatus, setOrderStatus] = useState("");
   const [orderReadyStatus, setOrderReadyStatus] = useState("");
+  const [orderId, setOrderId] = useState(null);
 
   useEffect(() => {
     const storedCartItems = localStorage.getItem("cartItems");
@@ -25,17 +26,23 @@ const OrderDetails = () => {
       setCartItems(JSON.parse(storedCartItems));
     }
     // Listen for 'mealPreparationStarted' events
-    socket.on("mealPreparationStarted", () => {
-      // Update the order status to 'Meals preparation started'
-      setOrderStatus("Meals preparation started");
+    socket.on("mealPreparationStarted", (data) => {
+      // Check if the orderId in the event data matches the orderId of the current order
+      if (data.orderId === orderId) {
+        // Update the order status to 'Meals preparation started'
+        setOrderStatus("Meals preparation started");
+      }
     });
 
     // Listen for 'orderReady' events
-    socket.on("orderReady", () => {
-      // Update the order status to 'ORDER READY'
-      setOrderReadyStatus("ORDER READY");
+    socket.on("orderReady", (data) => {
+      // Check if the orderId in the event data matches the orderId of the current order
+      if (data.orderId === orderId) {
+        // Update the order status to 'ORDER READY'
+        setOrderReadyStatus("ORDER READY");
+      }
     });
-  }, []);
+  }, [orderId]);
 
   const handleBack = () => {
     navigate(-1);
@@ -49,6 +56,7 @@ const OrderDetails = () => {
     try {
       const response = await createOrder(id, { orders: cartItems });
       const orderId = response.data.orderID;
+      setOrderId(orderId);
       socket.emit("orders", { tableID: id, orders: cartItems, orderId });
       console.log(response.data.message); // Log the success message
       if (response.data.success) {

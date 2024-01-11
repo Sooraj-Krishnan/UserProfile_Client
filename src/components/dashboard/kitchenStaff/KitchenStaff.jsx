@@ -32,7 +32,11 @@ function KitchenStaff() {
 
     if (order.status === "ORDER RECEIVED") {
       // Emit 'mealPreparationStarted' event to the order detail
-      socket.emit("mealPreparationStarted", orderData);
+      // socket.emit("mealPreparationStarted", orderData);
+      socket.emit("mealPreparationStarted", {
+        ...orderData,
+        orderId: order.orderId,
+      });
       // Update the order status to 'DONE'
       setOrders((prevOrders) =>
         prevOrders.map((o) =>
@@ -41,7 +45,8 @@ function KitchenStaff() {
       );
     } else if (order.status === "DONE") {
       // Emit 'orderReady' event to the order detail
-      socket.emit("orderReady", orderData);
+      //  socket.emit("orderReady", orderData);
+      socket.emit("orderReady", { ...orderData, orderId: order.orderId });
       // Update the order status to 'ORDER READY'
       setOrders((prevOrders) =>
         prevOrders.map((o) =>

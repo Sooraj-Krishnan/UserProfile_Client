@@ -52,12 +52,14 @@ module.exports = function (app) {
     // Listen for 'mealPreparationStarted' events
     socket.on("mealPreparationStarted", async (order) => {
       // Emit a 'mealPreparationStarted' event to all connected clients with the order details
-      io.emit("mealPreparationStarted", order);
+      //  io.emit("mealPreparationStarted", order);
+      io.emit("mealPreparationStarted", { orderId: order.orderId, ...order });
     });
     //Listen for 'orderReady' events
     socket.on("orderReady", async (order) => {
       // Emit a 'orderReady' event to all connected clients with the order details
-      io.emit("orderReady", order);
+      //  io.emit("orderReady", order);
+      io.emit("orderReady", { orderId: order.orderId, ...order });
     });
   });
 
