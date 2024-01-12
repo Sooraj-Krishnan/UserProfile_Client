@@ -1,7 +1,7 @@
 import { Layout } from "antd";
 const { Content } = Layout;
 import ManagerSidebar from "../../components/sidebar/ManagerSidebar";
-import ManagerDasboard from "../../components/dashboard/ManagerDasboard";
+import ManagerDashboard from "../../components/dashboard/ManagerDashboard";
 
 function ManagerDashboardPage() {
   return (
@@ -16,7 +16,7 @@ function ManagerDashboardPage() {
             background: "white",
           }}
         >
-          <ManagerDasboard />
+          <ManagerDashboard />
         </Content>
       </Layout>
     </div>

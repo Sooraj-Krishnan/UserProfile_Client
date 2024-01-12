@@ -29,8 +29,9 @@ module.exports = function (app) {
     // Listen for 'order' events
     socket.on("orders", async ({ orders, tableID, orderId }) => {
       try {
-        // Find the waiter assigned to the table ID
+        // Find the waiter and manager assigned to the table ID
         const waiter = await findWaiterByTableId(tableID);
+
         console.log("i got waiter waiter ", waiter);
 
         // Emit an 'order' event to the waiter with the order details
@@ -39,6 +40,14 @@ module.exports = function (app) {
           cartItems: orders,
           tableID,
         });
+
+        // Emit a separate 'managerOrders' event to all connected clients (including the manager)
+        io.emit("managerOrders", {
+          orderId,
+          cartItems: orders,
+          tableID,
+        });
+
         console.log("order received", { cartItems: orders, tableID });
       } catch (error) {
         console.error(error);

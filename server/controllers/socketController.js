@@ -42,4 +42,7 @@ const updateWaiterSocketId = async (userId, socketId) => {
   }
 };
 
-module.exports = { findWaiterByTableId, updateWaiterSocketId };
+module.exports = {
+  findWaiterByTableId,
+  updateWaiterSocketId,
+};
