@@ -150,25 +150,25 @@ function CreateMenuCard({ menuCardData, edit }) {
   );
 
   // Initialize fileLists with menuCardData
-  useEffect(() => {
-    if (menuCardData?.menuItems) {
-      const initialFileLists = {};
-      menuCardData.menuItems.forEach((menuItem, menuItemIndex) => {
-        menuItem.items.forEach((item, itemIndex) => {
-          if (item.itemImage) {
-            initialFileLists[`${menuItemIndex}-${itemIndex}`] = [
-              {
-                uid: "-1",
-                name: "image.png",
-                thumbUrl: item.itemImage,
-              },
-            ];
-          }
-        });
-      });
-      setFileList3(initialFileLists);
-    }
-  }, [menuCardData]);
+  // useEffect(() => {
+  //   if (menuCardData?.menuItems) {
+  //     const initialFileLists = {};
+  //     menuCardData.menuItems.forEach((menuItem, menuItemIndex) => {
+  //       menuItem.items.forEach((item, itemIndex) => {
+  //         if (item.itemImage) {
+  //           initialFileLists[`${menuItemIndex}-${itemIndex}`] = [
+  //             {
+  //               uid: "-1",
+  //               name: "image.png",
+  //               thumbUrl: item.itemImage,
+  //             },
+  //           ];
+  //         }
+  //       });
+  //     });
+  //     setFileList3(initialFileLists);
+  //   }
+  // }, [menuCardData]);
 
   const onFinish = async (values) => {
     console.log("Received values of form: ", values);
@@ -458,7 +458,7 @@ function CreateMenuCard({ menuCardData, edit }) {
 
                   <Collapse>
                     {menuItems.map((panel, panelIndex) => (
-                      <Panel header={panel.label} key={panel.key}>
+                      <Panel header={panel.label} key={panel.key} forceRender>
                         <label htmlFor="" className="text-xl font-semibold">
                           Category{" "}
                         </label>
