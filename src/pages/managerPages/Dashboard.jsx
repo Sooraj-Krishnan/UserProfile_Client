@@ -1,7 +1,7 @@
 import { Layout } from "antd";
 const { Content } = Layout;
 import ManagerSidebar from "../../components/sidebar/ManagerSidebar";
-import ManagerDashboard from "../../components/dashboard/ManagerDashboard";
+import ManagerDashboard from "../../components/dashboard/managerDashboard/ManagerDashboard";
 
 function ManagerDashboardPage() {
   return (

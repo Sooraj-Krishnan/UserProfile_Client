@@ -16,7 +16,7 @@ export const updateNewPassword = (pass, token) =>
 export const logout = (refToken) => axios.post("/logout", { refToken });
 
 /*-----------------------------Other Routes -------------------------------*/
-
+export const adminDashboard = () => axiosPrivate.get(`/admin-dashboard`);
 export const createManager = (details) =>
   axiosPrivate.post(`/create-manager`, details);
 

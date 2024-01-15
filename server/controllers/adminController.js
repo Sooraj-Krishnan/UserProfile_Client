@@ -1,7 +1,9 @@
 require("dotenv").config();
+const mongoose = require("mongoose");
 //const nodemailer = require("nodemailer");
 //const Admin = require("../models/adminModel");
 const Manager = require("../models/managerModel");
+const Admin = require("../models/adminModel");
 //const OTPVerification = require("../models/OTPverifyModel");
 const bcrypt = require("bcrypt");
 //const { generateQR } = require("../helpers/qrCodeGenerator");
@@ -18,6 +20,40 @@ const bcrypt = require("bcrypt");
 
 //const generateFileName = (bytes = 32) =>
 //crypto.randomBytes(bytes).toString("hex");
+
+const adminDashboard = async (req, res, next) => {
+  try {
+    const adminID = req.user._id;
+    const admin = await Admin.findById(adminID);
+    if (!admin) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Admin Not Found" });
+    }
+    const cardLimit = admin.cardLimit;
+    const managerCount = await Manager.countDocuments({
+      adminID: adminID,
+      status: { $ne: "delete" },
+    });
+
+    const usedCards = await Manager.aggregate([
+      { $match: { adminID: new mongoose.Types.ObjectId(adminID) } },
+      { $group: { _id: null, total: { $sum: "$cardLimit" } } },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      message: "Dashboard Fetched Successfully",
+      admin,
+      cardLimit,
+      managerCount,
+      totalUsedCards: usedCards[0] ? usedCards[0].total : 0,
+    });
+  } catch (error) {
+    console.error(error.message);
+    next(error);
+  }
+};
 
 const createManager = async (req, res, next) => {
   try {
@@ -135,6 +171,7 @@ const deleteManager = async (req, res, next) => {
 };
 
 module.exports = {
+  adminDashboard,
   createManager,
   editManager,
   viewManagers,

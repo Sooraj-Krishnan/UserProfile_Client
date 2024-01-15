@@ -58,10 +58,10 @@ function ViewManagers() {
 
   const handleDelete = async (id) => {
     confirm({
-      title: "Do you Want to Delete the Service",
+      title: "Do you Want to Delete the Manager",
       icon: <ExclamationCircleFilled />,
       content:
-        "if you delete the service  it will effect all the features under the service .",
+        "if you delete the Manager  it will effect all the features under this managers.",
       onOk() {
         setDelLoaderId(id._id);
         const block = async () => {

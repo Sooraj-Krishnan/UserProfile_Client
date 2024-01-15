@@ -1,5 +1,6 @@
 import {
-  //  MenuFoldOutlined,
+  UserOutlined,
+  // MenuFoldOutlined,
   // MenuUnfoldOutlined,
   PieChartOutlined,
   LogoutOutlined,
@@ -41,7 +42,7 @@ function ManagerSidebar() {
     {
       label: "All waiters",
       key: "/all-waiters",
-      icon: <GiRoundTable />,
+      icon: <UserOutlined />,
     },
     { label: "SignOut", key: "/signout", icon: <LogoutOutlined /> },
   ];

@@ -15,13 +15,13 @@ import { PlusOutlined } from "@ant-design/icons";
 import { UserOutlined, CreditCardOutlined } from "@ant-design/icons";
 import { GiRoundTable } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
-import { managerDashboard } from "../../api/ManagerRequest";
+import { managerDashboard } from "../../../api/ManagerRequest";
 import socketIOClient from "socket.io-client";
 import "./ManagerDashboard.css";
 
 const { Title } = Typography;
 
-const ManagerDasboard = () => {
+const ManagerDashboard = () => {
   const navigate = useNavigate();
   // const [managerName, setManagerName] = useState("");
   const [orders, setOrders] = useState([]);
@@ -31,19 +31,6 @@ const ManagerDasboard = () => {
   const handleButtonClick = (path) => {
     navigate(path);
   };
-
-  // useEffect(() => {
-  //   const fetchManagerData = async () => {
-  //     try {
-  //       const { data } = await managerDashboard();
-  //       setManagerName(data.data.name);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   fetchManagerData();
-  // }, []);
 
   const fetchManagerData = async () => {
     const { data } = await managerDashboard();
@@ -55,7 +42,6 @@ const ManagerDasboard = () => {
     queryFn: fetchManagerData,
     staleTime: ms("1d"),
   });
-  console.log("data", data);
   const managerName = data?.manager?.name;
   const waiterCount = data?.waiterCount;
   const tableCount = data?.tableCount;
@@ -312,4 +298,4 @@ const ManagerDasboard = () => {
   );
 };
 
-export default ManagerDasboard;
+export default ManagerDashboard;
