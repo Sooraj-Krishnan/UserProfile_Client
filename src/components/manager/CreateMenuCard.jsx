@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { createMenuCard, editMenuCard } from "../../api/ManagerRequest";
 import {
@@ -148,27 +148,6 @@ function CreateMenuCard({ menuCardData, edit }) {
         ]
       : []
   );
-
-  // Initialize fileLists with menuCardData
-  // useEffect(() => {
-  //   if (menuCardData?.menuItems) {
-  //     const initialFileLists = {};
-  //     menuCardData.menuItems.forEach((menuItem, menuItemIndex) => {
-  //       menuItem.items.forEach((item, itemIndex) => {
-  //         if (item.itemImage) {
-  //           initialFileLists[`${menuItemIndex}-${itemIndex}`] = [
-  //             {
-  //               uid: "-1",
-  //               name: "image.png",
-  //               thumbUrl: item.itemImage,
-  //             },
-  //           ];
-  //         }
-  //       });
-  //     });
-  //     setFileList3(initialFileLists);
-  //   }
-  // }, [menuCardData]);
 
   const onFinish = async (values) => {
     console.log("Received values of form: ", values);

@@ -22,10 +22,22 @@ const managerDashboard = async (req, res, next) => {
     if (!manager) {
       return res.status(404).json({ message: "Manager not found" });
     }
+    const cardLimit = manager.cardLimit;
+    const waiterCount = await Waiter.countDocuments({
+      managerID: managerID,
+      status: { $ne: "delete" },
+    });
+    const tableCount = await Table.countDocuments({
+      managerID: managerID,
+      status: { $ne: "delete" },
+    });
     return res.status(200).json({
       success: true,
       message: "Manager Dashboard",
-      data: manager,
+      manager,
+      waiterCount,
+      tableCount,
+      cardLimit,
     });
   } catch (error) {
     console.log(error);
