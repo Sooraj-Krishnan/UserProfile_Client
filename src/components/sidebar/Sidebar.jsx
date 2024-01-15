@@ -6,8 +6,7 @@ import {
   // ExclamationCircleFilled,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import { FcManager } from "react-icons/fc";
-
+import { FcBusinessman } from "react-icons/fc";
 import { Menu, Layout } from "antd";
 import { useState } from "react";
 import "./Sidebar.css";
@@ -29,7 +28,7 @@ function Sidebar() {
 
   const items = [
     { label: "Dashboard", key: "/admin-dashboard", icon: <PieChartOutlined /> },
-    { label: "Managers", key: "/view-managers", icon: <FcManager /> },
+    { label: "Managers", key: "/view-managers", icon: <FcBusinessman /> },
     { label: "SignOut", key: "/signout", icon: <LogoutOutlined /> },
   ];
 

@@ -1,5 +1,4 @@
 import {
-  UserOutlined,
   // MenuFoldOutlined,
   // MenuUnfoldOutlined,
   PieChartOutlined,
@@ -7,6 +6,7 @@ import {
   // ExclamationCircleFilled,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
+import { FcManager } from "react-icons/fc";
 import { GiRoundTable } from "react-icons/gi";
 
 import { Menu, Layout } from "antd";
@@ -42,7 +42,7 @@ function ManagerSidebar() {
     {
       label: "All waiters",
       key: "/all-waiters",
-      icon: <UserOutlined />,
+      icon: <FcManager />,
     },
     { label: "SignOut", key: "/signout", icon: <LogoutOutlined /> },
   ];

@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { DownOutlined } from "@ant-design/icons";
 import { FaEye } from "react-icons/fa";
 import {
@@ -28,7 +29,6 @@ function ViewTables() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [singleCard, setSingleCard] = useState("");
-  const [tables, setTables] = useState([]);
 
   //  const [block, setBlock] = useState("");
 
@@ -81,26 +81,25 @@ function ViewTables() {
     }),
   };
 
-  useEffect(() => {
-    const getTables = async () => {
-      try {
-        // Replace with your method to fetch all employees
-        const { data } = await viewAllTables();
-        console.log("data", data);
-        if (data && data.tables) {
-          setTables(data.tables);
-        }
-        setLoader(false);
-      } catch (error) {
-        console.log(error.message);
-        if (error.response.status === 403) {
-          //   ErrorLogout(error);
-        }
-      }
-    };
+  const getTables = async () => {
+    const { data } = await viewAllTables();
+    return data;
+  };
 
-    getTables();
-  }, []);
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["tables"],
+    queryFn: getTables,
+  });
+  const tables = data?.tables;
+  if (error) {
+    console.log(error.message);
+    if (error.respose && error.response.status === 403) {
+      // ErrorLogout(error);
+    }
+  }
+  useEffect(() => {
+    setLoader(isLoading);
+  }, [isLoading]);
   const showModal = (record) => {
     setSingleCard(record);
     setIsModalOpen(true);
@@ -240,7 +239,8 @@ function ViewTables() {
             columns={columns}
             loading={loader}
             dataSource={tables}
-            pagination={tables.length > 10 ? true : false}
+            pagination={tables?.length > 10 ? true : false}
+            //  pagination={{ pageSize: 10 }}
           />
         </div>
       </div>

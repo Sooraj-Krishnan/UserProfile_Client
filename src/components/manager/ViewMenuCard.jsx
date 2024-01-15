@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { PlusOutlined } from "@ant-design/icons";
 import { FaEye, FaEdit } from "react-icons/fa";
 import { AiOutlineUserAdd } from "react-icons/ai";
@@ -30,8 +31,6 @@ const { Title } = Typography;
 function ViewMenuCard() {
   const getColumnSearchProps = useColumnSearch();
   const navigate = useNavigate();
-
-  const [menucard, setMenuCard] = useState([]);
   // const [block, setBlock] = useState();
   // const [block] = useState();
   const [loader, setLoader] = useState(true);
@@ -162,26 +161,50 @@ function ViewMenuCard() {
     }),
   };
 
-  useEffect(() => {
-    const getMenuCard = async () => {
-      try {
-        const { data } = await viewAllMenuCards();
-        console.log("data", data);
-        if (data && data.menucard) {
-          setMenuCard(data.menucard);
-        }
-        setLoader(false);
-      } catch (error) {
-        console.log("Error fetching menu cards:", error);
-        console.log(error.message);
-        if (error.response && error.response.status === 403) {
-          //    ErrorLogout(error);
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const getMenuCard = async () => {
+  //     try {
+  //       const { data } = await viewAllMenuCards();
+  //       console.log("data", data);
+  //       if (data && data.menucard) {
+  //         setMenuCard(data.menucard);
+  //       }
+  //       setLoader(false);
+  //     } catch (error) {
+  //       console.log("Error fetching menu cards:", error);
+  //       console.log(error.message);
+  //       if (error.response && error.response.status === 403) {
+  //         //    ErrorLogout(error);
+  //       }
+  //     }
+  //   };
 
-    getMenuCard();
-  }, []);
+  //   getMenuCard();
+  // }, []);
+
+  const getMenuCard = async () => {
+    const { data } = await viewAllMenuCards();
+    return data;
+  };
+
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["menucard"],
+    queryFn: getMenuCard,
+  });
+  const menucard = data?.menucard;
+  if (error) {
+    console.log(error.message);
+    if (error.respose && error.response.status === 403) {
+      // ErrorLogout(error);
+    }
+  }
+  useEffect(() => {
+    setLoader(isLoading);
+  }, [isLoading]);
+
+  const cardLimit = data?.cardLimit;
+  const tableCount = data?.tableCount;
+  const remainingCards = cardLimit - tableCount;
 
   const columns = [
     {
@@ -246,13 +269,26 @@ function ViewMenuCard() {
               </Tooltip>
             </div>
             <div>
-              <Tooltip title={isBlocked ? "" : "Add Table"}>
+              <Tooltip
+                title={
+                  remainingCards === 0
+                    ? "Card limit over"
+                    : isBlocked
+                    ? ""
+                    : "Add Table"
+                }
+              >
                 <GiRoundTable
-                  onClick={isBlocked ? undefined : () => handleAddTable(_id)}
+                  onClick={
+                    isBlocked || remainingCards === 0
+                      ? undefined
+                      : () => handleAddTable(_id)
+                  }
                   size={28}
                   style={{
-                    cursor: isBlocked ? "default" : "pointer",
-                    opacity: isBlocked ? 0.5 : 1,
+                    cursor:
+                      isBlocked || remainingCards === 0 ? "default" : "pointer",
+                    opacity: isBlocked || remainingCards === 0 ? 0.5 : 1,
                   }}
                 />
               </Tooltip>
@@ -309,7 +345,7 @@ function ViewMenuCard() {
             columns={columns}
             loading={loader}
             dataSource={menucard}
-            pagination={menucard.length > 10 ? true : false}
+            pagination={menucard?.length > 10 ? true : false}
           />
         </div>
       </div>

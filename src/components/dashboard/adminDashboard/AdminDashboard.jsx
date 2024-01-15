@@ -15,7 +15,7 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { PiCardsFill } from "react-icons/pi";
-import { FcManager } from "react-icons/fc";
+import { FcBusinessman } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { adminDashboard } from "../../../api/AdminRequest";
 const { Title } = Typography;
@@ -36,7 +36,7 @@ const AdminDashboard = () => {
     queryFn: fetchAdminData,
     staleTime: ms("1d"),
   });
-  console.log(data);
+
   const adminName = data?.admin?.name;
   const managerCount = data?.managerCount;
   const cardLimit = data?.cardLimit;
@@ -103,7 +103,7 @@ const AdminDashboard = () => {
                 value={managerCount}
                 valueStyle={{ color: "#5bc1f0", fontSize: "35px" }}
                 prefix={
-                  <FcManager
+                  <FcBusinessman
                     style={{
                       fontSize: "35px",
                       marginRight: "8px",

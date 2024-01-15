@@ -10,9 +10,12 @@ import {
   Card,
   Spin,
   Statistic,
+  Alert,
+  Space,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { UserOutlined, CreditCardOutlined } from "@ant-design/icons";
+import { FcManager } from "react-icons/fc";
+import { PiCardsFill } from "react-icons/pi";
 import { GiRoundTable } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { managerDashboard } from "../../../api/ManagerRequest";
@@ -46,6 +49,7 @@ const ManagerDashboard = () => {
   const waiterCount = data?.waiterCount;
   const tableCount = data?.tableCount;
   const cardLimit = data?.cardLimit;
+  const remainingCards = cardLimit - tableCount;
   if (error) {
     console.log(error.message);
     if (error.respose && error.response.status === 403) {
@@ -158,6 +162,20 @@ const ManagerDashboard = () => {
   return (
     <div>
       <Spin spinning={loader}>
+        {remainingCards <= 2 && (
+          <Space
+            direction="vertical"
+            style={{
+              width: "100%",
+            }}
+          >
+            <Alert
+              message="Card Limit is going to be reached, contact metasoft.ae to buy more cards"
+              type="warning"
+              closable
+            />
+          </Space>
+        )}
         <Row style={{ width: "100%" }}>
           <Col span={12}>
             <Title level={1}>{`Hello, ${managerName}`}</Title>
@@ -184,7 +202,7 @@ const ManagerDashboard = () => {
                 value={waiterCount}
                 valueStyle={{ color: "#5bc1f0", fontSize: "35px" }}
                 prefix={
-                  <UserOutlined
+                  <FcManager
                     style={{
                       fontSize: "35px",
                       marginRight: "8px",
@@ -220,7 +238,7 @@ const ManagerDashboard = () => {
                 value={cardLimit}
                 valueStyle={{ color: "#3f8600", fontSize: "35px" }}
                 prefix={
-                  <CreditCardOutlined
+                  <PiCardsFill
                     style={{
                       fontSize: "35px",
                       marginRight: "8px",
@@ -235,10 +253,10 @@ const ManagerDashboard = () => {
             <Card bordered={true}>
               <Statistic
                 title="Remaining Cards"
-                value={cardLimit - tableCount}
+                value={remainingCards}
                 valueStyle={{ color: "#fa0f02", fontSize: "35px" }}
                 prefix={
-                  <CreditCardOutlined
+                  <PiCardsFill
                     style={{
                       fontSize: "35px",
                       marginRight: "8px",

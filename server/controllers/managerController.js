@@ -250,16 +250,24 @@ const editMenuCard = async (req, res, next) => {
 
 const viewAllMenuCards = async (req, res, next) => {
   try {
+    const managerID = req.user._id;
+    const manager = await Manager.findById(managerID);
     const menucard = await MenuCard.find({
-      managerID: req.user._id,
+      managerID: managerID,
       status: { $ne: "delete" },
     })
       .sort({ createdDate: -1 })
       .exec();
-
+    const cardLimit = manager.cardLimit;
+    const tableCount = await Table.countDocuments({
+      managerID: managerID,
+      status: { $ne: "delete" },
+    });
     res.status(200).json({
       success: true,
       menucard,
+      cardLimit,
+      tableCount,
       message: "All Menu Card Under This Service Manager",
     });
   } catch (error) {
