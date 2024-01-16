@@ -1,3 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+
+
+* {
+        font-family: 'Poppins', sans-serif;
+      }
+      
+      .my-title.ant-typography {
+        font-family: 'Poppins', sans-serif;
+      }
+
 .quantity-button {
         border-radius: 10%;
         display: flex;

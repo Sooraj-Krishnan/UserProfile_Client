@@ -48,23 +48,46 @@ const MenuView = () => {
     return <div>Error occurred while fetching data</div>;
   }
 
-  const incrementQuantity = (menuItemIndex, itemIndex) => {
+  const incrementQuantity = (itemId) => {
     queryClient.setQueryData(["menuView", id], (oldData) => {
       const updatedMenuData = { ...oldData };
-      updatedMenuData.menuItems[menuItemIndex].items[itemIndex].quantity++;
+      for (
+        let menuItemIndex = 0;
+        menuItemIndex < updatedMenuData.menuItems.length;
+        menuItemIndex++
+      ) {
+        const itemIndex = updatedMenuData.menuItems[
+          menuItemIndex
+        ].items.findIndex((item) => item._id === itemId);
+        if (itemIndex !== -1) {
+          updatedMenuData.menuItems[menuItemIndex].items[itemIndex].quantity++;
+          break;
+        }
+      }
       return updatedMenuData;
     });
 
     setLocalMenuData(queryClient.getQueryData(["menuView", id]));
   };
 
-  const decrementQuantity = (menuItemIndex, itemIndex) => {
+  const decrementQuantity = (itemId) => {
     setLocalMenuData((prevData) => {
       const updatedMenuData = { ...prevData };
-      if (
-        updatedMenuData.menuItems[menuItemIndex].items[itemIndex].quantity > 1
+      for (
+        let menuItemIndex = 0;
+        menuItemIndex < updatedMenuData.menuItems.length;
+        menuItemIndex++
       ) {
-        updatedMenuData.menuItems[menuItemIndex].items[itemIndex].quantity--;
+        const itemIndex = updatedMenuData.menuItems[
+          menuItemIndex
+        ].items.findIndex((item) => item._id === itemId);
+        if (
+          itemIndex !== -1 &&
+          updatedMenuData.menuItems[menuItemIndex].items[itemIndex].quantity > 1
+        ) {
+          updatedMenuData.menuItems[menuItemIndex].items[itemIndex].quantity--;
+          break;
+        }
       }
       queryClient.setQueryData(["menuView", id], updatedMenuData);
       return updatedMenuData;
@@ -81,7 +104,13 @@ const MenuView = () => {
   };
 
   return (
-    <div className="bg-gray-200" style={{ width: "600px", margin: "0 auto" }}>
+    <div
+      className="bg-gray-200"
+      style={{
+        width: "390px",
+        margin: "0 auto",
+      }}
+    >
       <div className="flex space-x-4 justify-center">
         <div className="rectangle-button">
           <button onClick={() => setSelectedLabel(null)}>All</button>
@@ -126,19 +155,11 @@ const MenuView = () => {
                     </p>
                     <div className="quantity-button">
                       {/* Quantity Adjustment Buttons */}
-                      <button
-                        onClick={() =>
-                          decrementQuantity(menuItemIndex, itemIndex)
-                        }
-                      >
+                      <button onClick={() => decrementQuantity(item._id)}>
                         -
                       </button>
                       <span>{item.quantity}</span>
-                      <button
-                        onClick={() =>
-                          incrementQuantity(menuItemIndex, itemIndex)
-                        }
-                      >
+                      <button onClick={() => incrementQuantity(item._id)}>
                         +
                       </button>
                     </div>
