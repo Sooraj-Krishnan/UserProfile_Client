@@ -272,7 +272,7 @@ function ViewWaiters() {
             {/* ... */}
             <div>
               {/* Wrap the next three buttons in a Dropdown */}
-              <Dropdown menu={<DropdownMenu _id={_id} />} placement="bottom">
+              <Dropdown overlay={<DropdownMenu _id={_id} />} placement="bottom">
                 <Button style={{ marginLeft: "10px", width: "150px" }}>
                   More{" "}
                   <DownOutlined style={{ position: "relative", top: "-2px" }} />

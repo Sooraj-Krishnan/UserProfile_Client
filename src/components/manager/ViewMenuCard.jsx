@@ -38,69 +38,6 @@ function ViewMenuCard() {
   // const [, setBtLoaderId] = useState("");
   // const [, setDelLoaderId] = useState("");
 
-  //   const handleBlock = async (id) => {
-  //     confirm({
-  //       title: `${
-  //         id?.block
-  //           ? "Do you Want to Unblock the Feedback "
-  //           : "Do you Want to Block the Feedback"
-  //       }`,
-  //       icon: <ExclamationCircleFilled />,
-  //       //   content: 'Some descriptions',
-  //       onOk() {
-  //         setBtLoaderId(id._id);
-  //         const block = async () => {
-  //           try {
-  //             const { data } = await blockFeedback(id._id);
-
-  //             if (data.update) {
-  //               setBlock(Date.now());
-  //               setBtLoaderId("");
-  //             }
-  //           } catch (error) {
-  //             console.log(error.message);
-  //           }
-  //         };
-  //         block();
-  //       },
-  //       onCancel() {},
-  //     });
-  //   };
-
-  //   const handleDelete = async (id) => {
-  //     console.log("Attempting to delete feedback with ID:", id._id);
-  //     confirm({
-  //       title: "Do you Want to Delete the Feedback",
-  //       icon: <ExclamationCircleFilled />,
-  //       content:
-  //         "if you delete the Feedback  it will effect all the features under the Feedback.",
-  //       onOk() {
-  //         setDelLoaderId(id._id);
-  //         const deleteFeedbackFromDB = async () => {
-  //           try {
-  //             const { data } = await deleteFeedback(id._id);
-
-  //             if (data.success) {
-  //               // Filter out the deleted feedback
-  //               const updatedFeedbacks = feedback.filter(
-  //                 (feed) => feed._id !== id._id
-  //               );
-  //               setFeedback(updatedFeedbacks);
-  //               setBlock(Date.now());
-  //               setDelLoaderId("");
-  //             }
-  //           } catch (error) {
-  //             console.log(error.message);
-  //           }
-  //         };
-  //         deleteFeedbackFromDB();
-  //       },
-  //       onCancel() {
-  //         console.log("Cancel");
-  //       },
-  //     });
-  //   };
-
   const handleEdit = (_id) => {
     const MenuCardID = _id._id;
     navigate(`/edit-menu-card/${MenuCardID}`, {
@@ -138,20 +75,6 @@ function ViewMenuCard() {
       >
         Kitchen Staff
       </Menu.Item>
-      {/* <Menu.Item
-        key="block"
-        onClick={() => handleBlock(_id)}
-        style={{ textAlign: "center" }}
-      >
-        {_id.status === "active" ? "Block" : "Unblock"}
-      </Menu.Item>
-      <Menu.Item
-        key="delete"
-        onClick={() => handleDelete(_id)}
-        style={{ textAlign: "center" }}
-      >
-        Delete
-      </Menu.Item> */}
     </Menu>
   );
 
@@ -160,27 +83,6 @@ function ViewMenuCard() {
       status: PropTypes.string,
     }),
   };
-
-  // useEffect(() => {
-  //   const getMenuCard = async () => {
-  //     try {
-  //       const { data } = await viewAllMenuCards();
-  //       console.log("data", data);
-  //       if (data && data.menucard) {
-  //         setMenuCard(data.menucard);
-  //       }
-  //       setLoader(false);
-  //     } catch (error) {
-  //       console.log("Error fetching menu cards:", error);
-  //       console.log(error.message);
-  //       if (error.response && error.response.status === 403) {
-  //         //    ErrorLogout(error);
-  //       }
-  //     }
-  //   };
-
-  //   getMenuCard();
-  // }, []);
 
   const getMenuCard = async () => {
     const { data } = await viewAllMenuCards();
@@ -312,7 +214,12 @@ function ViewMenuCard() {
             <div>
               {/* Wrap the next three buttons in a Dropdown */}
               <Dropdown
-                overlay={<DropdownMenu _id={_id} />}
+                overlay={
+                  <DropdownMenu
+                    _id={_id}
+                    handleAddKitchenStaff={handleAddKitchenStaff}
+                  />
+                }
                 placement="bottomCenter"
               >
                 <Button style={{ marginLeft: "10px", width: "150px" }}>
@@ -333,9 +240,15 @@ function ViewMenuCard() {
           <Title level={2}>Menu Cards</Title>
         </Col>
         <Col span={12} className="text-right">
-          <Link className="add-button rounded-lg" to="/create-menu-card">
-            <PlusOutlined />
-            Add Menu Card
+          <Link to="/create-menu-card">
+            <Button
+              size="large"
+              className="add-button rounded-lg"
+              style={{ backgroundColor: "#1f6ff0", color: "white" }}
+            >
+              <PlusOutlined />
+              Add Menu Card
+            </Button>
           </Link>
         </Col>
       </Row>
