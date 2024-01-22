@@ -28,3 +28,18 @@
     white-space: nowrap;
     margin-top: 16px;
   }
+
+  .items-added-box {
+    position: fixed;
+    bottom: 0;
+    width: 29%;
+    background-color: #5cfa5c;
+    border-radius: 5px;
+    padding: 10px;
+   justify-content: space-between;
+   align-items: center;
+    cursor: pointer;
+   display: flex; 
+   cursor: pointer;
+   z-index: 1;
+  }

@@ -1,5 +1,3 @@
-// menuFunctions.js
-
 export const incrementQuantity = (
   itemId,
   queryClient,
@@ -59,11 +57,21 @@ export const decrementQuantity = (
   setLocalMenuData(queryClient.getQueryData(["menuView", id]));
 };
 
-export const addToCart = (itemId, menuData, cartItems, setCartItems) => {
+export const addToCart = (
+  itemId,
+  menuData,
+  cartItems,
+  setCartItems,
+  callback
+) => {
   const selectedItem = menuData.menuItems
     .flatMap((menuItem) => menuItem.items)
     .find((item) => item._id === itemId);
   const newCartItems = [...cartItems, selectedItem];
   setCartItems(newCartItems);
   localStorage.setItem("cartItems", JSON.stringify(newCartItems));
+
+  if (callback) {
+    callback();
+  }
 };

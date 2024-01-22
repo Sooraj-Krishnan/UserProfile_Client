@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { menuView } from "../../api/PublicRequest";
 import { Typography, Row, Col, Input, Space } from "antd";
-import { FaShoppingCart } from "react-icons/fa";
+import { FaGreaterThan } from "react-icons/fa6";
 import "./MenuView.css";
 import {
   incrementQuantity,
@@ -21,6 +21,7 @@ const MenuView = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [cartItems, setCartItems] = useState([]);
   const [, setLocalMenuData] = useState(null);
+  const [showAddItemsBox, setShowAddItemsBox] = useState(false);
   const queryClient = useQueryClient();
 
   const {
@@ -71,12 +72,19 @@ const MenuView = () => {
           onSearch={onSearch}
           style={{
             width: 300,
+            marginLeft: 40,
+            marginTop: 20,
           }}
         />
       </Space>
 
       <div className="flex space-x-4 justify-center">
-        <div className="rectangle-button">
+        <div
+          className="rectangle-button"
+          style={{
+            backgroundColor: selectedLabel === null ? "#b6f5fa" : "initial",
+          }}
+        >
           <button
             onClick={() => {
               setSelectedLabel(null);
@@ -89,7 +97,14 @@ const MenuView = () => {
         {menuData &&
           menuData.menuItems &&
           menuData.menuItems.map((menuItem, index) => (
-            <div className="rectangle-button" key={index}>
+            <div
+              className="rectangle-button"
+              key={index}
+              style={{
+                backgroundColor:
+                  selectedLabel === menuItem.label ? "#b6f5fa" : "initial",
+              }}
+            >
               <button
                 onClick={() => {
                   setSelectedLabel(menuItem.label);
@@ -101,13 +116,18 @@ const MenuView = () => {
             </div>
           ))}
       </div>
-      <div style={{ marginLeft: "20px", marginTop: "-40px" }}>
-        <FaShoppingCart
-          size={30}
+      {showAddItemsBox && (
+        <div
+          className="items-added-box"
           onClick={() => navigate(`/menu-view/${id}/order`)}
-        />
-        {cartItems.length}
-      </div>
+        >
+          <span>Items added ({cartItems.length}) </span>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span>View Order </span>
+            <FaGreaterThan />
+          </div>
+        </div>
+      )}
 
       {(() => {
         let itemsFound = false;
@@ -121,7 +141,9 @@ const MenuView = () => {
             : menuData.menuItems
           ).map((menuItem, menuItemIndex) => {
             const filteredItems = menuItem.items.filter((item) =>
-              item.itemName.toLowerCase().includes(searchTerm.toLowerCase())
+              item.itemName
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase().trim())
             );
 
             if (filteredItems.length > 0) {
@@ -175,7 +197,8 @@ const MenuView = () => {
                                   item._id,
                                   menuData,
                                   cartItems,
-                                  setCartItems
+                                  setCartItems,
+                                  () => setShowAddItemsBox(true) // Pass setShowAddItemsBox as a callback
                                 )
                               }
                             >
