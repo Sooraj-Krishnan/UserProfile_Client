@@ -21,6 +21,7 @@ export const incrementQuantity = (
         break;
       }
     }
+    setLocalMenuData(updatedMenuData);
     return updatedMenuData;
   });
 
@@ -51,6 +52,7 @@ export const decrementQuantity = (
         break;
       }
     }
+    setLocalMenuData(updatedMenuData);
     return updatedMenuData;
   });
 

@@ -1,9 +1,11 @@
 require("dotenv").config();
+const mongoose = require("mongoose");
 const Manager = require("../models/managerModel");
 const Waiter = require("../models/waiterModel");
 const MenuCard = require("../models/menuCardModel");
 const Table = require("../models/tableModel");
 const KitchenStaff = require("../models/kitchenStaffModel");
+const Order = require("../models/orderModel");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const { generateQR } = require("../helpers/qrCodeGenerator");
@@ -17,7 +19,8 @@ const generateFileName = (bytes = 32) =>
 
 const managerDashboard = async (req, res, next) => {
   try {
-    const managerID = req.user._id;
+    const managerID = new mongoose.Types.ObjectId(req.user._id);
+    console.log("managerID:", managerID);
     const manager = await Manager.findById(managerID);
     if (!manager) {
       return res.status(404).json({ message: "Manager not found" });
@@ -31,6 +34,54 @@ const managerDashboard = async (req, res, next) => {
       managerID: managerID,
       status: { $ne: "delete" },
     });
+
+    // Get the date range from the request query parameters
+    const startDate = new Date(req.query.startDate);
+    const endDate = new Date(req.query.endDate);
+
+    // Create the aggregation pipeline
+    // if prices are stored as numbers
+    // let pipeline = [
+    //   { $match: { managerID: managerID } },
+    //   { $unwind: "$orders" },
+    //   { $addFields: { "orders.price": { $toDouble: "$orders.price" } } },
+    //   { $group: { _id: null, totalAmount: { $sum: "$orders.price" } } },
+    // ];
+
+    // if prices are stored as strings
+    let pipeline = [
+      { $match: { managerID: managerID } },
+      { $unwind: "$orders" },
+      {
+        $addFields: {
+          "orders.price": {
+            $arrayElemAt: [
+              {
+                $split: ["$orders.price", " "],
+              },
+              0,
+            ],
+          },
+        },
+      },
+      { $group: { _id: null, totalAmount: { $sum: "$orders.price" } } },
+    ];
+    // Add the date filtering step to the pipeline if startDate and endDate are valid dates
+    if (
+      startDate instanceof Date &&
+      !isNaN(startDate) &&
+      endDate instanceof Date &&
+      !isNaN(endDate)
+    ) {
+      pipeline.splice(3, 0, {
+        $match: { "orders.createdDate": { $gte: startDate, $lte: endDate } },
+      });
+    }
+    console.log("pipeline:", JSON.stringify(pipeline, null, 2));
+    // Calculate the total amount
+    const totalAmount = await Order.aggregate(pipeline);
+
+    console.log("total amount", totalAmount);
     return res.status(200).json({
       success: true,
       message: "Manager Dashboard",
@@ -38,6 +89,7 @@ const managerDashboard = async (req, res, next) => {
       waiterCount,
       tableCount,
       cardLimit,
+      totalAmount: totalAmount.length > 0 ? totalAmount[0].totalAmount : 0,
     });
   } catch (error) {
     console.log(error);
