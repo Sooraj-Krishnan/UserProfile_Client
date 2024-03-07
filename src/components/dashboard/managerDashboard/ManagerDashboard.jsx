@@ -45,6 +45,7 @@ const ManagerDashboard = () => {
     queryFn: fetchManagerData,
     staleTime: ms("1d"),
   });
+
   const managerName = data?.manager?.name;
   const waiterCount = data?.waiterCount;
   const tableCount = data?.tableCount;

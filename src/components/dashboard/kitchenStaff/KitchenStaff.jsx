@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import socketIOClient from "socket.io-client";
 import { Typography, Button } from "antd";
+import { updateOrderStatus } from "../../../api/PublicRequest";
 import "./kitchenStaff.css";
 
 const { Title } = Typography;
@@ -26,7 +27,7 @@ function KitchenStaff() {
     };
   }, []);
 
-  const handleOrderReceived = (order) => {
+  const handleOrderReceived = async (order) => {
     // Find the complete order data from the orders state
     const orderData = orders.find((o) => o.orderId === order.orderId);
 
@@ -43,6 +44,11 @@ function KitchenStaff() {
           o.orderId === order.orderId ? { ...o, status: "DONE" } : o
         )
       );
+      try {
+        await updateOrderStatus(order.orderId, "Meals preparation started");
+      } catch (error) {
+        console.error(error);
+      }
     } else if (order.status === "DONE") {
       // Emit 'orderReady' event to the order detail
       //  socket.emit("orderReady", orderData);
@@ -53,6 +59,13 @@ function KitchenStaff() {
           o.orderId === order.orderId ? { ...o, status: "ORDER READY" } : o
         )
       );
+
+      // Update the order status in the backend
+      try {
+        await updateOrderStatus(order.orderId, "ORDER READY");
+      } catch (error) {
+        console.error(error);
+      }
 
       setDoneOrders((prevDoneOrders) => [...prevDoneOrders, order.orderId]);
     }

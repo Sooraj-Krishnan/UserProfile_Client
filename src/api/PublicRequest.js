@@ -3,5 +3,5 @@ import axios from "./Axios";
 export const menuView = (tableID) => axios.get(`/menu-view/${tableID}`);
 export const createOrder = (tableID, orderDetails) =>
   axios.post(`/create-order/${tableID}/order`, orderDetails);
-export const updateOrderStatus = (orderID) =>
-  axios.put(`/update-order-status/${orderID}`);
+export const updateOrderStatus = (orderID, status) =>
+  axios.put(`/update-order-status/${orderID}`, { status });

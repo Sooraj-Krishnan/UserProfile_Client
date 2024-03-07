@@ -9,6 +9,15 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  waiterID: {
+    type: String,
+    required: true,
+  },
+  kitchenStaffID: {
+    type: String,
+    required: true,
+  },
+
   orders: [
     {
       itemName: {
@@ -27,7 +36,7 @@ const orderSchema = new mongoose.Schema({
   ],
   status: {
     type: String,
-    default: "unconfirmed",
+    default: "Order Received",
   },
   createdDate: {
     type: Date,

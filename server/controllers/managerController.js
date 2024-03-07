@@ -20,7 +20,6 @@ const generateFileName = (bytes = 32) =>
 const managerDashboard = async (req, res, next) => {
   try {
     const managerID = new mongoose.Types.ObjectId(req.user._id);
-    console.log("managerID:", managerID);
     const manager = await Manager.findById(managerID);
     if (!manager) {
       return res.status(404).json({ message: "Manager not found" });
@@ -77,11 +76,10 @@ const managerDashboard = async (req, res, next) => {
         $match: { "orders.createdDate": { $gte: startDate, $lte: endDate } },
       });
     }
-    console.log("pipeline:", JSON.stringify(pipeline, null, 2));
+
     // Calculate the total amount
     const totalAmount = await Order.aggregate(pipeline);
 
-    console.log("total amount", totalAmount);
     return res.status(200).json({
       success: true,
       message: "Manager Dashboard",

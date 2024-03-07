@@ -17,11 +17,8 @@ module.exports = function (app) {
   });
 
   io.on("connection", (socket) => {
-    console.log("a user connected", socket.id);
-
     // When a waiter logs in, they should emit a 'login' event with their user ID
     socket.on("login", async (userId) => {
-      console.log("a user logged in", userId);
       // Update the waiter's record in the database with their socket ID
       await updateWaiterSocketId(userId, socket.id);
     });
@@ -31,8 +28,6 @@ module.exports = function (app) {
       try {
         // Find the waiter and manager assigned to the table ID
         const waiter = await findWaiterByTableId(tableID);
-
-        console.log("i got waiter waiter ", waiter);
 
         // Emit an 'order' event to the waiter with the order details
         io.to(waiter.socketId).emit("orders", {
@@ -47,8 +42,6 @@ module.exports = function (app) {
           cartItems: orders,
           tableID,
         });
-
-        console.log("order received", { cartItems: orders, tableID });
       } catch (error) {
         console.error(error);
       }

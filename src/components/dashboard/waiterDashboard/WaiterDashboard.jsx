@@ -92,7 +92,7 @@ function Waiter() {
               if (socketRef.current) {
                 socketRef.current.emit("confirm", order);
                 try {
-                  await updateOrderStatus(order.orderId); // Call the function with the order ID
+                  await updateOrderStatus(order.orderId, "Confirmed by waiter"); // Call the function with the order ID
                   // After the status is updated in the database, update it in the state as well
                   // setOrders((prevOrders) =>
                   //   prevOrders.map((o) => (o._id === order._id ? { ...o } : o))
