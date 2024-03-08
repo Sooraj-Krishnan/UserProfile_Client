@@ -147,6 +147,7 @@ const createMenuCard = async (req, res, next) => {
         return {
           ...item,
           itemImage: itemImageFile ? S3Url + itemImageName : "",
+          price: `${item.price} ${menuItem.currency}`, // append currency to price
         };
       });
 
@@ -264,9 +265,16 @@ const editMenuCard = async (req, res, next) => {
             );
             itemImageUrl = S3Url + itemImageName; // Update the itemImage only if a new file is sent
           }
+          // Split the price by space and take the first part (actual price)
+          const actualPrice = item.price.split(" ")[0];
+          // If a new currency is provided, append it to the actual price
+          const price = menuItem.currency
+            ? `${actualPrice} ${menuItem.currency}`
+            : item.price;
           return {
             ...item,
             itemImage: itemImageUrl,
+            price,
           };
         })
       );

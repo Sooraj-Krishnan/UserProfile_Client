@@ -17,6 +17,7 @@
     "antd-img-crop": "^4.18.0",
     "axios": "^1.6.2",
     "browser-image-compression": "^2.0.2",
+    "currency-codes": "^2.1.0",
     "file-saver": "^2.0.5",
     "ms": "^2.1.3",
     "prop-types": "^15.8.1",

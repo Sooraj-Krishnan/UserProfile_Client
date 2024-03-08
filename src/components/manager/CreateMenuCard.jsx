@@ -11,6 +11,7 @@ import {
   Col,
   Collapse,
   Tooltip,
+  Select,
 } from "antd";
 import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
 import UseSpinner from "../hooks/UseSpinner";
@@ -21,10 +22,12 @@ import "./CreateMenuCard.css";
 import CoverImage from "../menuCard/CoverImage";
 import HandleImageUpload from "../helper/ImageCompress";
 import { UploadOutlined } from "@ant-design/icons";
+import currencyCodes from "currency-codes";
 
 const { Title } = Typography;
 const { Panel } = Collapse;
 const { TextArea } = Input;
+const { Option } = Select;
 
 const formItemLayout = {
   labelCol: {
@@ -62,6 +65,7 @@ function CreateMenuCard({ menuCardData, edit }) {
           {
             key: "1",
             label: "",
+            currency: "",
             items: [
               { itemImage: "", itemName: "", price: "", description: "" },
             ],
@@ -73,6 +77,7 @@ function CreateMenuCard({ menuCardData, edit }) {
     const newPanel = {
       key: (menuItems.length + 1).toString(),
       label: "",
+      currency: "",
       items: [{ itemImage: "", itemName: "", price: "", description: "" }],
     };
     setMenuItems([...menuItems, newPanel]);
@@ -86,6 +91,12 @@ function CreateMenuCard({ menuCardData, edit }) {
   const handleLabelChange = (panelIndex, newLabel) => {
     const newMenuItems = [...menuItems];
     newMenuItems[panelIndex].label = newLabel;
+    setMenuItems(newMenuItems);
+  };
+
+  const handleCurrencyChange = (panelIndex, value) => {
+    const newMenuItems = [...menuItems];
+    newMenuItems[panelIndex].currency = value;
     setMenuItems(newMenuItems);
   };
 
@@ -164,7 +175,7 @@ function CreateMenuCard({ menuCardData, edit }) {
       datas.append("coverImage", values.fileList1[0].originFileObj);
       // datas.append("fileList2", values.fileList2);
       datas.append("logoImage", values.fileList2[0].originFileObj);
-      console.log(values.menuItems);
+
       datas.append("menuItems", JSON.stringify(values.menuItems));
 
       if (fileList1[0]?.originFileObj && fileList1[0]?.status !== "removed") {
@@ -321,6 +332,7 @@ function CreateMenuCard({ menuCardData, edit }) {
                       : [
                           {
                             label: "",
+                            currency: "",
                             items: [
                               {
                                 itemImage: [],
@@ -448,6 +460,24 @@ function CreateMenuCard({ menuCardData, edit }) {
                               handleLabelChange(panelIndex, e.target.value)
                             }
                           />
+                        </Form.Item>
+                        <label htmlFor="" className="text-xl font-semibold">
+                          Select Currency{" "}
+                        </label>
+                        <Form.Item name={["menuItems", panelIndex, "currency"]}>
+                          <Select
+                            showSearch
+                            placeholder="Select a currency"
+                            onChange={(value) =>
+                              handleCurrencyChange(panelIndex, value)
+                            }
+                          >
+                            {currencyCodes.codes().map((code) => (
+                              <Option key={code} value={code}>
+                                {code}
+                              </Option>
+                            ))}
+                          </Select>
                         </Form.Item>
                         {panel.items.map((item, itemIndex) => (
                           <Row key={itemIndex}>
@@ -683,6 +713,7 @@ CreateMenuCard.propTypes = {
       PropTypes.shape({
         key: PropTypes.string,
         label: PropTypes.string,
+        currency: PropTypes.string,
         items: PropTypes.arrayOf(
           PropTypes.shape({
             itemImage: PropTypes.string,

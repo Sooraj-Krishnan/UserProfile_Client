@@ -5,6 +5,7 @@ const Admin = require("./adminModel");
 const MenuItemSchema = mongoose.Schema({
   key: String,
   label: String,
+  currency: String,
   items: [
     {
       itemImage: String,
