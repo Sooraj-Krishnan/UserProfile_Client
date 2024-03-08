@@ -34,6 +34,14 @@ const orderSchema = new mongoose.Schema({
       },
     },
   ],
+  specialInstructions: {
+    type: String,
+  },
+  totalAmount: {
+    type: Number,
+    required: true,
+  },
+
   status: {
     type: String,
     default: "Order Received",

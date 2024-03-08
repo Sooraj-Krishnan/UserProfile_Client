@@ -21,11 +21,7 @@ function Waiter() {
     //Listen for 'order' events
     socketRef.current.on("orders", (orderDetails) => {
       console.log("connected to server", socketRef.current.id);
-      // Update the orders state with the new order details
-      // setOrders((prevOrders) => [
-      //   ...prevOrders,
-      //   ...(Array.isArray(orderDetails) ? orderDetails : [orderDetails]),
-      // ]);
+
       setOrders((prevOrders) => [
         ...prevOrders,
         ...(Array.isArray(orderDetails)
@@ -74,16 +70,7 @@ function Waiter() {
                 </p>
               </div>
             ))}
-          <p>
-            Total Amount :{" "}
-            {order.cartItems &&
-              Array.isArray(order.cartItems) &&
-              order.cartItems.reduce(
-                (total, item) =>
-                  total + parseInt(item.price.split(" ")[0]) * item.quantity,
-                0
-              )}
-          </p>
+          <p>Total Amount: {order.totalAmount}</p>
           <button
             className={`items-confirm-button ${
               order.confirmed ? "confirmed" : ""

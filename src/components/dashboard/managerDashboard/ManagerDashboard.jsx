@@ -295,17 +295,7 @@ const ManagerDashboard = () => {
                         </p>
                       </div>
                     ))}
-                  <p>
-                    Total Amount :{" "}
-                    {order.cartItems &&
-                      Array.isArray(order.cartItems) &&
-                      order.cartItems.reduce(
-                        (total, item) =>
-                          total +
-                          parseInt(item.price.split(" ")[0]) * item.quantity,
-                        0
-                      )}
-                  </p>
+                  <p>Total Amount: {order.totalAmount}</p>
                   <Title level={4}>Status: {order.status}</Title>
                 </Card>
               </List.Item>

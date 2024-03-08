@@ -31,12 +31,11 @@ const findWaiterByTableId = async (tableId) => {
 
 const updateWaiterSocketId = async (userId, socketId) => {
   try {
-    const updatedWaiter = await Waiter.findOneAndUpdate(
+    await Waiter.findOneAndUpdate(
       { _id: userId },
       { socketId: socketId },
       { new: true }
     );
-    console.log("Updated waiter:", updatedWaiter);
   } catch (error) {
     console.log(error);
   }

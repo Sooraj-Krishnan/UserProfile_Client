@@ -45,8 +45,8 @@ const menuView = async (req, res, next) => {
 const createOrder = async (req, res, next) => {
   try {
     const tableID = req.params.id;
-    console.log("Table ID", tableID);
-    const { orders } = req.body;
+
+    const { orders, specialInstructions, totalAmount } = req.body;
 
     const table = await Table.findById(tableID);
     if (!table) {
@@ -87,6 +87,8 @@ const createOrder = async (req, res, next) => {
       waiterID,
       kitchenStaffID,
       orders,
+      specialInstructions,
+      totalAmount,
     });
     res.status(200).json({
       success: true,

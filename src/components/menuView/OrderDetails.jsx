@@ -8,18 +8,82 @@ import { ArrowLeftOutlined } from "@ant-design/icons";
 import { MdDelete } from "react-icons/md";
 import { createOrder } from "../../api/PublicRequest";
 import "./OrderDetails.css";
-// import { Typography } from "antd";
-// const { Title } = Typography;
+import { Input } from "antd";
+
+const Cart = ({
+  cartItems,
+  handleSpecialInstructionsChange,
+  handleDelete,
+  specialInstructions,
+}) => {
+  const totalAmount = cartItems.reduce((total, item) => {
+    return total + parseInt(item.price.split(" ")[0]) * item.quantity;
+  }, 0);
+
+  return (
+    <div>
+      {cartItems.map((item, index) => (
+        <div
+          key={index}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "20px",
+          }}
+        >
+          <div>
+            <p>{item.itemName}</p>
+            <p>
+              Price: {parseInt(item.price.split(" ")[0]) * item.quantity}{" "}
+              {item.price.split(" ")[1]}
+            </p>
+          </div>
+          <button
+            onClick={() => handleDelete(index)}
+            style={{ marginLeft: "20px" }}
+          >
+            <MdDelete />
+          </button>
+        </div>
+      ))}
+      <hr />
+      <p>Total Amount : {totalAmount}</p>
+      <p>Do you want to add any special instruction?</p>
+      <div>
+        <Input.TextArea
+          value={specialInstructions || ""}
+          onChange={handleSpecialInstructionsChange}
+          placeholder="Enter special instructions here"
+        />
+      </div>
+    </div>
+  );
+};
+
+Cart.propTypes = {
+  cartItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      itemName: PropTypes.string,
+      price: PropTypes.string,
+      quantity: PropTypes.number,
+    })
+  ),
+  handleSpecialInstructionsChange: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  specialInstructions: PropTypes.string,
+};
 
 const OrderDetails = () => {
   const socket = io(import.meta.env.VITE_REACT_APP_SERVER_URL);
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [cartItems, setCartItems] = useState([]);
   const [orderStatus, setOrderStatus] = useState("");
   const [orderReadyStatus, setOrderReadyStatus] = useState("");
   const [orderId, setOrderId] = useState(null);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
+  const [specialInstructions, setSpecialInstructions] = useState("");
 
   useEffect(() => {
     const storedCartItems = localStorage.getItem("cartItems");
@@ -49,82 +113,57 @@ const OrderDetails = () => {
     navigate(-1);
   };
 
+  const handleSpecialInstructionsChange = (e) => {
+    setSpecialInstructions(e.target.value);
+  };
+
+  const handleDelete = (indexToDelete) => {
+    const newCartItems = cartItems.filter(
+      (item, index) => index !== indexToDelete
+    );
+    setCartItems(newCartItems);
+    localStorage.setItem("cartItems", JSON.stringify(newCartItems));
+  };
+
   const handleOrder = async () => {
-    // socket.emit("orders", { tableID: id, orders: cartItems });
     console.log("Order sent to server", id, cartItems);
 
-    // Call the createOrder function when the ORDER button is clicked
+    const cartItemsWithTotal = cartItems.map((item) => {
+      const totalAmount = parseInt(item.price.split(" ")[0]) * item.quantity;
+      return { ...item, totalAmount };
+    });
+
+    const totalAmount = cartItemsWithTotal.reduce(
+      (total, item) => total + item.totalAmount,
+      0
+    );
+
+    console.log("Items sent to server:", cartItemsWithTotal);
     try {
-      const response = await createOrder(id, { orders: cartItems });
+      const response = await createOrder(id, {
+        orders: cartItemsWithTotal,
+        specialInstructions,
+        totalAmount,
+      });
       const orderId = response.data.orderID;
       setOrderId(orderId);
-      socket.emit("orders", { tableID: id, orders: cartItems, orderId });
-      console.log(response.data.message); // Log the success message
+      socket.emit("orders", {
+        tableID: id,
+        orders: cartItems,
+        orderId,
+        specialInstructions,
+        totalAmount,
+      });
+      console.log(response.data.message);
       if (response.data.success) {
         toast.success("Order Received");
         setIsOrderPlaced(true);
       }
     } catch (error) {
-      console.error(error); // Log any errors
+      console.error(error);
     }
-
-    // localStorage.removeItem("cartItems");
-    // setCartItems([]);
   };
 
-  const Cart = ({ cartItems }) => {
-    const totalAmount = cartItems.reduce((total, item) => {
-      return total + parseInt(item.price.split(" ")[0]) * item.quantity;
-    }, 0);
-
-    const handleDelete = (indexToDelete) => {
-      const newCartItems = cartItems.filter(
-        (item, index) => index !== indexToDelete
-      );
-      setCartItems(newCartItems);
-      localStorage.setItem("cartItems", JSON.stringify(newCartItems));
-    };
-
-    return (
-      <div>
-        {cartItems.map((item, index) => (
-          <div
-            key={index}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginBottom: "20px",
-            }}
-          >
-            <div>
-              <p>{item.itemName}</p>
-              <p>
-                Price: {parseInt(item.price.split(" ")[0]) * item.quantity}{" "}
-                {item.price.split(" ")[1]}
-              </p>
-            </div>
-            <button
-              onClick={() => handleDelete(index)}
-              style={{ marginLeft: "20px" }}
-            >
-              <MdDelete />
-            </button>
-          </div>
-        ))}
-        <hr />
-        <p>Total Amount : {totalAmount}</p>
-      </div>
-    );
-  };
-  Cart.propTypes = {
-    cartItems: PropTypes.arrayOf(
-      PropTypes.shape({
-        itemName: PropTypes.string,
-        price: PropTypes.string,
-        quantity: PropTypes.number,
-      })
-    ),
-  };
   return (
     <div style={{ width: "390px", margin: "0 auto", textAlign: "center" }}>
       <p
@@ -134,7 +173,12 @@ const OrderDetails = () => {
       >
         <ArrowLeftOutlined />
       </p>
-      <Cart cartItems={cartItems} />
+      <Cart
+        cartItems={cartItems}
+        handleSpecialInstructionsChange={handleSpecialInstructionsChange}
+        handleDelete={handleDelete}
+        specialInstructions={specialInstructions}
+      />
       <button
         className="items-order-button"
         onClick={handleOrder}

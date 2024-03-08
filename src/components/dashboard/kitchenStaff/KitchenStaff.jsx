@@ -88,16 +88,10 @@ function KitchenStaff() {
                 </p>
               </div>
             ))}
-          <p>
-            Total Amount :{" "}
-            {order.cartItems &&
-              Array.isArray(order.cartItems) &&
-              order.cartItems.reduce(
-                (total, item) =>
-                  total + parseInt(item.price.split(" ")[0]) * item.quantity,
-                0
-              )}
-          </p>
+          {order.specialInstructions ? (
+            <p>Cooking Instructions: {order.specialInstructions}</p>
+          ) : null}
+          <p>Total Amount: {order.totalAmount}</p>
           <Button
             onClick={() => handleOrderReceived(order)}
             className={doneOrders.includes(order.orderId) ? "done" : ""}
