@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import socketIOClient from "socket.io-client";
-import { Typography, Button } from "antd";
+import { Typography, Button, Input } from "antd";
+import Countdown from "react-countdown";
 import { updateOrderStatus } from "../../../api/PublicRequest";
 import "./kitchenStaff.css";
 
@@ -9,6 +10,7 @@ const { Title } = Typography;
 function KitchenStaff() {
   const [orders, setOrders] = useState([]);
   const [doneOrders, setDoneOrders] = useState([]);
+  const [inputValue, setInputValue] = useState("");
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
@@ -33,10 +35,10 @@ function KitchenStaff() {
 
     if (order.status === "ORDER RECEIVED") {
       // Emit 'mealPreparationStarted' event to the order detail
-      // socket.emit("mealPreparationStarted", orderData);
       socket.emit("mealPreparationStarted", {
         ...orderData,
         orderId: order.orderId,
+        time: inputValue,
       });
       // Update the order status to 'DONE'
       setOrders((prevOrders) =>
@@ -51,7 +53,6 @@ function KitchenStaff() {
       }
     } else if (order.status === "DONE") {
       // Emit 'orderReady' event to the order detail
-      //  socket.emit("orderReady", orderData);
       socket.emit("orderReady", { ...orderData, orderId: order.orderId });
       // Update the order status to 'ORDER READY'
       setOrders((prevOrders) =>
@@ -68,6 +69,20 @@ function KitchenStaff() {
       }
 
       setDoneOrders((prevDoneOrders) => [...prevDoneOrders, order.orderId]);
+    }
+  };
+  const renderer = ({ minutes, seconds, completed }) => {
+    if (completed) {
+      // Render a completed state
+      return <p>Time's up!</p>;
+    } else {
+      // Render a countdown
+      return (
+        <p>
+          Time remaining: {minutes}:{seconds < 10 ? "0" : ""}
+          {seconds}
+        </p>
+      );
     }
   };
 
@@ -92,6 +107,13 @@ function KitchenStaff() {
             <p>Cooking Instructions: {order.specialInstructions}</p>
           ) : null}
           <p>Total Amount: {order.totalAmount}</p>
+          <p>
+            Completed in:{" "}
+            <Input
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+          </p>
           <Button
             onClick={() => handleOrderReceived(order)}
             className={doneOrders.includes(order.orderId) ? "done" : ""}
@@ -104,6 +126,12 @@ function KitchenStaff() {
             }}
           >
             {order.status}
+            {order.status === "ORDER RECEIVED" && order.time && (
+              <Countdown
+                date={Date.now() + order.time * 60 * 1000}
+                renderer={renderer}
+              />
+            )}
           </Button>
         </div>
       ))}

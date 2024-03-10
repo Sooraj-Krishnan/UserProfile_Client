@@ -18,6 +18,7 @@ import { FcManager } from "react-icons/fc";
 import { PiCardsFill } from "react-icons/pi";
 import { GiRoundTable } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
+import Countdown from "react-countdown";
 import { managerDashboard } from "../../../api/ManagerRequest";
 import socketIOClient from "socket.io-client";
 import "./ManagerDashboard.css";
@@ -122,6 +123,7 @@ const ManagerDashboard = () => {
           updatedOrders[existingOrderIndex] = {
             ...order,
             status: "MEAL PREPARATION STARTED",
+            time: order.time,
           };
           return updatedOrders;
         } else {
@@ -159,6 +161,21 @@ const ManagerDashboard = () => {
       socketIO.disconnect();
     };
   }, []);
+
+  const renderer = ({ minutes, seconds, completed }) => {
+    if (completed) {
+      // Render a completed state
+      return <p>Time's up!</p>;
+    } else {
+      // Render a countdown
+      return (
+        <p>
+          Time remaining: {minutes}:{seconds < 10 ? "0" : ""}
+          {seconds}
+        </p>
+      );
+    }
+  };
 
   return (
     <div>
@@ -297,6 +314,12 @@ const ManagerDashboard = () => {
                     ))}
                   <p>Total Amount: {order.totalAmount}</p>
                   <Title level={4}>Status: {order.status}</Title>
+                  {order.status === "MEAL PREPARATION STARTED" && (
+                    <Countdown
+                      date={Date.now() + order.time * 60 * 1000}
+                      renderer={renderer}
+                    />
+                  )}
                 </Card>
               </List.Item>
             )}

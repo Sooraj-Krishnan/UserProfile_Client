@@ -4,6 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Countdown from "react-countdown";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { MdDelete } from "react-icons/md";
 import { createOrder } from "../../api/PublicRequest";
@@ -79,6 +80,7 @@ const OrderDetails = () => {
   const navigate = useNavigate();
 
   const [cartItems, setCartItems] = useState([]);
+  const [order, setOrder] = useState([]);
   const [orderStatus, setOrderStatus] = useState("");
   const [orderReadyStatus, setOrderReadyStatus] = useState("");
   const [orderId, setOrderId] = useState(null);
@@ -96,6 +98,9 @@ const OrderDetails = () => {
       if (data.orderId === orderId) {
         // Update the order status to 'Meals preparation started'
         setOrderStatus("Meals preparation started");
+
+        // Set the start time to the current time
+        setOrder((prevOrder) => ({ ...prevOrder, time: data.time }));
       }
     });
 
@@ -126,8 +131,6 @@ const OrderDetails = () => {
   };
 
   const handleOrder = async () => {
-    console.log("Order sent to server", id, cartItems);
-
     const cartItemsWithTotal = cartItems.map((item) => {
       const totalAmount = parseInt(item.price.split(" ")[0]) * item.quantity;
       return { ...item, totalAmount };
@@ -138,7 +141,6 @@ const OrderDetails = () => {
       0
     );
 
-    console.log("Items sent to server:", cartItemsWithTotal);
     try {
       const response = await createOrder(id, {
         orders: cartItemsWithTotal,
@@ -161,6 +163,21 @@ const OrderDetails = () => {
       }
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const renderer = ({ minutes, seconds, completed }) => {
+    if (completed) {
+      // Render a completed state
+      return <p>Time's up!</p>;
+    } else {
+      // Render a countdown
+      return (
+        <p>
+          Time remaining: {minutes}:{seconds < 10 ? "0" : ""}
+          {seconds}
+        </p>
+      );
     }
   };
 
@@ -187,6 +204,12 @@ const OrderDetails = () => {
         ORDER
       </button>
       {orderStatus && <p>{orderStatus}</p>}
+      {orderStatus === "Meals preparation started" && order.time && (
+        <Countdown
+          date={Date.now() + order.time * 60 * 1000}
+          renderer={renderer}
+        />
+      )}
       {orderReadyStatus && <p>{orderReadyStatus}</p>}
       <ToastContainer />
     </div>

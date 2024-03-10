@@ -1,5 +1,6 @@
 import { Typography } from "antd";
 import { useEffect, useState, useRef } from "react";
+import Countdown from "react-countdown";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import socketIOClient from "socket.io-client";
@@ -39,7 +40,7 @@ function Waiter() {
       setOrders((prevOrders) =>
         prevOrders.map((o) =>
           o.tableID === order.tableID
-            ? { ...o, status: "Meals preparation started" }
+            ? { ...o, status: "Meals preparation started", time: order.time }
             : o
         )
       );
@@ -53,9 +54,24 @@ function Waiter() {
       socketRef.current.disconnect();
     };
   }, []);
+
+  const renderer = ({ minutes, seconds, completed }) => {
+    if (completed) {
+      // Render a completed state
+      return <p>Time's up!</p>;
+    } else {
+      // Render a countdown
+      return (
+        <p>
+          Time remaining: {minutes}:{seconds < 10 ? "0" : ""}
+          {seconds}
+        </p>
+      );
+    }
+  };
   return (
     <div>
-      <Title level={1}>Hello</Title>
+      <Title level={1}>Waiter Dashboard</Title>
       {orders.map((order, index) => (
         <div key={index}>
           <p>Table {order.tableID}</p> {/* Display the tableID */}
@@ -102,6 +118,12 @@ function Waiter() {
             {order.confirmed ? "CONFIRMED" : "CONFIRM"}
           </button>
           <p>{order.status}</p>
+          {order.status === "Meals preparation started" && (
+            <Countdown
+              date={Date.now() + order.time * 60 * 1000}
+              renderer={renderer}
+            />
+          )}
           {orderReady.includes(order.tableID) && <p>ORDER READY</p>}
         </div>
       ))}
