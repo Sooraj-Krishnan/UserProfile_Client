@@ -49,6 +49,13 @@ function Waiter() {
     socketRef.current.on("orderReady", (order) => {
       // Update the orderReady state with the tableID of the ready order
       setOrderReady((prevOrderReady) => [...prevOrderReady, order.tableID]);
+
+      // Set isReady to true for the ready order
+      setOrders((prevOrders) =>
+        prevOrders.map((o) =>
+          o.tableID === order.tableID ? { ...o, isReady: true } : o
+        )
+      );
     });
     return () => {
       socketRef.current.disconnect();
@@ -58,13 +65,16 @@ function Waiter() {
   const renderer = ({ minutes, seconds, completed }) => {
     if (completed) {
       // Render a completed state
-      return <p>Time's up!</p>;
+      return <p style={{ color: "red" }}>Time's up!</p>;
     } else {
       // Render a countdown
       return (
         <p>
-          Time remaining: {minutes}:{seconds < 10 ? "0" : ""}
-          {seconds}
+          Time remaining:{" "}
+          <span style={{ color: "red" }}>
+            {minutes}:{seconds < 10 ? "0" : ""}
+            {seconds}
+          </span>
         </p>
       );
     }
@@ -87,6 +97,14 @@ function Waiter() {
               </div>
             ))}
           <p>Total Amount: {order.totalAmount}</p>
+          <p style={{ color: "green" }}>{order.status}</p>
+          {order.status === "Meals preparation started" && !order.isReady && (
+            <Countdown
+              date={Date.now() + order.time * 60 * 1000}
+              renderer={renderer}
+            />
+          )}
+          {orderReady.includes(order.tableID) && <p>ORDER READY</p>}
           <button
             className={`items-confirm-button ${
               order.confirmed ? "confirmed" : ""
@@ -96,10 +114,7 @@ function Waiter() {
                 socketRef.current.emit("confirm", order);
                 try {
                   await updateOrderStatus(order.orderId, "Confirmed by waiter"); // Call the function with the order ID
-                  // After the status is updated in the database, update it in the state as well
-                  // setOrders((prevOrders) =>
-                  //   prevOrders.map((o) => (o._id === order._id ? { ...o } : o))
-                  // );
+
                   setOrders((prevOrders) =>
                     prevOrders.map((o) =>
                       o.orderId === order.orderId
@@ -117,14 +132,6 @@ function Waiter() {
           >
             {order.confirmed ? "CONFIRMED" : "CONFIRM"}
           </button>
-          <p>{order.status}</p>
-          {order.status === "Meals preparation started" && (
-            <Countdown
-              date={Date.now() + order.time * 60 * 1000}
-              renderer={renderer}
-            />
-          )}
-          {orderReady.includes(order.tableID) && <p>ORDER READY</p>}
         </div>
       ))}
       <ToastContainer />

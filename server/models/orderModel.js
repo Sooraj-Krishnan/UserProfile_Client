@@ -41,7 +41,9 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-
+  completedIn: {
+    type: Number,
+  },
   status: {
     type: String,
     default: "Order Received",

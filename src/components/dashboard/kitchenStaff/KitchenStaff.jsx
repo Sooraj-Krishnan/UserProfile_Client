@@ -47,7 +47,11 @@ function KitchenStaff() {
         )
       );
       try {
-        await updateOrderStatus(order.orderId, "Meals preparation started");
+        await updateOrderStatus(
+          order.orderId,
+          "Meals preparation started",
+          inputValue
+        );
       } catch (error) {
         console.error(error);
       }
@@ -108,7 +112,7 @@ function KitchenStaff() {
           ) : null}
           <p>Total Amount: {order.totalAmount}</p>
           <p>
-            Completed in:{" "}
+            Completed in (minutes):{" "}
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}

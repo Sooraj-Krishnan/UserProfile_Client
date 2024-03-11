@@ -109,9 +109,9 @@ const createOrder = async (req, res, next) => {
 const updateOrderStatus = async (req, res, next) => {
   try {
     const orderID = req.params.id;
-    console.log("Order ID", orderID);
+
     const status = req.body.status;
-    console.log("Status", status);
+    const time = req.body.time;
 
     const order = await Order.findById(orderID);
     if (!order) {
@@ -122,6 +122,7 @@ const updateOrderStatus = async (req, res, next) => {
     }
     // order.status = "confirmed";
     order.status = status || order.status;
+    order.completedIn = time || order.time;
     await order.save();
 
     res.status(200).json({
