@@ -258,6 +258,7 @@ const OrderDetails = () => {
 
   useEffect(() => {
     const storedCartItems = localStorage.getItem("cartItems");
+
     if (storedCartItems) {
       setCartItems(JSON.parse(storedCartItems));
     }
@@ -362,7 +363,9 @@ const OrderDetails = () => {
         onClick={handleBack}
         style={{ marginBottom: "20px" }}
       >
+        {" "}
         <ArrowLeftOutlined />
+        MENU
       </p>
       <Cart
         cartItems={cartItems}

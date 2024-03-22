@@ -11,6 +11,7 @@ import { GiRoundTable } from "react-icons/gi";
 
 import { Menu, Layout } from "antd";
 import { useState } from "react";
+import { useMediaQuery } from "react-responsive";
 import "./Sidebar.css";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../api/AdminRequest";
@@ -25,6 +26,7 @@ const { Sider } = Layout;
 
 function ManagerSidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const isLargeScreen = useMediaQuery({ query: "(min-width: 992px)" });
 
   const navigate = useNavigate();
 
@@ -84,6 +86,10 @@ function ManagerSidebar() {
       collapsed={collapsed}
       onCollapse={setCollapsed}
       style={{ height: "100vh" }}
+      breakpoint="lg" // sidebar will automatically collapse when window width is less than the breakpoint
+      collapsedWidth="0" // width of the collapsed sidebar
+      // trigger={null} // to hide the trigger button
+      trigger={isLargeScreen ? null : undefined}
     >
       <div className="logo">
         <img src={ZEEQR_White} alt="ZEEQR" />

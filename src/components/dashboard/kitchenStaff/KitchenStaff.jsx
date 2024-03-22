@@ -18,6 +18,7 @@ function KitchenStaff() {
     setSocket(socketIO);
     // Listen for 'confirmOrder' events
     socketIO.on("confirmOrder", (order) => {
+      console.log("Received confirmOrder event:", order);
       // Update the orders state with the new order
       setOrders((prevOrders) => [
         ...prevOrders,
@@ -105,6 +106,7 @@ function KitchenStaff() {
                   Price: {parseInt(item.price.split(" ")[0]) * item.quantity}{" "}
                   {item.price.split(" ")[1]}
                 </p>
+                <p>Quantity: {item.quantity}</p>
               </div>
             ))}
           {order.specialInstructions ? (

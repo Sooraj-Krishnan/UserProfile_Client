@@ -1,6 +1,9 @@
 import PropTypes from "prop-types";
-import { Input } from "antd";
+import { Input, Card } from "antd";
 import { MdDelete } from "react-icons/md";
+import { IoMdAddCircleOutline } from "react-icons/io";
+
+import "./Cart.css";
 
 const Cart = ({
   cartItems,
@@ -11,42 +14,58 @@ const Cart = ({
   const totalAmount = cartItems.reduce((total, item) => {
     return total + parseInt(item.price.split(" ")[0]) * item.quantity;
   }, 0);
-
+  console.log("cartItems", cartItems);
   return (
     <div>
-      {cartItems.map((item, index) => (
-        <div
-          key={index}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: "20px",
-          }}
-        >
-          <div>
-            <p>{item.itemName}</p>
-            <p>
-              Price: {parseInt(item.price.split(" ")[0]) * item.quantity}{" "}
-              {item.price.split(" ")[1]}
-            </p>
+      <Card
+        title={
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span>Items</span>
+            <span>Quantity</span>
+            <span>Price</span>
           </div>
-          <button
-            onClick={() => handleDelete(index)}
-            style={{ marginLeft: "20px" }}
+        }
+        bordered={false}
+        style={{
+          width: 300,
+          marginBottom: "20px",
+        }}
+      >
+        {cartItems.map((item, index) => (
+          <div
+            key={index}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "20px",
+            }}
           >
-            <MdDelete />
-          </button>
-        </div>
-      ))}
-      <hr />
-      <p>Total Amount : {totalAmount}</p>
-      <p>Do you want to add any special instruction?</p>
-      <div>
+            <span>{item.itemName}</span>
+            <span>{item.quantity}</span>
+            <span>
+              {parseInt(item.price.split(" ")[0]) * item.quantity}{" "}
+              {item.price.split(" ")[1]}
+              <button
+                onClick={() => handleDelete(index)}
+                style={{ marginLeft: "20px" }}
+              >
+                <MdDelete color="red" />
+              </button>
+            </span>
+          </div>
+        ))}
+        <hr />
+        <p>Total Amount : {totalAmount}</p>
+      </Card>
+
+      <div className="input-wrapper">
         <Input.TextArea
           value={specialInstructions || ""}
           onChange={handleSpecialInstructionsChange}
-          placeholder="Enter special instructions here"
+          placeholder="Add Cooking Instructions"
+          className="special-instructions-input"
         />
+        <IoMdAddCircleOutline className="input-icon" />
       </div>
     </div>
   );

@@ -21,6 +21,7 @@ function Waiter() {
     socketRef.current.emit("login", waiterId);
     //Listen for 'order' events
     socketRef.current.on("orders", (orderDetails) => {
+      console.log("Order Details", orderDetails);
       console.log("connected to server", socketRef.current.id);
 
       setOrders((prevOrders) => [
@@ -90,6 +91,7 @@ function Waiter() {
             order.cartItems.map((item, index) => (
               <div key={index}>
                 <p>{item.itemName}</p>
+                <p>Quantity: {item.quantity}</p>
                 <p>
                   Price: {parseInt(item.price.split(" ")[0]) * item.quantity}{" "}
                   {item.price.split(" ")[1]}

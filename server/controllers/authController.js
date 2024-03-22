@@ -110,6 +110,7 @@ const login = async (req, res, next) => {
 
 const employeeLogin = async (req, res, next) => {
   try {
+    console.log(req.body);
     const { email, password } = req.body;
     const waiter = await Waiter.findOne({ email: email }).populate("adminID");
 

@@ -22,6 +22,7 @@ const MenuView = () => {
   const [cartItems, setCartItems] = useState([]);
   const [, setLocalMenuData] = useState(null);
   const [showAddItemsBox, setShowAddItemsBox] = useState(false);
+
   const queryClient = useQueryClient();
 
   const {
@@ -64,6 +65,7 @@ const MenuView = () => {
       style={{
         width: "390px",
         margin: "0 auto",
+        paddingBottom: "20px",
       }}
     >
       <Space direction="vertical">
@@ -161,6 +163,7 @@ const MenuView = () => {
                           <p>
                             Price: {parseInt(price) * item.quantity} {unit}
                           </p>
+                          {/* <p>Quantity: {item.quantity}</p> */}
                           <div className="quantity-button">
                             {/* Quantity Adjustment Buttons */}
                             <button
