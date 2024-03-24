@@ -1,5 +1,5 @@
 require("dotenv").config();
-const mongoose = require("mongoose");
+//const mongoose = require("mongoose");
 const MenuCard = require("../models/menuCardModel");
 const Table = require("../models/tableModel");
 const Order = require("../models/orderModel");
@@ -142,10 +142,10 @@ const updateOrderStatus = async (req, res, next) => {
 
 const getOrderDetails = async (req, res, next) => {
   try {
-    const userID = mongoose.Types.ObjectId(req.user_id);
+    const userID = req.user._id;
     console.log("User ID", userID);
 
-    const order = await Order.findOne({
+    const order = await Order.find({
       $or: [
         { managerID: userID },
         { waiterID: userID },

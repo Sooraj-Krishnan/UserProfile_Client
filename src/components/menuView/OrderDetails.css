@@ -2,6 +2,40 @@
     margin-top: 20px;
     background-color: #1f6ff0;
     color: white;
-    width: 50%;
-    border-radius: 5%;
+    font-size: 1.1rem;
+    border-radius: 2rem;
+    padding: 0.5rem 11rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .timeButton {
+    font-size: 1.1rem;
+    border-radius: 2rem;
+    width: 26.5rem;
+    height: 2.7rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: gold;
+    color: white;
+  }
+  
+  .timeRemainingText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .timeRemainingContainer {
+    width: 4rem;
+    margin-left: 0.5rem;
+  }
+  
+  .timeRemainingDigits {
+    color: red;
   }

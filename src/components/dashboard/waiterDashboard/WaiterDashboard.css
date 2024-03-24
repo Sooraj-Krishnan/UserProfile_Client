@@ -1,3 +1,23 @@
+.column-header {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+}
+
+.column-item {
+  flex: 1;
+  text-align: left;
+}
+
+.quantity {
+  text-align: center;
+}
+
+.price {
+  text-align: right;
+}
+
+
 .items-confirm-button {
     margin-top: 20px;
     background-color: #1f6ff0;
@@ -10,3 +30,33 @@
     background-color: green;
     color: white;
   }
+
+  
+.timeButton {
+  font-size: 1.1rem;
+  border-radius: 2rem;
+  width: 22rem;
+  height: 2.8rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: gold;
+  color: white;
+}
+
+.timeRemainingText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.timeRemainingContainer {
+  width: 4rem;
+  margin-left: 0.5rem;
+}
+
+.timeRemainingDigits {
+  color: red;
+}

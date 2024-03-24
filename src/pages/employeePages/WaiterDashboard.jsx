@@ -1,12 +1,13 @@
 import { Layout } from "antd";
 const { Content } = Layout;
-import KitchenStaffSidebar from "../../components/sidebar/KitchenStaffSidebar";
+
+import WaiterSidebar from "../../components/sidebar/WaiterSidebar";
 import Waiter from "../../components/dashboard/waiterDashboard/WaiterDashboard";
 function WaiterDashboard() {
   return (
     <div className="flex">
       <Layout>
-        <KitchenStaffSidebar />
+        <WaiterSidebar />
         <Content
           style={{
             margin: "24px 16px",

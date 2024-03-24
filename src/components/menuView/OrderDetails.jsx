@@ -337,21 +337,28 @@ const OrderDetails = () => {
       console.error(error);
     }
   };
-
   const renderer = ({ minutes, seconds, completed }) => {
     if (completed) {
       // Render a completed state
-      return <p>Time's up!</p>;
+      return (
+        <button className="timeButton">
+          <p style={{ color: "red" }}>Time's up!</p>
+        </button>
+      );
     } else {
       // Render a countdown
       return (
-        <p>
-          Time remaining:{" "}
-          <span style={{ color: "red" }}>
-            {minutes}:{seconds < 10 ? "0" : ""}
-            {seconds}
-          </span>
-        </p>
+        <button className="timeButton">
+          <div className="timeRemainingText">
+            Order Preparing:
+            <div className="timeRemainingContainer">
+              <span className="timeRemainingDigits">
+                {minutes}:{seconds < 10 ? "0" : ""}
+                {seconds}
+              </span>
+            </div>
+          </div>
+        </button>
       );
     }
   };

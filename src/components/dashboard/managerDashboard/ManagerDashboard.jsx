@@ -179,7 +179,7 @@ const ManagerDashboard = () => {
 
   return (
     <div>
-      <Spin spinning={loader}>
+      <Spin spinning={loader} size="large">
         {remainingCards <= 2 && (
           <Space
             direction="vertical"

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import socketIOClient from "socket.io-client";
-import { Typography, Button, Input } from "antd";
+import { Typography, Button, Input, Card } from "antd";
 import Countdown from "react-countdown";
 import { updateOrderStatus } from "../../../api/PublicRequest";
 import "./kitchenStaff.css";
@@ -95,24 +95,47 @@ function KitchenStaff() {
     <div>
       <Title level={1}>Kitchen Dashboard</Title>
       {orders.map((order, index) => (
-        <div key={index}>
-          <p>Table {order.tableID}</p> {/* Display the tableID */}
+        <Card
+          key={index}
+          title={
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span className="column-header">Table {order.tableID}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span className="column-header">Items</span>
+                <span className="column-header">Quantity</span>
+              </div>
+            </div>
+          }
+          bordered={false}
+          style={{ width: 400, marginBottom: "20px" }}
+        >
           {order.cartItems &&
             Array.isArray(order.cartItems) &&
             order.cartItems.map((item, index) => (
-              <div key={index}>
-                <p>{item.itemName}</p>
-                <p>
-                  Price: {parseInt(item.price.split(" ")[0]) * item.quantity}{" "}
-                  {item.price.split(" ")[1]}
-                </p>
-                <p>Quantity: {item.quantity}</p>
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "20px",
+                }}
+              >
+                <span className="column-item">{item.itemName}</span>
+                <span className="column-item quantity">{item.quantity}</span>
               </div>
             ))}
-          {order.specialInstructions ? (
-            <p>Cooking Instructions: {order.specialInstructions}</p>
-          ) : null}
-          <p>Total Amount: {order.totalAmount}</p>
+          {order.specialInstructions && (
+            <>
+              <p>Cooking Instructions:</p>
+              <Input.TextArea
+                value={order.specialInstructions}
+                autoSize
+                readOnly
+              />
+            </>
+          )}
           <p>
             Completed in (minutes):{" "}
             <Input
@@ -122,9 +145,18 @@ function KitchenStaff() {
           </p>
           <Button
             onClick={() => handleOrderReceived(order)}
-            className={doneOrders.includes(order.orderId) ? "done" : ""}
+            className={`items-confirm-button ${
+              doneOrders.includes(order.orderId) ? "done" : ""
+            }`}
             disabled={doneOrders.includes(order.orderId)}
             style={{
+              fontSize: "1.1rem",
+              borderRadius: "2rem",
+              padding: "1.3rem 11rem",
+              textAlign: "center",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
               backgroundColor: doneOrders.includes(order.orderId)
                 ? "#038009"
                 : "blue",
@@ -139,7 +171,7 @@ function KitchenStaff() {
               />
             )}
           </Button>
-        </div>
+        </Card>
       ))}
     </div>
   );

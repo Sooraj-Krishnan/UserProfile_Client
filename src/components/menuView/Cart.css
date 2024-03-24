@@ -1,3 +1,27 @@
+.column-header {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+}
+
+.column-item {
+  flex: 1;
+  text-align: left;
+}
+
+.quantity {
+  text-align: center;
+}
+
+.price {
+  text-align: right;
+}
+
+.delete-icon {
+  color: red;
+  font-size: 20px;
+}
+
 .special-instructions-input::placeholder {
     color: #595959;
     font-weight: bold;

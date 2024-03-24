@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../../api/AdminRequest";
 
 import { Modal } from "antd";
+import { useMediaQuery } from "react-responsive";
 
 import ZEEQR_White from "../../assets/images/ZEEQR_White.svg";
 
@@ -23,7 +24,7 @@ const { Sider } = Layout;
 
 function WaiterSidebar() {
   const [collapsed, setCollapsed] = useState(false);
-
+  const isLargeScreen = useMediaQuery({ query: "(min-width: 992px)" });
   const navigate = useNavigate();
 
   const items = [
@@ -72,6 +73,9 @@ function WaiterSidebar() {
       collapsed={collapsed}
       onCollapse={setCollapsed}
       style={{ height: "100vh" }}
+      breakpoint="lg"
+      collapsedWidth="0"
+      trigger={isLargeScreen ? null : undefined}
     >
       <div className="logo">
         <img src={ZEEQR_White} alt="ZEEQR" />

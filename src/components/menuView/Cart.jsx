@@ -20,16 +20,13 @@ const Cart = ({
       <Card
         title={
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span>Items</span>
-            <span>Quantity</span>
-            <span>Price</span>
+            <span className="column-header">Items</span>
+            <span className="column-header">Quantity</span>
+            <span className="column-header">Price</span>
           </div>
         }
         bordered={false}
-        style={{
-          width: 300,
-          marginBottom: "20px",
-        }}
+        style={{ width: 400, marginBottom: "20px" }}
       >
         {cartItems.map((item, index) => (
           <div
@@ -40,22 +37,25 @@ const Cart = ({
               marginBottom: "20px",
             }}
           >
-            <span>{item.itemName}</span>
-            <span>{item.quantity}</span>
-            <span>
+            <span className="column-item">{item.itemName}</span>
+            <span className="column-item quantity">{item.quantity}</span>
+            <span className="column-item price">
               {parseInt(item.price.split(" ")[0]) * item.quantity}{" "}
               {item.price.split(" ")[1]}
               <button
                 onClick={() => handleDelete(index)}
                 style={{ marginLeft: "20px" }}
               >
-                <MdDelete color="red" />
+                <MdDelete className="delete-icon" />
               </button>
             </span>
           </div>
         ))}
         <hr />
-        <p>Total Amount : {totalAmount}</p>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <p>Total Amount :</p>
+          <p>{totalAmount}</p>
+        </div>
       </Card>
 
       <div className="input-wrapper">
