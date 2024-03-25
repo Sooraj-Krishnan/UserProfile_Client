@@ -25,7 +25,7 @@ axiosPrivate.interceptors.response.use(
             localStorage.setItem("admin-refToken", response.data.refreshToken);
           }
         } else {
-          const refToken = await localStorage.getItem("refToken");
+          const refToken = await localStorage.getItem("manager-refToken");
           console.log("refToken user", refToken);
           const response = await axios.post(
             "/refresh-token",
@@ -34,7 +34,10 @@ axiosPrivate.interceptors.response.use(
           );
           console.log(response, "newwwwwwwwwwwwwwwww user");
           if (response.data.success) {
-            localStorage.setItem("refToken", response.data.refreshToken);
+            localStorage.setItem(
+              "manager-refToken",
+              response.data.refreshToken
+            );
           }
         }
       } catch (error) {

@@ -38,6 +38,7 @@ const ManagerDashboard = () => {
 
   const fetchManagerData = async () => {
     const { data } = await managerDashboard();
+    console.log("data", data);
     return data;
   };
 

@@ -4,7 +4,8 @@
     color: white;
     font-size: 1.1rem;
     border-radius: 2rem;
-    padding: 0.5rem 11rem;
+    width: 25rem;
+    height: 2.7rem;
     text-align: center;
     display: flex;
     justify-content: center;
@@ -14,7 +15,8 @@
   .timeButton {
     font-size: 1.1rem;
     border-radius: 2rem;
-    width: 26.5rem;
+    margin-top: 20px;
+    width: 26rem;
     height: 2.7rem;
     text-align: center;
     display: flex;

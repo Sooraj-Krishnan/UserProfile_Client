@@ -184,12 +184,12 @@ function Waiter() {
                   </span>
                 </div>
               ))}
-
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <p>Total Amount :</p>
               <p>{order.totalAmount}</p>
             </div>
-            <p style={{ color: "green" }}>{order.status}</p>
+            iterdash
+            {/* <p style={{ color: "green" }}>{order.status}</p> */}
             {order.status === "Meals preparation started" && !order.isReady && (
               <Countdown
                 date={Date.now() + order.time * 60 * 1000}

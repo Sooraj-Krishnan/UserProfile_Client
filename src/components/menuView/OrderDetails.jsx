@@ -387,7 +387,9 @@ const OrderDetails = () => {
       >
         ORDER
       </button>
-      {orderStatus && <p>{orderStatus}</p>}
+
+      {/* {orderStatus && <p>{orderStatus}</p>} */}
+
       {/* Render countdown only if orderTime is available and not ready */}
       {orderStatus === "Meals preparation started" && orderTime && !isReady && (
         <Countdown
