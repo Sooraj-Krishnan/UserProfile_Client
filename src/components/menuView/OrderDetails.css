@@ -12,11 +12,11 @@
     align-items: center;
   }
 
-  .timeButton {
+  .timeButton-Order {
     font-size: 1.1rem;
     border-radius: 2rem;
     margin-top: 20px;
-    width: 26rem;
+    width: 25.2rem;
     height: 2.7rem;
     text-align: center;
     display: flex;
@@ -26,18 +26,18 @@
     color: white;
   }
   
-  .timeRemainingText {
+  .timeRemainingText-Order {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
   }
   
-  .timeRemainingContainer {
+  .timeRemainingContainer-Order {
     width: 4rem;
     margin-left: 0.5rem;
   }
   
-  .timeRemainingDigits {
+  .timeRemainingDigits-Order {
     color: red;
   }

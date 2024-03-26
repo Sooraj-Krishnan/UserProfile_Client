@@ -145,7 +145,7 @@ const getOrderDetails = async (req, res, next) => {
     const userID = req.user._id;
     console.log("User ID", userID);
 
-    const order = await Order.find({
+    const orders = await Order.find({
       $or: [
         { managerID: userID },
         { waiterID: userID },
@@ -153,16 +153,31 @@ const getOrderDetails = async (req, res, next) => {
       ],
     }).populate("managerID waiterID kitchenStaffID tableID");
 
-    if (!order) {
+    if (!orders) {
       return res.status(404).json({
         success: false,
         message: "Order not found",
       });
     }
 
+    // Transform the orders to match the format of orderDetails from socket.io
+    const transformedOrders = orders.map((order) => ({
+      orderId: order._id,
+      cartItems: order.orders.map((item) => ({
+        _id: item._id,
+        itemName: item.itemName,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+      tableID: order.tableID,
+      specialInstructions: order.specialInstructions,
+      totalAmount: order.totalAmount,
+      status: order.status,
+    }));
+
     res.status(200).json({
       success: true,
-      order,
+      orders: transformedOrders,
     });
   } catch (error) {
     console.error("Detailed Error:", error);

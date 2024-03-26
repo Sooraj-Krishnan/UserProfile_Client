@@ -5,7 +5,9 @@ import Countdown from "react-countdown";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import socketIOClient from "socket.io-client";
+
 import { updateOrderStatus, getOrderDetails } from "../../../api/PublicRequest";
+
 import "./WaiterDashboard.css";
 import ms from "ms";
 
@@ -24,17 +26,24 @@ function Waiter() {
   };
 
   const {
-    data: orderDetailsData,
+    data: orderDetails,
     error,
     isLoading,
   } = useQuery({
-    queryKey: ["orderDetailsData"],
+    queryKey: ["orderDetails"],
     queryFn: fetchOrderDetails,
     staleTime: ms("1d"),
   });
   if (error) {
     console.log(error);
   }
+  useEffect(() => {
+    if (orderDetails) {
+      setOrders(
+        orderDetails.orders.map((order) => ({ ...order, confirmed: false }))
+      );
+    }
+  }, [orderDetails]);
   useEffect(() => {
     setLoader(isLoading);
   }, [isLoading]);
@@ -90,29 +99,6 @@ function Waiter() {
       socketRef.current.disconnect();
     };
   }, []);
-
-  console.log("Data from server", orderDetailsData);
-
-  // useEffect(() => {
-  //   if (orderDetailsData && orderDetailsData.order) {
-  //     const flattenedOrders = orderDetailsData.order.reduce((acc, order) => {
-  //       return [...acc, ...order.orders];
-  //     }, []);
-  //     setOrders(flattenedOrders);
-  //   }
-  // }, [orderDetailsData]);
-
-  // useEffect(() => {
-  //   const storedOrderDetails = localStorage.getItem("orderDetails");
-  //   if (storedOrderDetails) {
-  //     const parsedOrderDetails = JSON.parse(storedOrderDetails);
-  //     if (Array.isArray(parsedOrderDetails)) {
-  //       setOrders(parsedOrderDetails);
-  //     } else {
-  //       console.error("Stored order details is not an array");
-  //     }
-  //   }
-  // }, []);
 
   const renderer = ({ minutes, seconds, completed }) => {
     if (completed) {
@@ -188,7 +174,7 @@ function Waiter() {
               <p>Total Amount :</p>
               <p>{order.totalAmount}</p>
             </div>
-            iterdash
+
             {/* <p style={{ color: "green" }}>{order.status}</p> */}
             {order.status === "Meals preparation started" && !order.isReady && (
               <Countdown

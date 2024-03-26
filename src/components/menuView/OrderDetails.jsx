@@ -348,11 +348,11 @@ const OrderDetails = () => {
     } else {
       // Render a countdown
       return (
-        <button className="timeButton">
-          <div className="timeRemainingText">
+        <button className="timeButton-Order">
+          <div className="timeRemainingText-Order">
             Order Preparing:
-            <div className="timeRemainingContainer">
-              <span className="timeRemainingDigits">
+            <div className="timeRemainingContainer-Order">
+              <span className="timeRemainingDigits-Order">
                 {minutes}:{seconds < 10 ? "0" : ""}
                 {seconds}
               </span>
