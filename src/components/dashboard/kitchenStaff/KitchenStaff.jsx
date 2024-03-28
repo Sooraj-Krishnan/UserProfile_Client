@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import socketIOClient from "socket.io-client";
 import { Typography, Button, Input, Card, Spin } from "antd";
 import Countdown from "react-countdown";
-import { updateOrderStatus, getOrderDetails } from "../../../api/PublicRequest";
+import {
+  updateOrderStatus,
+  getOrderDetailsToKitchen,
+} from "../../../api/PublicRequest";
 import "./kitchenStaff.css";
 import ms from "ms";
 const { Title } = Typography;
@@ -16,7 +19,7 @@ function KitchenStaff() {
   const [loader, setLoader] = useState(true);
 
   const fetchOrderDetails = async () => {
-    const { data } = await getOrderDetails();
+    const { data } = await getOrderDetailsToKitchen();
     console.log("data", data);
     return data;
   };
@@ -77,10 +80,11 @@ function KitchenStaff() {
           o.orderId === order.orderId ? { ...o, status: "DONE" } : o
         )
       );
+
       try {
         await updateOrderStatus(
           order.orderId,
-          "Meals preparation started",
+          "Order Preparation Started",
           inputValue
         );
       } catch (error) {

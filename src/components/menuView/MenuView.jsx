@@ -5,11 +5,8 @@ import { menuView } from "../../api/PublicRequest";
 import { Typography, Row, Col, Input, Space } from "antd";
 import { FaGreaterThan } from "react-icons/fa6";
 import "./MenuView.css";
-import {
-  incrementQuantity,
-  decrementQuantity,
-  addToCart,
-} from "./MenuFunction";
+import { addToCart } from "./MenuFunction";
+import QuantitySelector from "./QuantityButton";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -63,7 +60,7 @@ const MenuView = () => {
     <div
       className="bg-gray-100"
       style={{
-        width: "390px",
+        width: "450px",
         margin: "0 auto",
         paddingBottom: "20px",
       }}
@@ -158,14 +155,16 @@ const MenuView = () => {
                     return (
                       <Row key={itemIndex}>
                         <Col span={12}>
-                          <Title level={3}>{item.itemName}</Title>
-                          <p>{item.description}</p>
+                          <Title level={3} className="custom-font">
+                            {item.itemName}
+                          </Title>
+                          <p className="custom-font">{item.description}</p>
                           <p>
                             Price: {parseInt(price) * item.quantity} {unit}
                           </p>
                           {/* <p>Quantity: {item.quantity}</p> */}
-                          <div className="quantity-button">
-                            {/* Quantity Adjustment Buttons */}
+
+                          {/* <div className="quantity-button">
                             <button
                               onClick={() =>
                                 decrementQuantity(
@@ -191,7 +190,16 @@ const MenuView = () => {
                             >
                               +
                             </button>
-                          </div>
+                          </div> */}
+
+                          <QuantitySelector
+                            itemId={item._id}
+                            queryClient={queryClient}
+                            id={id}
+                            setLocalMenuData={setLocalMenuData}
+                            quantity={item.quantity}
+                          />
+
                           <div className="quantity-button mt-2 justify-center">
                             {/* <button onClick={() => addToCart(item)}>Add</button> */}
                             <button
@@ -205,13 +213,13 @@ const MenuView = () => {
                                 )
                               }
                             >
-                              Add
+                              ADD
                             </button>
                           </div>
                         </Col>
                         <Col span={12}>
                           <img
-                            className="m-2"
+                            className="m-2 square-image"
                             src={item.itemImage}
                             alt={item.itemName}
                           />

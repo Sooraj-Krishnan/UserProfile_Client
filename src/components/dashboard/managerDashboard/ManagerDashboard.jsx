@@ -6,7 +6,6 @@ import {
   Typography,
   Row,
   Col,
-  List,
   Card,
   Spin,
   Statistic,
@@ -20,6 +19,7 @@ import { GiRoundTable } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import Countdown from "react-countdown";
 import { managerDashboard } from "../../../api/ManagerRequest";
+import { getOrderDetailsForManager } from "../../../api/PublicRequest";
 import socketIOClient from "socket.io-client";
 import "./ManagerDashboard.css";
 
@@ -38,20 +38,55 @@ const ManagerDashboard = () => {
 
   const fetchManagerData = async () => {
     const { data } = await managerDashboard();
-    console.log("data", data);
     return data;
   };
 
-  const { data, error, isLoading } = useQuery({
+  // const { data, error, isLoading } = useQuery({
+  //   queryKey: ["managerData"],
+  //   queryFn: fetchManagerData,
+  //   staleTime: ms("1d"),
+  // });
+
+  const {
+    data: managerData,
+    error: managerError,
+    isLoading: isManagerLoading,
+  } = useQuery({
     queryKey: ["managerData"],
     queryFn: fetchManagerData,
     staleTime: ms("1d"),
   });
+  // Fetch order details
+  const fetchOrderDetails = async () => {
+    const { data } = await getOrderDetailsForManager();
+    return data;
+  };
 
-  const managerName = data?.manager?.name;
-  const waiterCount = data?.waiterCount;
-  const tableCount = data?.tableCount;
-  const cardLimit = data?.cardLimit;
+  const {
+    data: orderDetails,
+    error: orderError,
+    isLoading: isOrderLoading,
+  } = useQuery({
+    queryKey: ["orderDetails"],
+    queryFn: fetchOrderDetails,
+    staleTime: ms("1d"),
+  });
+
+  // Combine data from both API calls
+  const isLoading = isManagerLoading || isOrderLoading;
+  const error = managerError || orderError;
+
+  if (error) {
+    console.log(error.message);
+    if (error.response && error.response.status === 403) {
+      // ErrorLogout(error);
+    }
+  }
+
+  const managerName = managerData?.manager?.name;
+  const waiterCount = managerData?.waiterCount;
+  const tableCount = managerData?.tableCount;
+  const cardLimit = managerData?.cardLimit;
   const remainingCards = cardLimit - tableCount;
   if (error) {
     console.log(error.message);
@@ -59,6 +94,15 @@ const ManagerDashboard = () => {
       // ErrorLogout(error);
     }
   }
+
+  useEffect(() => {
+    if (orderDetails) {
+      setOrders(
+        orderDetails.orders.map((order) => ({ ...order, confirmed: false }))
+      );
+    }
+  }, [orderDetails]);
+
   useEffect(() => {
     setLoader(isLoading);
   }, [isLoading]);
@@ -288,43 +332,62 @@ const ManagerDashboard = () => {
           </Col>
         </Row>
         <Row style={{ width: "100%" }}>
-          <List
-            grid={{ gutter: 16, column: 1 }}
-            dataSource={orders}
-            renderItem={(order) => (
-              <List.Item>
-                <Card
-                  title={`Order ${order.orderId}`}
-                  style={{
-                    width: 300,
-                  }}
-                >
-                  <p>Table: {order.tableID}</p>
-
-                  {order.cartItems &&
-                    Array.isArray(order.cartItems) &&
-                    order.cartItems.map((item, index) => (
-                      <div key={index}>
-                        <p>{item.itemName}</p>
-                        <p>
-                          Price:{" "}
-                          {parseInt(item.price.split(" ")[0]) * item.quantity}{" "}
-                          {item.price.split(" ")[1]}
-                        </p>
-                      </div>
-                    ))}
-                  <p>Total Amount: {order.totalAmount}</p>
-                  <Title level={4}>Status: {order.status}</Title>
-                  {order.status === "MEAL PREPARATION STARTED" && (
-                    <Countdown
-                      date={Date.now() + order.time * 60 * 1000}
-                      renderer={renderer}
-                    />
-                  )}
-                </Card>
-              </List.Item>
-            )}
-          />
+          {orders.map((order, index) => (
+            <Card
+              key={index}
+              title={
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <span className="column-header">Table {order.tableID}</span>
+                  </div>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <span className="column-header">Items</span>
+                    <span className="column-header">Quantity</span>
+                    <span className="column-header">Price</span>
+                  </div>
+                </div>
+              }
+              bordered={false}
+              style={{ width: 400, marginBottom: "20px" }}
+            >
+              {order.cartItems &&
+                Array.isArray(order.cartItems) &&
+                order.cartItems.map((item, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    <span className="column-item">{item.itemName}</span>
+                    <span className="column-item quantity">
+                      {item.quantity}
+                    </span>
+                    <span className="column-item price">
+                      {parseInt(item.price.split(" ")[0]) * item.quantity}{" "}
+                      {item.price.split(" ")[1]}
+                    </span>
+                  </div>
+                ))}
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <p>Total Amount :</p>
+                <p>{order.totalAmount}</p>
+              </div>
+              <Title level={4}>Status: {order.status}</Title>
+              {order.status === "MEAL PREPARATION STARTED" && (
+                <Countdown
+                  date={Date.now() + order.time * 60 * 1000}
+                  renderer={renderer}
+                />
+              )}
+            </Card>
+          ))}
         </Row>
       </Spin>
     </div>

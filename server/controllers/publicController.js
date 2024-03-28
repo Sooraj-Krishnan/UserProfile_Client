@@ -143,14 +143,126 @@ const updateOrderStatus = async (req, res, next) => {
 const getOrderDetails = async (req, res, next) => {
   try {
     const userID = req.user._id;
-    console.log("User ID", userID);
 
     const orders = await Order.find({
-      $or: [
-        { managerID: userID },
-        { waiterID: userID },
-        { kitchenStaffID: userID },
+      $and: [
+        {
+          $or: [
+            { managerID: userID },
+            { waiterID: userID },
+            { kitchenStaffID: userID },
+          ],
+        },
+        { status: { $ne: "ORDER READY" } },
       ],
+    }).populate("managerID waiterID kitchenStaffID tableID");
+
+    if (!orders) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // Transform the orders to match the format of orderDetails from socket.io
+    const transformedOrders = orders.map((order) => ({
+      orderId: order._id,
+      cartItems: order.orders.map((item) => ({
+        _id: item._id,
+        itemName: item.itemName,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+      tableID: order.tableID,
+      specialInstructions: order.specialInstructions,
+      totalAmount: order.totalAmount,
+      status: order.status,
+    }));
+
+    res.status(200).json({
+      success: true,
+      orders: transformedOrders,
+    });
+  } catch (error) {
+    console.error("Detailed Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+    next(error);
+  }
+};
+
+const getOrderDetailsToKitchen = async (req, res, next) => {
+  try {
+    const userID = req.user._id;
+
+    const orders = await Order.find({
+      $and: [
+        {
+          $or: [{ managerID: userID }, { kitchenStaffID: userID }],
+        },
+        { status: { $ne: "ORDER READY" } },
+        { status: { $ne: "Order Received" } },
+      ],
+    }).populate("managerID kitchenStaffID tableID");
+
+    if (!orders) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // Transform the orders to match the format of orderDetails from socket.io
+    const transformedOrders = orders.map((order) => {
+      let status;
+      if (order.status === "Confirmed by waiter") {
+        status = "ORDER RECEIVED";
+      } else if (order.status === "Order Preparation Started") {
+        status = "DONE";
+      } else {
+        status = order.status;
+      }
+
+      return {
+        orderId: order._id,
+        cartItems: order.orders.map((item) => ({
+          _id: item._id,
+          itemName: item.itemName,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+        tableID: order.tableID,
+        specialInstructions: order.specialInstructions,
+        totalAmount: order.totalAmount,
+        status: status,
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      orders: transformedOrders,
+    });
+  } catch (error) {
+    console.error("Detailed Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+    next(error);
+  }
+};
+
+const getOrderDetailsForManager = async (req, res, next) => {
+  try {
+    const userID = req.user._id;
+
+    const orders = await Order.find({
+      managerID: userID,
+      status: { $ne: "ORDER READY" },
     }).populate("managerID waiterID kitchenStaffID tableID");
 
     if (!orders) {
@@ -195,4 +307,6 @@ module.exports = {
   createOrder,
   updateOrderStatus,
   getOrderDetails,
+  getOrderDetailsToKitchen,
+  getOrderDetailsForManager,
 };

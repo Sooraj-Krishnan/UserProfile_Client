@@ -18,7 +18,6 @@ const generateFileName = (bytes = 32) =>
   crypto.randomBytes(bytes).toString("hex");
 
 const managerDashboard = async (req, res, next) => {
-  console.log("Rer", req);
   try {
     const managerID = new mongoose.Types.ObjectId(req.user._id);
     const manager = await Manager.findById(managerID);

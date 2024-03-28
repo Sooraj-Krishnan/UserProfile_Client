@@ -37,13 +37,25 @@ function Waiter() {
   if (error) {
     console.log(error);
   }
+  // useEffect(() => {
+  //   if (orderDetails) {
+  //     setOrders(
+  //       orderDetails.orders.map((order) => ({ ...order, confirmed: false }))
+  //     );
+  //   }
+  // }, [orderDetails]);
+
   useEffect(() => {
     if (orderDetails) {
       setOrders(
-        orderDetails.orders.map((order) => ({ ...order, confirmed: false }))
+        orderDetails.orders.map((order) => ({
+          ...order,
+          confirmed: order.status !== "Order Received",
+        }))
       );
     }
   }, [orderDetails]);
+
   useEffect(() => {
     setLoader(isLoading);
   }, [isLoading]);
