@@ -1,29 +1,50 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
 
+.font-label-heading {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 2.1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+
+}
+.label-button-font {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
 .custom-font {
   font-family: 'Inter Tight', sans-serif;
  font-size: 1rem; 
 }
 
+.price-font {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 1.1rem;
+  font-weight: bold;
+
+}
+
+
 .item-label-font {
   font-family: 'Inter Tight', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
 
 }
 
 .quantity-button {
         border-radius: 10%;
         display: flex;
-        justify-content: space-between;
-        width: 100px;
-        background-color: lightblue;
+         width: 100px;
+        background-color: rgb(249, 250, 250);
         padding: 10px;   
-        align-self: flex-start;  
+        margin: auto;
+        
 }
 
-.rectangle-button {
+.label-rectangle-button {
     border: 1px solid black;
-    border-radius: 14%;
     padding: 10px 20px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -50,4 +71,7 @@
     width: 185px; 
     height: 160px; 
     object-fit: cover;
+  }
+  .grey-gradient {
+    background: linear-gradient(to right, #797878, #333);
   }

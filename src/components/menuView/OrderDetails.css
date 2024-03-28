@@ -1,3 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+
+.menu-font{
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 1.1rem;
+    font-weight: bold;
+
+}
+
 .items-order-button {
     margin-top: 20px;
     background-color: #1f6ff0;

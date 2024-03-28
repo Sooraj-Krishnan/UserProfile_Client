@@ -1,3 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+.individual-items-font{
+    font-family: 'Inter Tight', sans-serif;
+    font-size: .9rem;
+    font-weight: bold;
+    
+
+}
+.total-amount-font{
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
 .column-header {
   flex: 1;
   text-align: center;
@@ -20,7 +36,11 @@
 .delete-icon {
   color: red;
   font-size: 20px;
+  position: relative;
+  top: 0.3em;
 }
+  
+
 
 .special-instructions-input::placeholder {
     color: #595959;

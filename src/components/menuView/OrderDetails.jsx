@@ -366,12 +366,12 @@ const OrderDetails = () => {
   return (
     <div style={{ width: "390px", margin: "0 auto", textAlign: "center" }}>
       <p
-        className="text-md mr-5 h-12  pt-2 px-3 rounded-full border  font-medium cursor-pointer"
+        className=" menu-fonttext-md mr-5 h-12  pt-2 px-3 rounded-full border  font-medium cursor-pointer"
         onClick={handleBack}
         style={{ marginBottom: "20px" }}
       >
         {" "}
-        <ArrowLeftOutlined />
+        <ArrowLeftOutlined style={{ marginRight: "15px" }} />
         MENU
       </p>
       <Cart

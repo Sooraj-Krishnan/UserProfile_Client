@@ -58,33 +58,28 @@ const MenuView = () => {
 
   return (
     <div
-      className="bg-gray-100"
+      className="grey-gredient"
       style={{
-        width: "450px",
-        margin: "0 auto",
+        width: "390px",
+        margin: "auto",
         paddingBottom: "20px",
       }}
     >
-      <Space direction="vertical">
-        <Search
-          placeholder="search for dishes"
-          onSearch={onSearch}
-          style={{
-            width: 300,
-            marginLeft: 40,
-            marginTop: 20,
-          }}
-        />
-      </Space>
+      <div style={{ textAlign: "center", marginTop: "15px" }}>
+        <Space direction="vertical" style={{ width: "90%" }}>
+          <Search placeholder="search for dishes" onSearch={onSearch} />
+        </Space>
+      </div>
 
       <div className="flex space-x-4 justify-center">
         <div
-          className="rectangle-button"
+          className="label-rectangle-button rounded-full"
           style={{
             backgroundColor: selectedLabel === null ? "#b6f5fa" : "initial",
           }}
         >
           <button
+            className="label-button-font"
             onClick={() => {
               setSelectedLabel(null);
               setSearchTerm("");
@@ -97,7 +92,7 @@ const MenuView = () => {
           menuData.menuItems &&
           menuData.menuItems.map((menuItem, index) => (
             <div
-              className="rectangle-button"
+              className="label-rectangle-button rounded-full"
               key={index}
               style={{
                 backgroundColor:
@@ -105,6 +100,7 @@ const MenuView = () => {
               }}
             >
               <button
+                className="label-button-font"
                 onClick={() => {
                   setSelectedLabel(menuItem.label);
                   setSearchTerm("");
@@ -148,20 +144,21 @@ const MenuView = () => {
             if (filteredItems.length > 0) {
               itemsFound = true;
               return (
-                <div key={menuItemIndex} className="m-8">
-                  <Title level={1}>{menuItem.label}</Title>
+                <div key={menuItemIndex} className="m-8 custom-font">
+                  <p className="font-label-heading">{menuItem.label}</p>
                   {filteredItems.map((item, itemIndex) => {
                     const [price, unit] = item.price.split(" ");
                     return (
-                      <Row key={itemIndex}>
+                      <Row key={itemIndex} className="my-10">
                         <Col span={12}>
                           <Title level={3} className="custom-font">
                             {item.itemName}
                           </Title>
-                          <p className="custom-font">{item.description}</p>
-                          <p>
-                            Price: {parseInt(price) * item.quantity} {unit}
+
+                          <p className="price-font">
+                            {parseInt(price) * item.quantity} {unit}
                           </p>
+                          <p className="custom-font mb-2">{item.description}</p>
                           {/* <p>Quantity: {item.quantity}</p> */}
 
                           {/* <div className="quantity-button">
@@ -199,30 +196,43 @@ const MenuView = () => {
                             setLocalMenuData={setLocalMenuData}
                             quantity={item.quantity}
                           />
-
-                          <div className="quantity-button mt-2 justify-center">
-                            {/* <button onClick={() => addToCart(item)}>Add</button> */}
-                            <button
-                              onClick={() =>
-                                addToCart(
-                                  item._id,
-                                  menuData,
-                                  cartItems,
-                                  setCartItems,
-                                  () => setShowAddItemsBox(true) // Pass setShowAddItemsBox as a callback
-                                )
-                              }
-                            >
-                              ADD
-                            </button>
-                          </div>
                         </Col>
                         <Col span={12}>
-                          <img
-                            className="m-2 square-image"
-                            src={item.itemImage}
-                            alt={item.itemName}
-                          />
+                          <div style={{ position: "relative" }}>
+                            <img
+                              className="m-2 square-image"
+                              src={item.itemImage}
+                              alt={item.itemName}
+                            />
+                            <div
+                              className="quantity-button mt-2 justify-center"
+                              style={{
+                                position: "absolute",
+                                bottom: "-20px",
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                              }}
+                            >
+                              <button
+                                style={{
+                                  color: "green",
+                                  fontWeight: "bold",
+                                  fontSize: "1.2rem",
+                                }}
+                                onClick={() =>
+                                  addToCart(
+                                    item._id,
+                                    menuData,
+                                    cartItems,
+                                    setCartItems,
+                                    () => setShowAddItemsBox(true) // Pass setShowAddItemsBox as a callback
+                                  )
+                                }
+                              >
+                                ADD
+                              </button>
+                            </div>
+                          </div>
                         </Col>
                       </Row>
                     );

@@ -16,7 +16,7 @@ const QuantitySelector = ({
     >
       Choose quantity:
     </label> */}
-    <div className="relative flex items-center max-w-[11rem]">
+    <div className="relative flex items-center max-w-[11rem]  border border-gray-300 rounded-lg">
       <div className="absolute bottom-1 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 flex items-center text-xs text-gray-400 space-x-1 rtl:space-x-reverse">
         <svg
           className="w-2.5 h-2.5 text-gray-400"

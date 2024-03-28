@@ -14,6 +14,7 @@ const Cart = ({
   const totalAmount = cartItems.reduce((total, item) => {
     return total + parseInt(item.price.split(" ")[0]) * item.quantity;
   }, 0);
+  const unit = cartItems[0].price.split(" ")[1];
   console.log("cartItems", cartItems);
   return (
     <div>
@@ -37,9 +38,13 @@ const Cart = ({
               marginBottom: "20px",
             }}
           >
-            <span className="column-item">{item.itemName}</span>
-            <span className="column-item quantity">{item.quantity}</span>
-            <span className="column-item price">
+            <span className="column-item individual-items-font">
+              {item.itemName}
+            </span>
+            <span className="column-item quantity individual-items-font">
+              {item.quantity}
+            </span>
+            <span className="column-item price individual-items-font">
               {parseInt(item.price.split(" ")[0]) * item.quantity}{" "}
               {item.price.split(" ")[1]}
               <button
@@ -53,8 +58,8 @@ const Cart = ({
         ))}
         <hr />
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <p>Total Amount :</p>
-          <p>{totalAmount}</p>
+          <p className="total-amount-font">Total Amount :</p>
+          <p className="total-amount-font">{`${totalAmount} ${unit}`}</p>
         </div>
       </Card>
 
