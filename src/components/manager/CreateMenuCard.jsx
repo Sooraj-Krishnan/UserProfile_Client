@@ -53,6 +53,7 @@ const tailFormItemLayout = {
 };
 
 function CreateMenuCard({ menuCardData, edit }) {
+  const [currency, setCurrency] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -65,7 +66,6 @@ function CreateMenuCard({ menuCardData, edit }) {
           {
             key: "1",
             label: "",
-            currency: "",
             items: [
               { itemImage: "", itemName: "", price: "", description: "" },
             ],
@@ -77,7 +77,6 @@ function CreateMenuCard({ menuCardData, edit }) {
     const newPanel = {
       key: (menuItems.length + 1).toString(),
       label: "",
-      currency: "",
       items: [{ itemImage: "", itemName: "", price: "", description: "" }],
     };
     setMenuItems([...menuItems, newPanel]);
@@ -94,10 +93,8 @@ function CreateMenuCard({ menuCardData, edit }) {
     setMenuItems(newMenuItems);
   };
 
-  const handleCurrencyChange = (panelIndex, value) => {
-    const newMenuItems = [...menuItems];
-    newMenuItems[panelIndex].currency = value;
-    setMenuItems(newMenuItems);
+  const handleCurrencyChange = (value) => {
+    setCurrency(value);
   };
 
   const addItem = (panelIndex) => {
@@ -172,6 +169,7 @@ function CreateMenuCard({ menuCardData, edit }) {
 
       const datas = new FormData();
       datas.append("name", values.name);
+      datas.append("currency", currency);
       datas.append("coverImage", values.fileList1[0].originFileObj);
       // datas.append("fileList2", values.fileList2);
       datas.append("logoImage", values.fileList2[0].originFileObj);
@@ -308,6 +306,7 @@ function CreateMenuCard({ menuCardData, edit }) {
                   onFinish={onFinish}
                   initialValues={{
                     name: menuCardData?.name,
+                    currency: menuCardData?.currency,
                     fileList1: fileList1,
                     fileList2: fileList2,
                     menuItems: menuCardData?.menuItems
@@ -432,6 +431,24 @@ function CreateMenuCard({ menuCardData, edit }) {
                       </Form.Item>
                     </div>
                   </div>
+                  <div>
+                    <label htmlFor="" className="text-xl font-semibold">
+                      Select Currency{" "}
+                    </label>
+                    <Form.Item name="currency">
+                      <Select
+                        showSearch
+                        placeholder="Select a currency"
+                        onChange={handleCurrencyChange}
+                      >
+                        {currencyCodes.codes().map((code) => (
+                          <Option key={code} value={code}>
+                            {code}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </div>
                   <label htmlFor="" className="text-xl font-semibold">
                     Enter Your item details{" "}
                   </label>
@@ -461,24 +478,7 @@ function CreateMenuCard({ menuCardData, edit }) {
                             }
                           />
                         </Form.Item>
-                        <label htmlFor="" className="text-xl font-semibold">
-                          Select Currency{" "}
-                        </label>
-                        <Form.Item name={["menuItems", panelIndex, "currency"]}>
-                          <Select
-                            showSearch
-                            placeholder="Select a currency"
-                            onChange={(value) =>
-                              handleCurrencyChange(panelIndex, value)
-                            }
-                          >
-                            {currencyCodes.codes().map((code) => (
-                              <Option key={code} value={code}>
-                                {code}
-                              </Option>
-                            ))}
-                          </Select>
-                        </Form.Item>
+
                         {panel.items.map((item, itemIndex) => (
                           <Row key={itemIndex}>
                             {itemIndex !== 0 && (
@@ -707,6 +707,7 @@ CreateMenuCard.propTypes = {
   menuCardData: PropTypes.shape({
     _id: PropTypes.string,
     name: PropTypes.string,
+    currency: PropTypes.string,
     coverImage: PropTypes.string,
     logoImage: PropTypes.string,
     menuItems: PropTypes.arrayOf(

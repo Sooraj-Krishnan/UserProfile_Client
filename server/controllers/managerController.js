@@ -147,7 +147,7 @@ const createMenuCard = async (req, res, next) => {
         return {
           ...item,
           itemImage: itemImageFile ? S3Url + itemImageName : "",
-          price: `${item.price} ${menuItem.currency}`, // append currency to price
+          price: `${item.price} ${req.body.currency}`, // append currency to price
         };
       });
 
@@ -159,6 +159,7 @@ const createMenuCard = async (req, res, next) => {
 
     const newMenuCard = await MenuCard.create({
       name: req.body.name,
+      currency: req.body.currency,
       coverImage: coverImageFile ? S3Url + coverImageName : "",
       logoImage: logoImageFile ? S3Url + logoImageName : "",
       managerID: managerID,
@@ -183,6 +184,7 @@ const createMenuCard = async (req, res, next) => {
 };
 
 const editMenuCard = async (req, res, next) => {
+  console.log("req.body", req.body);
   try {
     const managerID = req.user._id;
     const MenuCardID = req.params.id;
@@ -268,8 +270,8 @@ const editMenuCard = async (req, res, next) => {
           // Split the price by space and take the first part (actual price)
           const actualPrice = item.price.split(" ")[0];
           // If a new currency is provided, append it to the actual price
-          const price = menuItem.currency
-            ? `${actualPrice} ${menuItem.currency}`
+          const price = req.body.currency
+            ? `${actualPrice} ${req.body.currency}`
             : item.price;
           return {
             ...item,
@@ -282,6 +284,7 @@ const editMenuCard = async (req, res, next) => {
     });
     // Update the Menu Card in the database
     existingMenuCard.name = req.body.name;
+    existingMenuCard.currency = req.body.currency;
     existingMenuCard.coverImage = coverImageUrl;
     existingMenuCard.logoImage = logoImageUrl;
     existingMenuCard.managerID = managerID;

@@ -5,7 +5,6 @@ const Admin = require("./adminModel");
 const MenuItemSchema = mongoose.Schema({
   key: String,
   label: String,
-  currency: String,
   items: [
     {
       itemImage: String,
@@ -29,6 +28,10 @@ const MenuCardSchema = mongoose.Schema({
   logoImage: {
     type: String,
     required: [true, "Logo Image is required"],
+  },
+  currency: {
+    type: String,
+    required: [true, "Currency is required"],
   },
   menuItems: [MenuItemSchema],
 
