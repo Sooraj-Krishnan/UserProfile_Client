@@ -184,7 +184,6 @@ const createMenuCard = async (req, res, next) => {
 };
 
 const editMenuCard = async (req, res, next) => {
-  console.log("req.body", req.body);
   try {
     const managerID = req.user._id;
     const MenuCardID = req.params.id;

@@ -1,6 +1,6 @@
 // import io from "socket.io-client";
 import { useState } from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, Checkbox } from "antd";
 import Styles from "./styles.module.scss";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,6 +15,11 @@ import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 function EmployeeLoginArea() {
   // const socket = io(import.meta.env.VITE_REACT_APP_SERVER_URL);
   const navigate = useNavigate();
+  const [checkedS, setCheckedS] = useState(false);
+  const onChangeS = (e) => {
+    setCheckedS(e.target.checked);
+    navigate("/");
+  };
 
   const [loginError, setLoginError] = useState("");
   const [, setOTPError] = useState("");
@@ -193,9 +198,11 @@ function EmployeeLoginArea() {
                 <div className={Styles.checkbox}>
                   <div>
                     <div className={Styles.Privacy}>
-                      {/* <Checkbox checked={checkedS} onChange={onChangeS}>
-                        <span style={{ color: "white" }}>I’m a New User</span>
-                      </Checkbox> */}
+                      <Checkbox checked={checkedS} onChange={onChangeS}>
+                        <span style={{ color: "white" }}>
+                          Admin/Manager Login
+                        </span>
+                      </Checkbox>
                     </div>
                   </div>
                   <div className={Styles.check}>

@@ -14,7 +14,7 @@ const Cart = ({
   const totalAmount = cartItems.reduce((total, item) => {
     return total + parseInt(item.price.split(" ")[0]) * item.quantity;
   }, 0);
-  const unit = cartItems[0].price.split(" ")[1];
+  const unit = cartItems.length > 0 ? cartItems[0].price.split(" ")[1] : "";
   console.log("cartItems", cartItems);
   return (
     <div>

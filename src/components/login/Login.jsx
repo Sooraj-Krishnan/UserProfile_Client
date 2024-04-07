@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, Checkbox } from "antd";
 import Styles from "./styles.module.scss";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,11 +13,11 @@ import Countdown from "react-countdown";
 import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 function LoginArea() {
   const navigate = useNavigate();
-  // const [checkedS, setCheckedS] = useState(false);
-  // const onChangeS = (e) => {
-  //   setCheckedS(e.target.checked);
-  //   navigate("/signup");
-  // };
+  const [checkedS, setCheckedS] = useState(false);
+  const onChangeS = (e) => {
+    setCheckedS(e.target.checked);
+    navigate("/employee-login");
+  };
   const [loginError, setLoginError] = useState("");
   const [, setOTPError] = useState("");
   const [otpCmp, setOtpCmp] = useState(false);
@@ -196,9 +196,9 @@ function LoginArea() {
                 <div className={Styles.checkbox}>
                   <div>
                     <div className={Styles.Privacy}>
-                      {/* <Checkbox checked={checkedS} onChange={onChangeS}>
-                        <span style={{ color: "white" }}>I’m a New User</span>
-                      </Checkbox> */}
+                      <Checkbox checked={checkedS} onChange={onChangeS}>
+                        <span style={{ color: "white" }}>Employee Login</span>
+                      </Checkbox>
                     </div>
                   </div>
                   <div className={Styles.check}>

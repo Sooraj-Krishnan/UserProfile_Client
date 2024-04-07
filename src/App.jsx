@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "./components/state-management/ThemeContext";
 
 /*---------------Public Pages ----------------*/
-import HomePage from "./pages/publicPages/HomePage";
+
 import LoginPage from "./pages/LoginPage";
 import EmployeeLoginPage from "./pages/employeePages/EmployeeLogin";
 import MenuCardView from "./pages/publicPages/MenuCardView";
@@ -37,53 +37,112 @@ import WaiterLoginProtect from "./auth/WaiterLoginProtext";
 import KitchenStaffDashboard from "./pages/employeePages/KitchenStaffDashboard";
 import WaiterDashboard from "./pages/employeePages/WaiterDashboard";
 
+// function App() {
+//   return (
+//     <ThemeProvider>
+//       <Router>
+//         <Routes>
+//           <Route path="/" element={<HomePage />} />
+//           <Route path="/login" element={<LoginPage />} />
+//           <Route path="/employee-login" element={<EmployeeLoginPage />} />
+//           <Route path="/menu-view/:id" element={<MenuCardView />} />
+//           <Route path="/menu-view/:id/order" element={<OrderView />} />
+
+//           <Route path="/" element={<AdminLoginProtect />} />
+//           <Route path="admin-dashboard" element={<DashboardPage />} />
+//           <Route path="create-manager" element={<CreateManagerPage />} />
+//           <Route path="edit-manager" element={<EditManagerPage />} />
+//           <Route path="view-managers" element={<ViewAllManagers />} />
+//           {/* other routes can go here */}
+//           <Route path="/" element={<ManagerLoginProtect />} />
+//           <Route path="manager-dashboard" element={<ManagerDashboardPage />} />
+//           <Route path="create-menu-card" element={<CreateMenuCardPage />} />
+//           <Route path="edit-menu-card/:id" element={<EditMenuCardPage />} />
+//           <Route path="all-menu-cards" element={<ViewAllMenuCard />} />
+//           <Route path="create-table/:id" element={<CreateTablePage />} />
+//           <Route path="edit-table/:id" element={<EditTablePage />} />
+//           <Route path="all-tables" element={<ViewAllTables />} />
+//           <Route path="create-waiter/:id" element={<CreateWaiterPage />} />
+//           <Route path="all-waiters" element={<ViewAllWaiters />} />
+//           <Route path="edit-waiter/:id" element={<EditWaiterPage />} />
+//           <Route
+//             path="create-kitchen-staff/:id"
+//             element={<CreateKitchenEmployee />}
+//           />
+//           <Route
+//             path="edit-kitchen-staff/:id"
+//             element={<EditKitchenEmployee />}
+//           />
+//           <Route path="all-kitchen-staffs" element={<ViewAllKitchenStaffs />} />
+//           {/* other routes can go here */}
+//           <Route path="/" element={<KitchenStaffLoginProtect />} />
+//           <Route
+//             path="kitchenStaff-dashboard"
+//             element={<KitchenStaffDashboard />}
+//           />
+//           {/* other routes can go here */}
+//           <Route path="/" element={<WaiterLoginProtect />} />
+//           <Route path="waiter-dashboard" element={<WaiterDashboard />} />
+//           {/* other routes can go here */}
+//         </Routes>
+//       </Router>
+//     </ThemeProvider>
+//   );
+// }
+
 function App() {
   return (
     <ThemeProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<LoginPage />} />
           <Route path="/employee-login" element={<EmployeeLoginPage />} />
           <Route path="/menu-view/:id" element={<MenuCardView />} />
           <Route path="/menu-view/:id/order" element={<OrderView />} />
 
-          <Route path="/" element={<AdminLoginProtect />} />
-          <Route path="admin-dashboard" element={<DashboardPage />} />
-          <Route path="create-manager" element={<CreateManagerPage />} />
-          <Route path="edit-manager" element={<EditManagerPage />} />
-          <Route path="view-managers" element={<ViewAllManagers />} />
-          {/* other routes can go here */}
-          <Route path="/" element={<ManagerLoginProtect />} />
-          <Route path="manager-dashboard" element={<ManagerDashboardPage />} />
-          <Route path="create-menu-card" element={<CreateMenuCardPage />} />
-          <Route path="edit-menu-card/:id" element={<EditMenuCardPage />} />
-          <Route path="all-menu-cards" element={<ViewAllMenuCard />} />
-          <Route path="create-table/:id" element={<CreateTablePage />} />
-          <Route path="edit-table/:id" element={<EditTablePage />} />
-          <Route path="all-tables" element={<ViewAllTables />} />
-          <Route path="create-waiter/:id" element={<CreateWaiterPage />} />
-          <Route path="all-waiters" element={<ViewAllWaiters />} />
-          <Route path="edit-waiter/:id" element={<EditWaiterPage />} />
-          <Route
-            path="create-kitchen-staff/:id"
-            element={<CreateKitchenEmployee />}
-          />
-          <Route
-            path="edit-kitchen-staff/:id"
-            element={<EditKitchenEmployee />}
-          />
-          <Route path="all-kitchen-staffs" element={<ViewAllKitchenStaffs />} />
-          {/* other routes can go here */}
-          <Route path="/" element={<KitchenStaffLoginProtect />} />
-          <Route
-            path="kitchenStaff-dashboard"
-            element={<KitchenStaffDashboard />}
-          />
-          {/* other routes can go here */}
-          <Route path="/" element={<WaiterLoginProtect />} />
-          <Route path="waiter-dashboard" element={<WaiterDashboard />} />
-          {/* other routes can go here */}
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminLoginProtect />}>
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="create-manager" element={<CreateManagerPage />} />
+            <Route path="edit-manager" element={<EditManagerPage />} />
+            <Route path="view-managers" element={<ViewAllManagers />} />
+          </Route>
+
+          {/* Manager Routes */}
+          <Route path="/manager" element={<ManagerLoginProtect />}>
+            <Route path="dashboard" element={<ManagerDashboardPage />} />
+            <Route path="create-menu-card" element={<CreateMenuCardPage />} />
+            <Route path="edit-menu-card/:id" element={<EditMenuCardPage />} />
+            <Route path="all-menu-cards" element={<ViewAllMenuCard />} />
+            <Route path="create-table/:id" element={<CreateTablePage />} />
+            <Route path="edit-table/:id" element={<EditTablePage />} />
+            <Route path="all-tables" element={<ViewAllTables />} />
+            <Route path="create-waiter/:id" element={<CreateWaiterPage />} />
+            <Route path="all-waiters" element={<ViewAllWaiters />} />
+            <Route path="edit-waiter/:id" element={<EditWaiterPage />} />
+            <Route
+              path="create-kitchen-staff/:id"
+              element={<CreateKitchenEmployee />}
+            />
+            <Route
+              path="edit-kitchen-staff/:id"
+              element={<EditKitchenEmployee />}
+            />
+            <Route
+              path="all-kitchen-staffs"
+              element={<ViewAllKitchenStaffs />}
+            />
+          </Route>
+
+          {/* Kitchen Staff Routes */}
+          <Route path="/kitchen-staff" element={<KitchenStaffLoginProtect />}>
+            <Route path="dashboard" element={<KitchenStaffDashboard />} />
+          </Route>
+
+          {/* Waiter Routes */}
+          <Route path="/waiter" element={<WaiterLoginProtect />}>
+            <Route path="dashboard" element={<WaiterDashboard />} />
+          </Route>
         </Routes>
       </Router>
     </ThemeProvider>
