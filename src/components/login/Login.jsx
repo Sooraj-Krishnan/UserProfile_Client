@@ -3,7 +3,7 @@ import { Form, Input, Button, Checkbox } from "antd";
 import Styles from "./styles.module.scss";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FiX } from "react-icons/fi";
+// import { FiX } from "react-icons/fi";
 import "antd/dist/reset.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ function LoginArea() {
   const [checkedS, setCheckedS] = useState(false);
   const onChangeS = (e) => {
     setCheckedS(e.target.checked);
-    navigate("/employee-login");
+    navigate("/register");
   };
   const [loginError, setLoginError] = useState("");
   const [, setOTPError] = useState("");
@@ -187,9 +187,9 @@ function LoginArea() {
               <div className={Styles.signin}>
                 <h3>Please signing to continue</h3>
 
-                <a href="http://zeeqr.com">
+                {/* <a href="http://zeeqr.com">
                   <FiX className={Styles.fix} />
-                </a>
+                </a> */}
               </div>
 
               <div>
@@ -197,7 +197,7 @@ function LoginArea() {
                   <div>
                     <div className={Styles.Privacy}>
                       <Checkbox checked={checkedS} onChange={onChangeS}>
-                        <span style={{ color: "white" }}>Employee Login</span>
+                        <span style={{ color: "white" }}>Register</span>
                       </Checkbox>
                     </div>
                   </div>
