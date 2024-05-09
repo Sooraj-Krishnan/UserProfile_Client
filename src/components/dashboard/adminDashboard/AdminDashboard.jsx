@@ -55,7 +55,7 @@ const AdminDashboard = () => {
   return (
     <div>
       <Spin spinning={loader} size="large">
-        {remainingCards <= 2 && (
+        {/* {remainingCards <= 2 && (
           <Space
             direction="vertical"
             style={{
@@ -68,7 +68,8 @@ const AdminDashboard = () => {
               closable
             />
           </Space>
-        )}
+        )} */}
+
         <Row style={{ width: "100%" }}>
           <Col span={12}>
             <Title level={1}>{`Hello, ${adminName}`}</Title>
