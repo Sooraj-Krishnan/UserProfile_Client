@@ -15,7 +15,8 @@ import { logout } from "../../api/AdminRequest";
 
 import { Modal } from "antd";
 
-import ZEEQR_White from "../../assets/images/ZEEQR_White.svg";
+//import ZEEQR_White from "../../assets/images/ZEEQR_White.svg";
+import Voosh from "../../assets/images/VooshLogo.webp";
 
 const { confirm } = Modal;
 const { Sider } = Layout;
@@ -71,7 +72,7 @@ function Sidebar() {
       style={{ height: "100vh" }}
     >
       <div className="logo">
-        <img src={ZEEQR_White} alt="ZEEQR" />
+        <img src={Voosh} alt="ZEEQR" />
       </div>
       <Menu
         theme="dark"

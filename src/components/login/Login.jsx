@@ -16,7 +16,7 @@ function LoginArea() {
   const [checkedS, setCheckedS] = useState(false);
   const onChangeS = (e) => {
     setCheckedS(e.target.checked);
-    navigate("/employee-login");
+    navigate("/register");
   };
   const [loginError, setLoginError] = useState("");
   const [, setOTPError] = useState("");
@@ -34,10 +34,7 @@ function LoginArea() {
     setLoginError("");
 
     try {
-      console.log("login data", loginData);
       const { data } = await login(loginData);
-      console.log("login token data", data);
-      console.log("login error", data?.message);
 
       if (data.success) {
         if (data.admin) {
@@ -197,7 +194,9 @@ function LoginArea() {
                   <div>
                     <div className={Styles.Privacy}>
                       <Checkbox checked={checkedS} onChange={onChangeS}>
-                        <span style={{ color: "white" }}>Employee Login</span>
+                        <span style={{ color: "white" }}>
+                          New User? Sign UP
+                        </span>
                       </Checkbox>
                     </div>
                   </div>
