@@ -4,6 +4,7 @@ import { ThemeProvider } from "./components/state-management/ThemeContext";
 /*---------------Public Pages ----------------*/
 
 import LoginPage from "./pages/LoginPage";
+import Registration from "./pages/publicPages/RegisterPage";
 import EmployeeLoginPage from "./pages/employeePages/EmployeeLogin";
 import MenuCardView from "./pages/publicPages/MenuCardView";
 import OrderView from "./pages/publicPages/OrderViewPage";
@@ -43,6 +44,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<LoginPage />} />
+          <Route path="/register" element={<Registration />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/employee-login" element={<EmployeeLoginPage />} />
           <Route path="/menu-view/:id" element={<MenuCardView />} />

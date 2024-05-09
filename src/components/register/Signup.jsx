@@ -50,7 +50,7 @@ function Signup() {
   const handleSubmit = async (loginData) => {
     try {
       const { data } = await register(loginData);
-      // console.log("sign up", data);
+      console.log("sign up", data);
       if (data.success) {
         toast.success("Succesfully registered, Please login..", {
           position: "top-right",
@@ -67,8 +67,7 @@ function Signup() {
         }, 2500);
       }
     } catch (error) {
-      console.log(error);
-      // console.log(error.response.data.message);
+      console.log(error.response.data.message);
       setLoginError(error.response.data.message);
     }
   };
