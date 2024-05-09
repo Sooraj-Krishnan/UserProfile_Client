@@ -29,7 +29,8 @@ function Sidebar() {
 
   const items = [
     { label: "Dashboard", key: "/admin-dashboard", icon: <PieChartOutlined /> },
-    { label: "Managers", key: "/view-managers", icon: <FcBusinessman /> },
+    // { label: "Managers", key: "/view-managers", icon: <FcBusinessman /> },
+    { label: "View Users", key: "/view-users", icon: <FcBusinessman /> },
     { label: "SignOut", key: "/signout", icon: <LogoutOutlined /> },
   ];
 

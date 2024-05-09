@@ -1,8 +1,13 @@
-.add-button-icon {
-    margin-bottom: 8px;
-    margin-right: 8px;
-  }
-  
-  .add-button {
-    margin: 20px;
-  }
+.primary-button {
+  background-color: blue !important;
+  color: white !important;
+}
+
+
+.mandatory-switch[aria-checked="false"] {
+  background-color: grey !important;
+}
+
+.mandatory-switch[aria-checked="true"] {
+  background-color: #1677ff !important;
+}

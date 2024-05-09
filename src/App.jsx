@@ -12,6 +12,7 @@ import OrderView from "./pages/publicPages/OrderViewPage";
 /*---------------Admin Pages ----------------*/
 import AdminLoginProtect from "./auth/AdminLoginProtect";
 import DashboardPage from "./pages/adminPages/Dashboard";
+import AllUsers from "./pages/adminPages/AllUsersPage";
 import CreateManagerPage from "./pages/adminPages/CreateManager";
 import EditManagerPage from "./pages/adminPages/EditManager";
 import ViewAllManagers from "./pages/adminPages/ViewManager";
@@ -43,7 +44,7 @@ function App() {
     <ThemeProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<LoginPage />} />
+          <Route path="/" element={<Registration />} />
           <Route path="/register" element={<Registration />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/employee-login" element={<EmployeeLoginPage />} />
@@ -52,6 +53,7 @@ function App() {
 
           <Route path="/" element={<AdminLoginProtect />} />
           <Route path="admin-dashboard" element={<DashboardPage />} />
+          <Route path="view-users" element={<AllUsers />} />
           <Route path="create-manager" element={<CreateManagerPage />} />
           <Route path="edit-manager" element={<EditManagerPage />} />
           <Route path="view-managers" element={<ViewAllManagers />} />

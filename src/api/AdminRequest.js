@@ -17,6 +17,9 @@ export const logout = (refToken) => axios.post("/logout", { refToken });
 
 /*-----------------------------Other Routes -------------------------------*/
 export const adminDashboard = () => axiosPrivate.get(`/admin-dashboard`);
+export const editAdminProfile = (details) =>
+  axiosPrivate.put(`/edit-admin-profile`, details);
+export const viewAllUsers = () => axiosPrivate.get(`/view-all-users`);
 export const createManager = (details) =>
   axiosPrivate.post(`/create-manager`, details);
 
