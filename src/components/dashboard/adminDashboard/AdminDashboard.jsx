@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import ms from "ms";
 import { Typography, Row, Col, Spin, Form, Input, Avatar, Switch } from "antd";
 import { adminDashboard, editAdminProfile } from "../../../api/AdminRequest";
@@ -11,42 +10,44 @@ const { Title } = Typography;
 
 const AdminDashboard = () => {
   const [loader, setLoader] = useState(true);
+  const [adminData, setAdminData] = useState(null);
   const [form] = Form.useForm();
 
   const fetchAdminData = async () => {
-    const { data } = await adminDashboard();
-    return data;
+    try {
+      const { data } = await adminDashboard();
+      setAdminData(data);
+    } catch (error) {
+      console.log(error.message);
+      if (error.response && error.response.status === 403) {
+        // ErrorLogout(error);
+      }
+    }
   };
 
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["adminData"],
-    queryFn: fetchAdminData,
-    staleTime: ms("1d"),
-  });
+  useEffect(() => {
+    fetchAdminData();
+    const interval = setInterval(() => {
+      fetchAdminData();
+    }, ms("1d"));
 
-  const adminName = data?.admin?.name;
-
-  if (error) {
-    console.log(error.message);
-    if (error.response && error.response.status === 403) {
-      // ErrorLogout(error);
-    }
-  }
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
-    setLoader(isLoading);
-    if (!isLoading && data) {
+    setLoader(!adminData);
+    if (adminData) {
       form.setFieldsValue({
-        name: data.admin.name,
-        email: data.admin.email,
-        role: data.admin.isAdmin ? "Admin" : "Normal User",
-        bio: data.admin.bio,
-        profileImage: data.admin.profileImage,
-        profileImageUrl: data.admin.profileImage,
-        isPublic: data.admin.isPublic,
+        name: adminData.admin.name,
+        email: adminData.admin.email,
+        role: adminData.admin.isAdmin ? "Admin" : "Normal User",
+        bio: adminData.admin.bio,
+        profileImage: adminData.admin.profileImage,
+        profileImageUrl: adminData.admin.profileImage,
+        isPublic: adminData.admin.isPublic,
       });
     }
-  }, [isLoading, data, form]);
+  }, [adminData, form]);
 
   const handleFormSubmit = async (values) => {
     try {
@@ -74,6 +75,8 @@ const AdminDashboard = () => {
     }
   };
 
+  const adminName = adminData?.admin?.name;
+
   return (
     <div>
       <Spin spinning={loader} size="large">
@@ -90,13 +93,13 @@ const AdminDashboard = () => {
               layout="vertical"
               onFinish={handleFormSubmit}
               initialValues={{
-                name: data?.admin?.name,
-                email: data?.admin?.email,
-                role: data?.admin?.isAdmin ? "Admin" : "Normal User",
-                bio: data?.admin?.bio,
-                profileImage: data?.admin?.profileImage,
-                profileImageUrl: data?.admin?.profileImage,
-                isPublic: data?.admin?.isPublic,
+                name: adminData?.admin?.name,
+                email: adminData?.admin?.email,
+                role: adminData?.admin?.isAdmin ? "Admin" : "Normal User",
+                bio: adminData?.admin?.bio,
+                profileImage: adminData?.admin?.profileImage,
+                profileImageUrl: adminData?.admin?.profileImage,
+                isPublic: adminData?.admin?.isPublic,
               }}
             >
               <Form.Item name="profileImage">
@@ -203,14 +206,22 @@ const AdminDashboard = () => {
                 <Col span={12}>
                   <Form.Item
                     name="isPublic"
-                    label="Make Private"
+                    label="Make Public"
                     valuePropName="checked"
                   >
-                    <Switch className="mandatory-switch" />
+                    <Switch />
                   </Form.Item>
                 </Col>
                 <Col span={12} style={{ textAlign: "right" }}>
-                  <button type="submit" className="primary-button">
+                  <button
+                    type="submit"
+                    style={{
+                      backgroundColor: "blue",
+                      color: "white",
+                      border: "none",
+                      padding: "10px 20px",
+                    }}
+                  >
                     Edit Profile
                   </button>
                 </Col>
